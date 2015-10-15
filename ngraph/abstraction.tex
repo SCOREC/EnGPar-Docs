@@ -366,6 +366,17 @@ In addition to accounting for macro mesh modifications, the macro improvement
 will account for heterogeneous computation loads associated with micro-coupling
 through additional weighted N-Graph edges.
 
+For this problem the N-Graph will be used to represent the macroscale mesh with 
+an abstraction from Figure \ref{fig::meshMapping}. To represent the micromodel, 
+each macroscale mesh element is given a weight based on the micromodel that
+corresponds to the mesh element. At first the new edge type will be weighted 
+based on the currently used predictive load balancing technique where the 
+weights are assigned based on the previous iterations' number of Newton 
+iterations. %this needs work
+After this, an adaptive load balancing technique will be implemented using ParMA 
+to balance the microscale calculations based on the current iterations' number
+of Newton iterations.%Once again needs work
+
 A second multiscale problem to be considered will be an adaptive concurrent
 atomistic continuum model where molecular dynamics models are applied over a
 small portion of the domain, continuum models over the majority of the domain
