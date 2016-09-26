@@ -1,0 +1,71 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{titling}
+\usepackage{color}
+
+\setlength{\droptitle}{-11em}
+
+\title{N-graph Abstraction for Partitioning Relation Based Data Structures}
+
+\author{Gerrett Diamond}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem}
+Most parallel applications distribute data across multiple processors to optimize performance. While some applications can naively distribute data evenly, many applications have complicated designs that require load balancing procedures that partition based on the computation and communication costs. We propose an expanded graph structure, N-graph, to provide an abstraction for different sets of data that have some level of relation between pairs of elements within the data. The N-graph will be used to interface these distributed data structures to (hyper)graph, geometric, and diffusive partitioning procedures. 
+
+\section{Related Works}
+%Parma,zoltan,parmetis,etc.
+Many different approaches to partitioning have been developed in order to optimize various balance and communication metrics. Graph-based partitioners like ParMETIS \cite{parmetis4} and PT-Scotch \cite{scotch2009} use a graph structure to evaluate a partitioning of the user data. Other partitioning algorithms will partition using the application's data structure directly, like ParMA's diffusive load balancing procedures \cite{Smith2015} for mesh load balancing. Other partitioning tools, such as Zoltan \cite{devine2002zoltan} and Zoltan2 \cite{zoltan2} define auxiliary structures that are used to interface a range of data representations to several partitioning tools. Integration of the N-graph abstraction and partitioning methods are planned to be integrated into Zoltan2 and potentially replace the current ParMA methods already in place.
+%{\color{red}It may be a good idea to mention Zoltan and Zoltan2 here since our work will be very similar in design.  To that point, we should be clear to mention that integration with Zoltan2 is planned, possibly as a replacement for the current ParMA methods.}
+
+\section{Experiments}
+%Scale-free, web graphs
+There are three application areas that we will base our development
+and algorithms for. Our initial experiments will focus on
+constantly evolving massive scale-free graphs or web graphs
+that require periodic dynamic load balancing to maintain
+efficient execution of parallel discrete event simulations. The
+quality of our partitioning will be evaluated by executing the
+massively parallel ROSS \cite{carothers2002ross} open source discrete event
+simulation engine.  Critical to this development is ROSS support for distributions that allow actors (N-Graph vertices) in the simulation with a very high degree to be shared by multiple processes; a split-vertex in N-Graph. 
+%{\color{red} more needed?}
+
+%3D unstructured mesh load balancing
+The second is multi-criteria load balancing
+for use in adaptive unstructured mesh simulations where there exist multiple
+entities that need to be balanced simultaneously. These 
+cases will be evaluated by comparing its performance on finite
+element codes where ParMA is already being used \cite{phastaParma2015}.
+
+%Multi level RVE for biotissue (Bill)
+The third development is for multimodel simulations that have
+multiple levels of computational elements in the simulation. 
+Tests will be performed on a hierarchic multiscale soft
+tissue \cite{luo07} application which considers a
+microscale model, a macroscale model, and the relationships
+between them. Our load balancing will be compared to the
+currently used Zoltan block partitioning. 
+This experiment and the related developments are a longer-term goal of this work and not expected to be completed in this semester project.
+
+\section{Goals and Outcomes}
+%Ngraph data structure
+The goals for this project include implementing the
+N-graph data structure \cite{EnGPar2015proposal} and implementing the ParMA diffusive algorithms for testing with finite element and multimodel applications.
+The data structure and algorithm implementations will leverage data-parallel methods to support hardware for SIMD vectorization and SMP GP-GPU cores.  Tests will be executed on the CCI AMOS BlueGene/Q and the NERSC CoriII Knights Landing Cray XC30.
+
+
+
+\newpage \bibliographystyle{plain}
+\bibliography{references}
+%\bibliography{scorec-refs/partition,scorec-refs/meshdb,scorec-refs/hardware,scorec-refs/io,scorec-refs/frameworks,scorec-refs/cr,scorec-refs/fem,scorec-refs/meshgen,scorec-refs/msgpass,references}
+
+\end{document}
