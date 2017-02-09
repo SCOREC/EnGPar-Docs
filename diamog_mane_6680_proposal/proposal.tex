@@ -1,0 +1,38 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{titling}
+\usepackage{color}
+
+\setlength{\droptitle}{-11em}
+
+\title{EnGPar - Partitioning and Load Balancing for Relation Based Data}
+
+\author{Gerrett Diamond}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Problem}
+A main problem in parallel applications is ensuring a even distribution of load across all the processors. While some applications can naively distribute data evenly, many applications have complicated designs that require load balancing procedures that partition based on the computation and communication costs. For finite element programs that utilize unstructured meshes, there exists a complicated structure of computation costs that depend on where degrees of freedoms are defined and the type of shape functions being used. Thus any load balancing technique must offer a diverse set of procedures to target the different levels of imbalance relative to the finite element method being applied. To target the different load balancing requirements we propose utilizing an expanded graph structure, N-graph \cite{EnGPar2015proposal}, that can represent multiple levels of relations simultaneously coupled with a set of partitioning techniques and diffusive load balancing strategies.
+
+\section{Related Works}
+%Parma,zoltan,parmetis,etc.
+Many different approaches to partitioning have been developed in order to optimize various balance and communication metrics. Graph-based partitioners like ParMETIS \cite{parmetis4} and PT-Scotch \cite{scotch2009} use a graph structure to compute a partitioning of the user data. Other partitioning algorithms will partition using the application's data structure directly, like ParMA's diffusive load balancing procedures \cite{Smith2015} for mesh load balancing. Other partitioning tools, such as Zoltan \cite{devine2002zoltan} and Zoltan2 \cite{zoltan2} define auxiliary structures that are used to interface a range of data representations to several partitioning tools. Integration of the N-graph abstraction and partitioning methods are planned to be integrated into Zoltan2 and potentially replace the current ParMA methods already in place.
+
+\section{Goals and Outcomes}
+Our main goal going in to this project is to implement ParMA-like diffusive load balancing techniques on top of the N-graph data structure that can be applied to finite element methods. These algorithms will be focused on multi-criteria load balancing to target the imbalance of multiple mesh dimensions as per the requirements of the specific finite element method. Our algorithm implementation will leverage data-parallel methods to support hardware for SIMD vectorization and SMP GP-GPU cores.  Tests will be executed on the CCI AMOS BlueGene/Q and the NERSC CoriII Knights Landing Cray XC30.
+
+
+
+\newpage \bibliographystyle{plain}
+\bibliography{references}
+%\bibliography{scorec-refs/partition,scorec-refs/meshdb,scorec-refs/hardware,scorec-refs/io,scorec-refs/frameworks,scorec-refs/cr,scorec-refs/fem,scorec-refs/meshgen,scorec-refs/msgpass,references}
+
+\end{document}
