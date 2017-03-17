@@ -95,6 +95,19 @@ Then each specific parma balancer can extend this class and define the virtual f
     Makes a migration plan of the vertices to send to neighboring processes based on the iteration queue and amount of weight being sent.
 \end{itemize}
 
-\subsection{Performing Mesh vertex < Mesh element balancing}
+\subsection{Performing Mesh vertex $<$ Mesh element balancing}
+For this case the N-Graph will be constructed such that for each mesh element there is a graph vertex and each mesh vertex there is a graph hyperedge. Then pins are created between any graph vertex and hyperedge that the corresponding mesh element is bounded by the mesh vertex. Then the functions to be overloaded would be as follows:
+\begin{itemize}
+  \item makeSides\\
+    Calculate the number of hyperedges on the part boundaries (equivalent to number of mesh vertices).
+  \item makeVtxWeights \\
+    Calculate the total weight of graph vertices on each process (equivalent to weight of mesh elements).
+  \item makeEdgeWeights \\
+    Calculate the total weight of hyperedges on each process (equivalent to weight of mesh vertices).
+  \item makeTargets\\
+    Calculate the weight to send to neighbors $= (my\_weight-neighbor\_weight)*step\_factor$.
+  \item makeSelector\\
+    Makes a migration plan of the vertices to send to neighboring processes based on the iteration queue and amount of weight being sent.
+\end{itemize}
 
 \end{document}
