@@ -1,0 +1,86 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{titling}
+\usepackage{color}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\setlength{\droptitle}{-11em}
+
+\title{ParMA design for EnGPar}
+
+\author{Gerrett Diamond}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.95,0.95,0.95}
+\lstset { %
+  backgroundcolor=\color{lbcolor},
+  tabsize=2,    
+  language=[GNU]C++,
+  aboveskip={1.5\baselineskip},
+  columns=fixed,
+  showstringspaces=false,
+  extendedchars=false,
+  breaklines=true,
+  prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+  frame=single,
+  numbers=left,
+  showtabs=false,
+  showspaces=false,
+  showstringspaces=false,
+  identifierstyle=\ttfamily,
+  keywordstyle=\color[rgb]{0,0,1},
+  commentstyle=\color[rgb]{0.026,0.112,0.095},
+  stringstyle=\color[rgb]{0.627,0.126,0.941},
+  numberstyle=\color[rgb]{0.205, 0.142, 0.73}
+}
+
+
+
+\section{General Design}
+A general ParMA like balancer will look like the following:
+
+\begin{lstlisting}
+  class ParmaBalancer {
+   public:
+    virtual makeSides(g)=0;
+    virtual makeVtxWeights(g,sides)=0;
+    virtual makeEdgeWeights(g,sides,i)=0;
+    virtual makeTargets(g,sides,vtxWeights,eWeights)=0;
+    virtual makeSelector(g,sides,targets,pq)=0;
+    void runStep() {
+      sides = makeSides(g);
+      vtxWeights = makeVtxWeights(g,sides);
+      for each edge type i to be balanced {
+        edgeWeights[i] = makeEdgeWeights(g,sides,i);
+      }
+      targets = makeTargets(g,sides,vtxWeights,edgeWeights);
+      pq = createIterationQueue(g);
+      selector = makeSelector(g,sides,targets,pq);
+      Perform migration based on selector
+      Update Stagnation Detectors
+    }
+    void balance() {
+      iter=0;
+      while(iter<maxIter && !stagnate) {
+        runStep();
+      }
+    }
+   private:
+    Graph g;
+  };
+\end{lstlisting}
+
+Then each specific parma balancer can extend this class and define the virtual functions as needed to support the strategy. When there is overlap in usage of functions, such as two different balancers would use the same $makeSides$ function we can leverage further inheritance thus automatically getting the functions we need and overloading the ones that need to be changed. As for the iteration queue, we can switch out different techniques for forming this queue as we get more advanced easily by defining different createIterationQueue functions and putting in ways to switch between them.
+
+
+\end{document}
