@@ -79,8 +79,22 @@ A general ParMA like balancer will look like the following:
     Graph g;
   };
 \end{lstlisting}
-
 Then each specific parma balancer can extend this class and define the virtual functions as needed to support the strategy. When there is overlap in usage of functions, such as two different balancers would use the same $makeSides$ function we can leverage further inheritance thus automatically getting the functions we need and overloading the ones that need to be changed. As for the iteration queue, we can switch out different techniques for forming this queue as we get more advanced easily by defining different createIterationQueue functions and putting in ways to switch between them.
 
+\subsection{Overloaded functions}
+\begin{itemize}
+  \item makeSides\\
+    Each process calculates the length of the part boundaries to all neighbors.
+  \item makeVtxWeights \\
+    Each process calculates the weight of its own vertices and shares with each neighboring process.
+  \item makeEdgeWeights \\
+    Each process calculates the weight of its own edges and shares with each neighboring process.
+  \item makeTargets\\
+    Each process calculates the amount of weight to send to each of its neighbors.
+  \item makeSelector\\
+    Makes a migration plan of the vertices to send to neighboring processes based on the iteration queue and amount of weight being sent.
+\end{itemize}
+
+\subsection{Performing Mesh vertex < Mesh element balancing}
 
 \end{document}
