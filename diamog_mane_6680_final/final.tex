@@ -1,11 +1,17 @@
 \documentclass[a4paper]{article}
 
-\usepackage[english]{babel}
-\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{amsmath}
+\geometry{margin=1in}
+\usepackage[english]{babel}
 \usepackage{url}
 \usepackage{titling}
-\usepackage{color}
 
 \setlength{\droptitle}{-11em}
 
@@ -49,9 +55,55 @@ Optionally, the vertices and edges may be assigned with weights to better contro
 Applications utilizing this abstraction define atomic domain entities as vertices in the N-Graph and at least one relation between them as the (hyper)edges. In this manner, applications may represent multiple relations of different sparsity and degree. For example the toplogy of an unstructured 3D mesh may be represented via vertices defined as mesh elements and a hyperedge type for each entity shared by adjacent elements. Figure \ref{fig:Mesh2Graph} depicts the mapping of an unstructured mesh (a) to a representation where mesh elements map to graph vertices and mesh vertices map to graph hyperedges (b) and a second mapping where mesh edges are mapped to a second edge type in the graph (c).
 
 \subsection{Diffusive Balancer Framework}
+In order to support continuously new methods of diffusive load balancing and new criterias and priorities, a general algorithm is defined for both ease of use and creation for future use of EnGPar. Algorithm \ref{alg:balancer} lists pseudocode for the overall design of the balancer. For each diffusive technique being implemented five methods need to be defined:
+\begin{itemize}
+  \item $makeSides$\\
+    Each process calculates the length of the part boundaries to all neighbors.
+  \item $makeVtxWeights$ \\
+    Each process calculates the weight of its own vertices and shares with each neighboring process.
+  \item $makeEdgeWeights$ \\
+    Each process calculates the weight of its own edges and shares with each neighboring process.
+  \item $makeTargets$\\
+    Each process calculates the amount of weight to send to each of its neighbors.
+  \item $makeSelector$\\
+    Makes a migration plan of the vertices to send to neighboring processes based on the iteration queue and amount of weight being sent.
+\end{itemize}
+Further operation control is also possible through changing the $createIterationQueue$ function which controls the order that graph vertices are iterated when selecting for migration. Stagnation detection is utilized to ensure that the balancer ends after no more improvements are found rather than completing any further unproductive iterations.
+
+\begin{algorithm}
+\caption{Diffusive balancer design}\label{alg:balancer}
+\begin{algorithmic}
+  \label{alg:balancer}
+  \Procedure{runStep}{Ngraph g}
+  \State sides = makeSides(g)
+  \State vtxWeights = makeVtxWeights(g,sides)
+  \For {each edge type i}
+  \State edgeWeights[i] = makeEdgeWeights(g,sides,i)
+  \EndFor
+  \State targets = makeTargets(g,sides,vtxWeights,edgeWeights)
+  \State pq = createIterationQueue(g)
+  \State selector = makeSelector(pq)
+  \For {increasing cavity size,cavSize}
+  \State plan $\leftarrow$ selector.select(targets,cavSize)
+  \EndFor
+  \State g.migrate(plan)
+  \State Update Stagnation Detection
+  \EndProcedure
+  \Procedure{balance}{Ngraph g}
+  \State iter=0
+  \For {iter=0 to maxIter}
+  \State runstep(g)
+  \If {balance has stagnated or g is sufficiently balanced}
+  \State return
+  \EndIf
+  \EndFor
+  \EndProcedure
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Vertex Balancer}
 
+\subsection{Extending to Multi-criteria Balancing}
 \section{Experiments}
 
 \section{Results}
