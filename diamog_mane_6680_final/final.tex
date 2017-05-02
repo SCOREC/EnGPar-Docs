@@ -54,6 +54,9 @@ EnGPar interfaces to the differenct partitioning procedures through a graph abst
 Optionally, the vertices and edges may be assigned with weights to better control partitioning. Vertices may also have spacial relations in the form of a coordinate vector $c$.\\
 Applications utilizing this abstraction define atomic domain entities as vertices in the N-Graph and at least one relation between them as the (hyper)edges. In this manner, applications may represent multiple relations of different sparsity and degree. For example the toplogy of an unstructured 3D mesh may be represented via vertices defined as mesh elements and a hyperedge type for each entity shared by adjacent elements. Figure \ref{fig:Mesh2Graph} depicts the mapping of an unstructured mesh (a) to a representation where mesh elements map to graph vertices and mesh vertices map to graph hyperedges (b) and a second mapping where mesh edges are mapped to a second edge type in the graph (c).
 
+\subsection{Migration}
+
+
 \subsection{Diffusive Balancer Framework}
 In order to support continuously new methods of diffusive load balancing and new criterias and priorities, a general algorithm is defined for both ease of use and creation for future use of EnGPar. Algorithm \ref{alg:balancer} lists pseudocode for the overall design of the balancer. For each diffusive technique being implemented five methods need to be defined:
 \begin{itemize}
@@ -102,13 +105,21 @@ Further operation control is also possible through changing the $createIteration
 \end{algorithm}
 
 \subsection{Vertex Balancer}
+As proof of concept a simple diffusive vertex balancer was implemented off of this design. The vertex balancer targets balancing the sum of the weights of the vertices in the graph. To do so we implement the five basic functions mentioned previously as follows. The $makeSides$ function has each part compute $s_i$ which is the number of (hyper)edges that are cut between this part and part $i$. This way each part knows which parts are its neighbors and has a metric representing the length of the boundary to the part. Second is the $makeVtxWeights$ function. This function has each part compute the sum of the weights of the local vertices and shares this value with each of its neighbors. Thus each part has a weight, $w_i$, that corresponds to each $s_i>0$. The $makeEdgeWeights$ function does nothing for this balancer since it only prioritizes the vertex weight. The $makeTargets$ function takes each neighboring weight and if the part's weight is greater than the neighbor's weight than it computes the amount of weight to send to that part in this iteration. This value is equal to 
+$$(w-w_i)*\dfrac{s_i}{\sum{s_i}}*\text{factor}$$
+where the factor is some parameter that controls the step size of each iteration. The final piece, $makeSelector$, is a selection procedure that traverses the given iteration queue and selects cavities that are shared between a part and a target neighboring part. For now the selector is kept simple for testing cases, but in future iterations will include capabilities such as canceling some parts of the migration plan to account for multi-criteria or improving some metric for specific load balancing goals.
 
-\subsection{Extending to Multi-criteria Balancing}
+\subsection{Extending to Multi-Criteria Balancing}
+In order to advance to multi-criteria load balancing we have to expand some of the functionality created in the vertex balancer. The $makeSides$ and $makeVtxWeights$ functions will be unchanged since they act similarly. However now the $makeEdgeWeights$ function will be used to calculate the weights of each edge type that is being targeted. The $makeTarget$ function will have to be altered to take into account the edge weights given by the $makeEdgeWeights$ function as well as look at the priorities of the edge types and vertices given by the user. The biggest change required is to the selector which has to take into account the weights of all edge types being balanced and make appropriate changes to the migration plan to ensure that the partition improves in each iteration. 
+
 \section{Experiments}
 
 \section{Results}
 
 \section{Future Work}
+As detailed earlier, for multi-criteria load balancing there is much work to be done to add functionality to the selector in order to properly balance the range of priorities any given user could have. Continuing on that the selector will need to have the ability to correct the plan by cancelling portions of the migration plan to best balance based on the different criteria. \\
+Another portion that can have a major impact on the quality of partitioning for these diffusive methods is the order in which the vertices are iterated over. The current method is iterating blindly over how the vertices are stored in memory with no regards to the overall structure of the part. While this will result in balancing the vertices, for some instances the parts can become elongated and result in large diameters. In ParMA \cite{Smith2015}, the iteration follows a graph distance based metric which prioritizes mesh elements that are further away from the part centroid. This method results in rounder parts and smoother part boundaries as well as reducing the diameter of the part. Further work will go into implementing this method into EnGPar and also exploring other options and what metrics are effected by the order of iteration.
+
 
 \section{Conclusion}
 
