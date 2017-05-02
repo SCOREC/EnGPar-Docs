@@ -8,7 +8,7 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{amsmath}
-\geometry{margin=1in}
+\geometry{margin=1.5in}
 \usepackage[english]{babel}
 \usepackage{url}
 \usepackage{titling}
@@ -27,10 +27,10 @@
 
 \section{Introduction}
 %TODO: rework into a full introduction and abstract
-A main problem in parallel applications is ensuring a even distribution of load across all the processors. While some applications can naively distribute data evenly, many applications have complicated designs that require load balancing procedures that partition based on the computation and communication costs. For finite element programs that utilize unstructured meshes, there exists a complicated structure of computation costs that depend on where degrees of freedoms are defined and the type of shape functions being used. Thus any load balancing technique must offer a diverse set of procedures to target the different levels of imbalance relative to the finite element method being applied. To target the different load balancing requirements we propose utilizing an expanded graph structure, N-graph \cite{EnGPar2015proposal}, that can represent multiple levels of relations simultaneously coupled with a set of partitioning techniques and diffusive load balancing strategies.
+A main problem in parallel applications is ensuring a even distribution of load across all the processors. While some applications can naively distribute data evenly, many applications have complicated designs that require load balancing procedures that partition in order to minimize both the computation and communication costs. For finite element programs that utilize unstructured meshes, there exists a complicated structure of computation and communicative costs that depend on where degrees of freedoms are defined and the type of shape functions being used. Thus any load balancing technique must offer a diverse set of procedures to target the different levels of imbalance relative to the finite element method being applied. To target the different load balancing requirements we propose utilizing an expanded graph structure, N-graph \cite{EnGPar2015proposal}, that can represent multiple levels of relations simultaneously coupled with a set of partitioning techniques and diffusive load balancing strategies.
+This paper provides an overview of the N-graph structure and the framework for diffusive load balancing in EnGPar. Some examples of partitioning strategies are given in section 2. Section 3 describes the details of the N-graph structure and some components needed for use in diffusive load balancing. Then the framework and some details on diffusive load balancing is given in Section 4. Section 5 and 6 provide an experiment of the diffusive load balancing technique. Finally, Section 7 discusses some further work in this topic to be explored.
 
 \section{Related Works}
-
 \subsection{Geometric Partitioning}
 Some of the fastest and simpliest partitioning techniques are geometric partitioning algorithms that utilize coordinate information on the data and partition just based on the spatial distribution of the data. Some of these techniques include Recursive Coordinate Bisection and Recursive Inertial Bisection \cite{chevalier2012load,TaylorRIB,williamsRIB} which recursively partition the data by defining cut planes in space to create the parts. While these techniques are relitively fast and can partition the data well, the edge cut across parts is often poor and thus the communication costs tends to be quite high. Furthmore, there is no consideration given to multi-criteria partitioning for these techniques so there is no guarentee that the partitioning will be sufficient for finite element methods.
 
@@ -42,9 +42,8 @@ On top of graph partitioners there are also hypergraph partitioners that utilize
 \subsection{Diffusive Load Balancing}
 Typically less powerful but faster than graph partitioning techniques are diffusive load balancing methods which iteratively migrate data from high load parts to the lower loaded neighbors across part boundaries. These methods like ParMA \cite{SmithParma2015} allow techniques that can target different metrics as well as multiple criteras simultaneously which other methods cannot. These methods are often used as a routine to improve upon a partition as the migrations are only done locally between a part and its neighbors instead of the global partitioning seen in geometric and graph partitioning techniques.
 
-\section{Methodology}
-\subsection{Ngraph}
-EnGPar interfaces to the differenct partitioning procedures through a graph abstraction called the N-Graph. Towards supporting a combination of (hyper)graph, geomertic and diffusive partitioning methods on relation-based data, the N-Graph is defined as $G^n(V,E_0,E_1,...,E_{n-1},[P_0,P_1,...,P_{n-1}])$ where:
+\section{Ngraph}
+EnGPar interfaces to the differenct partitioning procedures through a graph abstraction called the N-graph. Towards supporting a combination of (hyper)graph, geomertic and diffusive partitioning methods on relation-based data, the N-graph is defined as $G^n(V,E_0,E_1,...,E_{n-1},[P_0,P_1,...,P_{n-1}])$ where:
 \begin{itemize}
   \item $V$ atomic units $u_i$ of the domain $\omega$ which uniquely exist on one
     part such that $\omega = \bigcup_{\forall_i}u_i$, and 
@@ -61,12 +60,69 @@ Optionally, the vertices and edges may be assigned with weights to better contro
   \label{fig:Mesh2Graph}
 \end{figure}
 
-Applications utilizing this abstraction define atomic domain entities as vertices in the N-Graph and at least one relation between them as the (hyper)edges. In this manner, applications may represent multiple relations of different sparsity and degree. For example the toplogy of an unstructured 3D mesh may be represented via vertices defined as mesh elements and a hyperedge type for each entity shared by adjacent elements. Figure \ref{fig:Mesh2Graph} depicts the mapping of an unstructured mesh (a) to a representation where mesh elements map to graph vertices and mesh vertices map to graph hyperedges (b) and a second mapping where mesh edges are mapped to a second edge type in the graph (c).
+Applications utilizing this abstraction define atomic domain entities as vertices in the N-graph and at least one relation between them as the (hyper)edges. In this manner, applications may represent multiple relations of different sparsity and degree. For example the toplogy of an unstructured 3D mesh may be represented via vertices defined as mesh elements and a hyperedge type for each entity shared by adjacent elements. Figure \ref{fig:Mesh2Graph} depicts the mapping of an unstructured mesh (a) to a representation where mesh elements map to graph vertices and mesh vertices map to graph hyperedges (b) and a second mapping where mesh edges are mapped to a second edge type in the graph (c).
 
 \subsection{Migration}
-In order to support diffusive load balancing, an internal migration procedure is required to allow iterative changes of the data structure. Having to perform several small migrations constantly introduces a challenge in how to construct the data structure optimally to allow quick changes. One solution to this problem, as seen in PUMI for use in ParMA \cite{ibanez2016pumi}, is to allocate extra storage where neccessary in order to allow easy inserts and deletes into the data structure without having to restructure entire portions of it. This results in a migration procedure which runs in time proportional to the number of entities being migrated. While this method is fast it has a memory concern on having this extra storage. On top of that there is the question of how large the extra storage needs to be to ensure it never overflows. For the case of PUMI, the data structure is a mesh and adjacencies are mostly limited due to spatial considerations. For general graphs, especially those seen in real world networks, there is no limitation on the number of adjacencies and defining some large constant to support real world networks where only a few vertices have very high degree would be a large waste of memory. To further motivate against this strategy is that when expanding to data parallel architechures like GP-GPUs this method is not well suited. Therefore we take a different approach focusing of the data parallel approach where for each migration the entire data structure is reformatted to compactly store the new set of adjacencies. This approach comes with a penalty where each migration no matter the size must perform a total reconstruction of the graph which means the runtime is proportional to the number of vertices and edges on part.
+In order to support diffusive load balancing, an internal migration procedure is required to allow iterative changes of the data structure. Having to perform several small migrations constantly introduces a challenge in how to construct the data structure optimally to allow quick changes.
 
-\subsection{Diffusive Balancer Framework}
+One solution to this problem, as seen in PUMI for use in ParMA \cite{ibanez2016pumi}, is to allocate extra storage where neccessary in order to allow easy inserts and deletes into the data structure without having to restructure entire portions of it. This results in a migration procedure which runs in time proportional to the number of entities being migrated. While this method is fast it has a memory concern on having this extra storage. On top of that there is the question of how large the extra storage needs to be to ensure it never overflows. For the case of PUMI, the data structure is a mesh and adjacencies are mostly limited due to spatial considerations. For general graphs, especially those seen in real world networks, there is no limitation on the number of adjacencies and defining some large constant to support real world networks where only a few vertices have very high degree would be a large waste of memory. To further motivate against this strategy is that when expanding to data parallel architechures like GP-GPUs this method is not well suited.
+
+An alternative approach, focusing on data parallel techniques, is for each migration the entire data structure is reformatted to compactly store the new set of adjacencies. This approach comes with a penalty where each migration no matter the size must perform a total reconstruction of the graph which means the runtime is proportional to the number of vertices and edges on part. However the data is always compactly stored for the amount that is currently on process. We use this approach for migration due to its natural data parallel design. Algorithm \ref{alg:migration} details psuedocode for the implementation of this approach in EnGPar.
+\newpage
+
+\begin{algorithm}
+\caption{Migration}\label{alg:migration}
+\begin{algorithmic}
+  \Procedure{migrate}{plan}
+  \State updateGhostOwners(plan)
+  \For {each local vtx}
+  \If {vtx is not in plan}
+  \State local\_verts$\leftarrow$ vtx
+  \For {each edge of vtx}
+  \If {edge is not added}
+  \State local\_edge $\leftarrow$ edge
+  \EndIf
+  \For {each pin of edge}
+  \If {this part does not own pin}
+  \State ghost\_verts $\leftarrow$ pin
+  \EndIf
+  \EndFor
+  \EndFor
+  \EndIf
+  \EndFor
+  \For {each vtx in plan}
+  \For {each edge of vtx}
+  \State affectedEdges $\leftarrow$ edge
+  \EndFor
+  \EndFor
+  \For {each vtx in plan}
+  \State send vtx to new owner
+  \EndFor
+  \For {each received vtx}
+  \State local\_verts$\leftarrow$ vtx
+  \EndFor
+  \For {each edge in affectedEdges}
+  \State residence = getResidence(edge)
+  \For {each part in residence}
+  \State send edge to part
+  \EndFor
+  \EndFor
+  \For {each received edge}
+  \State local\_edge$\leftarrow$edge
+  \For {each pin of edge}
+  \If {this part does not own pin}
+  \State ghost\_verts $\leftarrow$ pin
+  \EndIf
+  \EndFor
+  \EndFor
+  reconstructGraph(local\_verts,local\_edges,ghost\_verts)
+  \EndProcedure
+  
+\end{algorithmic}
+\end{algorithm}
+
+\section{Diffusive Load Balancing}
+\subsection{General Framework}
 In order to support continuously new methods of diffusive load balancing and new criterias and priorities, a general algorithm is defined for both ease of use and creation for future use of EnGPar. Algorithm \ref{alg:balancer} lists pseudocode for the overall design of the balancer. For each diffusive technique being implemented five methods need to be defined:
 \begin{itemize}
   \item $makeSides$\\
@@ -164,9 +220,9 @@ As detailed earlier, for multi-criteria load balancing there is much work to be 
 
 Another portion that can have a major impact on the quality of partitioning for these diffusive methods is the order in which the vertices are iterated over. The current method is iterating blindly over how the vertices are stored in memory with no regards to the overall structure of the part. While this will result in balancing the vertices, for some instances the parts can become elongated and result in large diameters. In ParMA \cite{SmithParma2015}, the iteration follows a graph distance based metric which prioritizes mesh elements that are further away from the part centroid. This method results in rounder parts and smoother part boundaries as well as reducing the diameter of the part. Further work will go into implementing this method into EnGPar and also exploring other options and what metrics are effected by the order of iteration.
 
+\section{Closing Remarks}
+Diffusive load balancing techniques offer a fast way to itertively improve the partition of a relation based struture through the ability to use different sets of metrics to define the different layers of load in the structure. EnGPar along with the N-graph structure provide a light-weight interface that allow faster and easier usage of techniques shown to work on specific structures such as ParMA for load balancing unstructured meshes. In this paper, we discussed the beginning work for diffusive load balancing methods being used on the N-graph as well as methods to advance the techniques to the levels seen in the current methods being used.
 
-
-\section{Conclusion}
 
 \newpage \bibliographystyle{plain}
 \bibliography{scorec-refs/scorec-refs}
