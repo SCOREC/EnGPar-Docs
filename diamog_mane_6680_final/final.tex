@@ -39,7 +39,7 @@ The most common methods to partition relation-based data structures is utilizing
 On top of graph partitioners there are also hypergraph partitioners that utilize hyperedges to better represent the communication costs between processors for highly interconnected relation-based data structures like unstructured meshes \cite{devine2002zoltan}. These techniques tend to decrease the overall edge cut and reduce the communication volume across parts. Like graph partitioning, hypergraph partitioning also suffer from having high imbalances of any entities in the data that are not represented as graph vertices. 
 
 \subsection{Diffusive Load Balancing}
-Typically less powerful but faster than graph partitioning techniques are diffusive load balancing methods which iteratively migrate data from high load parts to the lower loaded neighbors across part boundaries. These methods like ParMA \cite{Smith2015} allow techniques that can target different metrics as well as multiple criteras simultaneously which other methods cannot. These methods are often used as a routine to improve upon a partition as the migrations are only done locally between a part and its neighbors instead of the global partitioning seen in geometric and graph partitioning techniques.
+Typically less powerful but faster than graph partitioning techniques are diffusive load balancing methods which iteratively migrate data from high load parts to the lower loaded neighbors across part boundaries. These methods like ParMA \cite{SmithParma2015} allow techniques that can target different metrics as well as multiple criteras simultaneously which other methods cannot. These methods are often used as a routine to improve upon a partition as the migrations are only done locally between a part and its neighbors instead of the global partitioning seen in geometric and graph partitioning techniques.
 
 \section{Methodology}
 \subsection{Ngraph}
@@ -76,7 +76,6 @@ Further operation control is also possible through changing the $createIteration
 \begin{algorithm}
 \caption{Diffusive balancer design}\label{alg:balancer}
 \begin{algorithmic}
-  \label{alg:balancer}
   \Procedure{runStep}{Ngraph g}
   \State sides = makeSides(g)
   \State vtxWeights = makeVtxWeights(g,sides)
@@ -118,7 +117,7 @@ In order to advance to multi-criteria load balancing we have to expand some of t
 
 \section{Future Work}
 As detailed earlier, for multi-criteria load balancing there is much work to be done to add functionality to the selector in order to properly balance the range of priorities any given user could have. Continuing on that the selector will need to have the ability to correct the plan by cancelling portions of the migration plan to best balance based on the different criteria. \\
-Another portion that can have a major impact on the quality of partitioning for these diffusive methods is the order in which the vertices are iterated over. The current method is iterating blindly over how the vertices are stored in memory with no regards to the overall structure of the part. While this will result in balancing the vertices, for some instances the parts can become elongated and result in large diameters. In ParMA \cite{Smith2015}, the iteration follows a graph distance based metric which prioritizes mesh elements that are further away from the part centroid. This method results in rounder parts and smoother part boundaries as well as reducing the diameter of the part. Further work will go into implementing this method into EnGPar and also exploring other options and what metrics are effected by the order of iteration.
+Another portion that can have a major impact on the quality of partitioning for these diffusive methods is the order in which the vertices are iterated over. The current method is iterating blindly over how the vertices are stored in memory with no regards to the overall structure of the part. While this will result in balancing the vertices, for some instances the parts can become elongated and result in large diameters. In ParMA \cite{SmithParma2015}, the iteration follows a graph distance based metric which prioritizes mesh elements that are further away from the part centroid. This method results in rounder parts and smoother part boundaries as well as reducing the diameter of the part. Further work will go into implementing this method into EnGPar and also exploring other options and what metrics are effected by the order of iteration.
 
 
 \section{Conclusion}
