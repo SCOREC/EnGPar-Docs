@@ -38,16 +38,11 @@
     multi-core and GPU systems.  The APIs abstract the implementation details of
     using CUDA, OpenMP, and other data parallel programming
     models~\cite{edwards2013kokkos}.
-  \item MDS - array-based mesh data structure that supports task parallel mesh
-    adaptation~\cite{ibanez2017modifiable}
-  \item PUMI - Parallel Unstructured Mesh Infrastructure - uses MDS - executes on
-    multi-core systems only using MPI~\cite{ibanez2016pumi}
-  \item Omega\_h - hybrid parallel mesh infrastructure that executes on
-    multi-core and GPU systems using a combination of Kokkos and
-    MPI~\cite{osh_github,ibanez2016mesh,ibanezthesis}
   \item scale-free graph - a graph with a power-law degree distribution. i.e.,
     the majority graph nodes bound only a few edges (low degree) but some have extremely high
     degree (thousands or millions of bounded edges).
+  \item N-Graph - array-based graph data structure that supports multiple edge types
+  \item EnGPar - dynamic load balancing and partitioning operations using an N-Graph
 \end{itemize}
 
 \section{Goals}
@@ -63,14 +58,48 @@ machine learning.
 
 \section{Challenges}
 
-%\begin{itemize}
-%  \item Structures of arrays (SoA) programming is required for data parallel
-%    algorithms.  Array of structures (AoS) programming produces indirections in
-%    memory that cannot easily be coalesced~\cite{karlRuppStridedAccess}.
-%  \item how to deal with topologically sparse/infrequent modification operations
-%    - i.e. split-collapse for quality improvement of a few element out of
-%    thousands of elements
-%\end{itemize}
+Constantly evolving massive scale-free graphs, such as those modeling social
+networks~\cite{twitter2010,kwak2010twitter}, or the world wide web, require
+periodic dynamic load balancing to maintain efficient execution of parallel
+discrete event simulations~\cite{carothers2002ross}.
+As vertex partitionings of scale-free graphs are known to have low quality
+~\cite{abou2006multilevel,lang2004finding,leskovec2009community,pienta2013parallel}
+the feasibility of splitting the communication and computation load of high
+degree vertices via a split-vertex dynamic partitioning will be evaluated as
+part of this research program.
+Towards this, the N-Graph interface will be implemented such
+that the top few percent of high degree graph vertices, d(u) > εMax(d(u)), are
+split and represented by log2(d(u))-1 additional N-Graph vertices and edges, as
+depicted in Figure~\ref{fig:vtxSplitting}.
+A split-vertex partitioning of the source graph prioritizing the imbalance of
+edges over vertices is computed using EnGPar’s multicriteria partitioning
+methods.
+The graph will then be augmented with additional vertices and edges,
+maintaining the original distribution characteristics, and the dynamic
+partitioning re-applied.
+Support for the design and implementation of scale-free graph operations will be
+provided by RPI Professor George Slota.
+Professor Slota has extensive experience working on scale-free graphs with over
+a trillion edges~\cite{slota_ipdps2017} as a developer of Zoltan2~\cite{zoltan2}, and the
+PULP~\cite{slota_ipdps2017} label propagation-based partitioning methods.
+
+\begin{figure}
+  \includegraphics[width=\textwidth]{../ngraph/vtxSplitting.eps}
+  \caption{\label{fig:vtxSplitting}
+    High degree vertex splitting. 
+    The original high degree vertex in (a), the split N-graph representation in
+    (b), and the scatter and gather update protocol in (c) and (d) respectively.
+  }
+\end{figure}
+
+The quality of the partitionings will be evaluated by executing the massively
+parallel ROSS~\cite{carothers2002ross,mubarak2012modeling,barnes2013warp}
+open-source discrete event simulation engine.
+Through on-going collaborations with RPI Professor Chris Carothers, the principal
+author of ROSS, a message passing based shared state update of split vertices
+using a scatter/gather update
+protocol~\cite{gonzalez2012powergraph,sahni2009scalable} as depicted in
+Figure~\ref{fig:vtxSplitting} will be integrated into ROSS.
 
 The key challenge to implementing EnGPar is quickly partitioning massive
 scale-free graphs for workflows executing on both GPU and multi-core systems.
@@ -96,26 +125,6 @@ operations, and/or development time spent implementing complex algorithms to
 force a procedure to execute on a GPU.
 
 \section{Approach}
-%\begin{itemize}
-%  \item Follow Ibanez's guidelines for data parallel
-%    programming~\cite{ibanezthesis}.
-%    \begin{enumerate}
-%      \item Organize data in large allocations, such that the number of allocations
-%        is not proportional to the size of the data. This allows the CPU to manage
-%        allocations efficiently.
-%      \item Allocate all data on the GPU, and only transfer it to the CPU
-%        for network and disk operations.
-%      \item A kernel should do a small, constant amount of work using a
-%        small, constant amount of memory.
-%    \end{enumerate}
-%  \item Create a hard fork of Omega\_h.
-%    \begin{itemize}
-%      \item read-only, array-based mesh data structure
-%      \item only supports tetrahedra
-%    \end{itemize}
-%  \item Rely on unified memory to perform some operations on the multi-core
-%    processor and other, higher concurrency, operations on the GPU.
-%\end{itemize}
 
 For both CPU and GPU data parallel algorithms Kokkos~\cite{edwards2013kokkos}
 will be used to implement user-facing EnGPar APIs that support operation on
