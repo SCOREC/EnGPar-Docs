@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage{cite}
+\usepackage{hyperref}
+
+\title{Load Balancing Scale-free Graphs on Hybrid Parallel Systems}
+\author{Cameron W. Smith}
+
+\begin{document}
+\maketitle
+\section{Definitions}
+\begin{itemize}
+  \item data parallel - independently (i.e., without data dependencies) execute
+    a single set of instruction on multiple pieces of data concurrently.
+    Typically, the instructions are executed by simple, low power, in-order,
+    processing units.
+  \item task parallel - assign each process in a distributed memory system a
+    different set of data and execute a series of instructions sequentially on
+    that data.
+  \item CPU - a processor composed of hundreds of units that are
+    each capable of executing independent instruction sets that interact with
+    each other, the filesystem, the network, and the memory hierarchy
+    (registers, cache, [high-bandwidth memory,] and main memory).
+    Both the task and data parallel programming models can be used for these
+    devices~\cite{jeffers2016intel}.
+  \item GPU - a processor composed of thousands units in which groups of
+    hundreds of units can execute independent instruction sets in lock-step.
+    Divergence within the instruction sets caused by conditionals negatively
+    impact performance.
+    Each unit has access to its local registers, and the device memory.
+    The latest generation GPUs now have access to node-memory through hardware-
+    and software-based mechanisms.
+    The data parallel programming model is used for these devices.
+  \item multi-core system - a parallel computer composed of nodes with CPUs
+  \item hybrid system - a parallel computer composed of nodes with
+    both GPUs and CPUs.
+    Each node has at least one GPU per CPU.
+  \item Kokkos - APIs for data implementing parallel algorithms that can execute on
+    multi-core and GPU systems.  The APIs abstract the implementation details of
+    using CUDA, OpenMP, and other data parallel programming
+    models~\cite{edwards2013kokkos}.
+  \item MDS - array-based mesh data structure that supports task parallel mesh
+    adaptation~\cite{ibanez2017modifiable}
+  \item PUMI - Parallel Unstructured Mesh Infrastructure - uses MDS - executes on
+    multi-core systems only using MPI~\cite{ibanez2016pumi}
+  \item Omega\_h - hybrid parallel mesh infrastructure that executes on
+    multi-core and GPU systems using a combination of Kokkos and
+    MPI~\cite{osh_github,ibanez2016mesh,ibanezthesis}
+  \item scale-free graph - a graph with a power-law degree distribution. i.e.,
+    the majority graph nodes bound only a few edges (low degree) but some have extremely high
+    degree (thousands or millions of bounded edges).
+\end{itemize}
+
+\section{Goals}
+
+The goal of EnGPar is to support multi-criteria, parallel
+load balancing of weighted irregular and scale-free graphs.
+EnGPar needs to run on both multi-core and GPU systems from a single code base
+(we may define kernels specific to different devices, but their use should be
+transparent to end-users).
+The code base should provide sufficient graph construction, modification, and
+query APIs to support scale-free graph-based workflows for data mining and
+machine learning.
+
+\section{Challenges}
+
+%\begin{itemize}
+%  \item Structures of arrays (SoA) programming is required for data parallel
+%    algorithms.  Array of structures (AoS) programming produces indirections in
+%    memory that cannot easily be coalesced~\cite{karlRuppStridedAccess}.
+%  \item how to deal with topologically sparse/infrequent modification operations
+%    - i.e. split-collapse for quality improvement of a few element out of
+%    thousands of elements
+%\end{itemize}
+
+The key challenge to implementing EnGPar is quickly partitioning massive
+scale-free graphs for workflows executing on both GPU and multi-core systems.
+Critial to efficient execution is the use of operations that apply to graph
+nodes or edges concurrently (via vectorization of parallel loop constructs).
+Critically, users must implement their procedures without branching (i.e.,
+{\texttt if} statements) or loop inter-dependencies
+(i.e., a given iteration of the loop must be able to execute independently of
+all other iterations).
+Thus, we will be develop APIs to minimize the burden on users accustomed to
+serial, iterator-based graph interactions.
+
+One specific challenge will be maintaing efficiency when graph queries or
+modification procedures involve only a small subset of the domain.
+For example, during a breadth first traveral the front size significantly limits
+concurrency.
+Thus, using low overhead cache-coherency mechanisms, we will dynamically
+relocate the execution of kernels from the CPU, which excels at high speed
+serial computation, to the GPU when concurrency becomes sufficient.
+Ideally, this careful matching of algorithm concurrency to processing resources
+will reduce overheads caused by the forced use of GPUs for near-serial
+operations, and/or development time spent implementing complex algorithms to
+force a procedure to execute on a GPU.
+
+\section{Approach}
+%\begin{itemize}
+%  \item Follow Ibanez's guidelines for data parallel
+%    programming~\cite{ibanezthesis}.
+%    \begin{enumerate}
+%      \item Organize data in large allocations, such that the number of allocations
+%        is not proportional to the size of the data. This allows the CPU to manage
+%        allocations efficiently.
+%      \item Allocate all data on the GPU, and only transfer it to the CPU
+%        for network and disk operations.
+%      \item A kernel should do a small, constant amount of work using a
+%        small, constant amount of memory.
+%    \end{enumerate}
+%  \item Create a hard fork of Omega\_h.
+%    \begin{itemize}
+%      \item read-only, array-based mesh data structure
+%      \item only supports tetrahedra
+%    \end{itemize}
+%  \item Rely on unified memory to perform some operations on the multi-core
+%    processor and other, higher concurrency, operations on the GPU.
+%\end{itemize}
+
+For both CPU and GPU data parallel algorithms Kokkos~\cite{edwards2013kokkos}
+will be used to implement user-facing EnGPar APIs that support operation on
+large groups of mesh entities.
+User APIs to query (i.e., read only) single mesh entities will use the
+array-based structures to perform atomic look ups.
+
+\section{Questions}
+\begin{itemize}
+  \item What is the overhead for using the cache coherency between the
+    CPU and the GPU?
+    The current systems don't support this advanced feature of NVLink so we will
+    likely have to wait another year to find out.
+\end{itemize}
+
+\bibliographystyle{scorec-refs/IEEEtran_rpi}
+\bibliography{scorec-refs/scorec-refs}
+
+\end{document}
