@@ -1,4 +1,5 @@
 $latex="latex -interaction errorstopmode %O %S";
+$pdflatex="pdflatex --shell-escape -interaction errorstopmode %O %S";
 $bibtex="bibtex -min-crossrefs=20 %O %S";
 $out_dir = 'out';
 $pdf_mode=1;
