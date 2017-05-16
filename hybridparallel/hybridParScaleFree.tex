@@ -46,16 +46,17 @@
   \item EnGPar - dynamic load balancing and partitioning operations using an N-Graph
 \end{itemize}
 
-\section{Goals}
+\section{EnGPar}
 
-The goal of EnGPar is to support multi-criteria, parallel
-load balancing of weighted irregular and scale-free graphs.
-EnGPar needs to run on both multi-core and GPU systems from a single code base
-(we may define kernels specific to different devices, but their use should be
-transparent to end-users).
-The code base should provide sufficient graph construction, modification, and
-query APIs to support scale-free graph-based workflows for data mining and
+The goal of EnGPar is to support multi-criteria, parallel load balancing of
+weighted irregular and scale-free graphs.
+EnGPar runs on both multi-core and GPU systems from a single code base using
+device specific kernels.
+The code base provides sufficient graph construction, modification, and
+query APIs to support scale-free, graph-based workflows for data mining and
 machine learning.
+Specific APIs supporting for these workflows enable construction of edge-based
+partitions using split nodes (see Figure~\ref{fig:vtxSplitting}).
 
 \section{Challenges}
 
