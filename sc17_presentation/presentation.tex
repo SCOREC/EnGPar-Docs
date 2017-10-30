@@ -75,15 +75,15 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Common Methods for Partitioning}
   \begin{itemize}
-  \item Graph Methods %Discuss poor scaling
+  \item Multilevel Graph Methods %Discuss poor scaling
     \begin{itemize}
-    \item METIS/ParMETIS
+    \item ParMETIS
     \item Scotch
     \end{itemize}
   \item Geometric Methods %Require coordinates
     \begin{itemize}
-    \item RIB
-    \item RCB
+    \item Recursive Coordinate Bisection (RCB)
+    \item Recursive Inertial Bisection (RIB)
     \end{itemize}
   \item Diffusive Methods %Improve a partition efficiently
     \begin{itemize}
@@ -109,7 +109,8 @@ Rensselaer Polytechnic Institute
   \frametitle{N-graph}
   %EnGPar utilizes an expanded multigraph structure called the N-graph.\\
   %THIS IS TOO MUCH TEXT PROBABLY...
-  The N-graph has two modes of operation: traditional or hypergraph. \\
+  The N-graph has two modes of operation: traditional or hypergraph.\\
+  \smallskip
   The N-graph is defined as the following:
   \begin{itemize}
   \item A set of vertices $V$ representing the atomic units of work.
@@ -151,7 +152,6 @@ Rensselaer Polytechnic Institute
     \label{alg:engpar}
     \small
     \begin{algorithmic}[1]
-
       \Procedure{Balance}{$ngraph$,$dimensions$}
       \ForAll{$d \in dimensions$}
       \While{imbalance of $d >$ tolerance}
@@ -176,7 +176,7 @@ Rensselaer Polytechnic Institute
   \end{algorithm}
 \end{frame}
 
-%More slides to desribe each step with some detail
+%More slides to describe each step with some detail
 \begin{frame}
   \frametitle{Sides, Weights, Targets}
   
