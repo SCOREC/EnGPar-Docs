@@ -63,18 +63,45 @@ Rensselaer Polytechnic Institute
 \section{Partitioning and Load Balancing}
 \begin{frame}
   \frametitle{Movtivation \& definitions}
-  
-  
+  Many evolving distributed simulations have: \\
+  \begin{itemize}
+    \item Complex relational structures.
+    \item Irregular forms of computational and communication costs.
+    \item Evolving imbalance of work. %Define Imbalance
+    \item Multiple levels of load.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
-  \frametitle{Common Methods}
-  
+  \frametitle{Common Methods for Partitioning}
+  \begin{itemize}
+  \item Graph Methods %Discuss poor scaling
+    \begin{itemize}
+    \item METIS/ParMETIS
+    \item Scotch
+    \end{itemize}
+  \item Geometric Methods %Require coordinates
+    \begin{itemize}
+    \item RIB
+    \item RCB
+    \end{itemize}
+  \item Diffusive Methods %Improve a partition efficiently
+    \begin{itemize}
+    \item ParMA
+    \item EnGPar
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \section{EnGPar - a graph based diffusive load balancer}
 \begin{frame}
   \frametitle{Software}
+  \begin{itemize}
+  \item Code can be found at \url{https://github.com/SCOREC/EnGPar}.
+  \item Written in C++ using MPI.
+  \item Depends on a SCOREC developed communication library, PCU.
+  \item Future GPU work will use Kokkos.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
