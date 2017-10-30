@@ -1,0 +1,112 @@
+% small.tex
+\documentclass{beamer}
+\usetheme{Boadilla}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+%algorithms and pseudo code
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{numprint}
+\usepackage{subcaption}
+\usepackage{media9}
+\usepackage{bibentry}
+\nobibliography*
+
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{author in head/foot}{\insertshortauthor}
+\setbeamertemplate{navigation symbols}{}
+
+\newcommand{\lenitem}[2][.6\linewidth]{\parbox[t]{#1}{\strut #2\strut}}
+\newcommand{\outline}{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\begin{document}
+
+\title[Unstructured Mesh Workflows]
+{
+Dynamic Load Balancing of Massively Parallel Unstructured Meshes
+}
+\author{Gerrett Diamond, Cameron W. Smith, Mark S. Shephard}
+%\email{diamog@rpi.edu}
+%\author[smithc11@rpi.edu]{Cameron W. Smith\\
+%  \smallskip
+%  Committee:\\
+%  Mark Shephard\\
+%  Max Bloomfield, Christopher Carothers, Barbara Cutler, Onkar Sahni
+%}
+
+\institute[SCOREC]{
+Scientific Computation Research Center \\
+Rensselaer Polytechnic Institute
+}
+
+\date{November 13, 2017}
+
+%----------- titlepage ----------------------------------------------%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+%----------- outline ----------------------------------------------%
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
+%----------------------------------------------------------------------%
+%----------- Section --------------------------------------------------%
+%----------------------------------------------------------------------%
+\section{Partitioning and Load Balancing}
+\begin{frame}
+  \frametitle{Movtivation \& definitions}
+  
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Common Methods}
+  
+\end{frame}
+
+\section{EnGPar - a graph based diffusive load balancer}
+\begin{frame}
+  \frametitle{Software}
+\end{frame}
+
+\begin{frame}
+  \frametitle{N-graph}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Mapping structures to the N-graph}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Diffusive Partitioning}
+\end{frame}
+
+%More slides to desribe each step with some detail
+
+\section{Comparison to ParMA}
+
+\begin{frame}
+  \frametitle{Experiments}
+  %Describe the mesh, system run on, initial partition etc.
+\end{frame}
+
+%More slides to go over the results in the paper
+
+\begin{frame}
+  \frametitle{Future Work}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Citations}
+\end{frame}
+  
+\end{document}
