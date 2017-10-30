@@ -107,18 +107,90 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{N-graph}
-  
+  %EnGPar utilizes an expanded multigraph structure called the N-graph.\\
+  %THIS IS TOO MUCH TEXT PROBABLY...
+  The N-graph has two modes of operation: traditional or hypergraph. \\
+  The N-graph is defined as the following:
+  \begin{itemize}
+  \item A set of vertices $V$ representing the atomic units of work.
+  \item If using the traditional graph mode:
+    \begin{itemize}
+    \item $N$ sets of edges $E_0,...,E_{n-1}$ for each type of relation.
+    \item Each edge connects two vertices $u,v \in V$.
+    \end{itemize}
+  \item If using the hypergraph mode:
+    \begin{itemize}
+    \item $N$ sets of hyperedges $H_0,...,H_{n-1}$ for each type of relation.
+    \item $N$ sets of pins $P_0,...,P_{n-1}$ corresponding to each set of hyperedges.
+    \item Each pin in $P_i$ connects a vertex, $v \in V$, to a hyperedge $h \in H_i$.
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{Mapping structures to the N-graph}
+  %Before using EnGPar a simulation must first map its data to the N-graph
+  To map to the N-graph simulations must:
+  \begin{itemize}
+  \item Define units of work as the vertices.
+  \item Decide on the method of edges to use.
+  \item Define the relations between the work as (hyper)edges.
+  \end{itemize}
+  
+  %Figure showing the conversion from mesh to N-graph
+  \begin{figure}
+    \centering
+    \includegraphics[width=.7\textwidth]{figures/exampleMesh2Graph.png}
+  \end{figure}
 \end{frame}
 
 \begin{frame}
   \frametitle{Diffusive Partitioning}
+  \begin{algorithm}[H]
+    \caption{Diffusive Load Balancing Framework}
+    \label{alg:engpar}
+    \small
+    \begin{algorithmic}[1]
+
+      \Procedure{Balance}{$ngraph$,$dimensions$}
+      \ForAll{$d \in dimensions$}
+      \While{imbalance of $d >$ tolerance}
+      \Call{RunStep}{$ngraph$,$d$}
+      \If{Balancing Stagnates}
+      \State break
+      \EndIf
+      \EndWhile
+      \EndFor
+      \EndProcedure
+
+      \Procedure{RunStep}{$ngraph$,$d$}
+      \State $sides = makeSides(ngraph)$
+      \State $weights = makeWeights(ngraph,sides,d)$
+      \State $targets = makeTargets(ngraph,sides,weights)$
+      \State $queue = makeIterationQueue(ngraph)$
+      \State $plan = select(ngraph,targets,queue)$
+      \State $trim(ngraph,plan)$
+      \State $ngraph.migrate(plan)$
+      \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
 \end{frame}
 
 %More slides to desribe each step with some detail
+\begin{frame}
+  \frametitle{Sides, Weights, Targets}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Iteration Queue}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Selection}
+  
+\end{frame}
 
 \section{Comparison to ParMA}
 
