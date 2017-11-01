@@ -178,8 +178,24 @@ Rensselaer Polytechnic Institute
 
 %More slides to describe each step with some detail
 \begin{frame}
-  \frametitle{Sides, Weights, Targets}
-  
+  \frametitle{Neighbor Initialization}
+  \begin{itemize}
+  \item Sides
+    \begin{itemize}
+    \item Each part determines which parts are its neighbors.
+    \item Determines a measurement of the length of the part boundary.
+    \end{itemize}
+  \item Weights
+    \begin{itemize}
+    \item Each part computes its weight of the current target dimension.
+    \item This weight is shared with all of the parts neighbors(sides).
+    \end{itemize}
+  \item Targets
+    \begin{itemize}
+    \item Each part determines which part they will send weight to.
+    \item Weight to send from part $i$ to part $j$ is $(w_i-w_j)*\dfrac{\text{size}(s_{ij})}{\text{size}(s)}$
+    \end{itemize}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
