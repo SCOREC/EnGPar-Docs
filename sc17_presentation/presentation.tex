@@ -245,15 +245,40 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Experiments}
   %Describe the mesh, system run on, initial partition etc.
+  We compare EnGPar's performance to its predecessor ParMA, which is specifically built for unstructured meshes for finite element analysis.\\
+  \medskip
+  Tests were run on a billion element mesh partitioned to 128Ki, 256Ki and 512Ki parts using ParMETIS. \\
+  \medskip
+  EnGPar and ParMA are used to balance the three partitions on the Mira BlueGene/Q system.
 \end{frame}
 
+%Maybe add a slide to desribe the setup of the problem
+
 %More slides to go over the results in the paper
+\begin{frame}
+  \frametitle{Mesh Imbalance}
+  %Figure showing the conversion from mesh to N-graph
+  \begin{figure}
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/eimb_v_cores.eps}
+    \includegraphics[width=.5\textwidth]{figures/vimb_v_cores.eps}
+  \end{figure}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{RunTime Comparison}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.8\textwidth]{figures/time_v_cores.eps}
+  \end{figure}
+  
+\end{frame}
 
 \begin{frame}
   \frametitle{Future Work}
   Expanding the capabilities of EnGPar:
   \begin{itemize}
-    \item Improve partitioning structures at very high part count.
+    \item Improve partitioning at very high part count.
   \item Supporting the diffusive algorithms on GPUs
   \end{itemize}
   Applying EnGPar to other applications:
