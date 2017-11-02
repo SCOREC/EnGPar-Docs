@@ -199,6 +199,25 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
+  \frametitle{Building the Migration Plan}
+  \begin{itemize}
+  \item Selection
+    \begin{itemize}
+    \item All (hyper)edges that cross a part boundary are iterated.
+    \item The vertices on part that are bounded by the (hyper)edge form a cavity.
+    \item The cavity is chosen for migration if the (hyper)edge is on the boundary of a targeted part.
+    \end{itemize}
+  \item Trim
+    \begin{itemize}
+    \item In the case of multiple criteria, the migration plan created through selection may be reduced.
+    \item This reduction ensures that the weight being sent will not increase the previously balanced criteria.
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Iteration Queue}
   %the edges on the boundary are ordered/ not vertices
   In order to make well shaped parts, the order that vertices are selected matters. \\
@@ -209,10 +228,6 @@ Rensselaer Polytechnic Institute
   %This can be described much better
 \end{frame}
 
-\begin{frame}
-  \frametitle{Selection}
-  
-\end{frame}
 
 \section{Comparison to ParMA}
 
