@@ -231,11 +231,11 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Iteration Queue}
   %the edges on the boundary are ordered/not vertices
-  In order to make well shaped parts, the order that vertices are selected matters. \\
+  In order to make well shaped parts and minimize part boundaries, the order that vertices are selected matters. \\
   \bigskip
-  To minimize part boundaries, the graph vertices on the part boundary are ordered based on their distance from the center of the part. \\
+  Ordering is computed based on distance from the center of the part. However, it is common that some parts will be disconnected.\\
   \bigskip
-  This results in more rounded parts and less surface area. 
+  In this case, distances are calculated separately and components are ordered based on shallowness.
   %This can be described much better. Maybe with a very high level algorithm.
 \end{frame}
 
