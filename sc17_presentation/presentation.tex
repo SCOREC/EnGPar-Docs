@@ -252,13 +252,13 @@ Rensselaer Polytechnic Institute
   EnGPar and ParMA are used to balance the three partitions on the Mira BlueGene/Q system.
 \end{frame}
 
-%Maybe add a slide to desribe the setup of the problem
 \begin{frame}
   \frametitle{Problem Setup}
   ParMA and EnGPar are set to balance the mesh for a standard finite element analysis where:
   \begin{itemize}
   \item Scalability of matrix formation is sensitive to mesh element imbalance.
-  \item Linear algebra routines are sensitive to the mesh vertex imbalance.
+  \item Linear algebra routines are sensitive to the imbalance of degrees of freedom.
+  \item For this we assume the degrees of freedom are associated with mesh vertices.
   \end{itemize}
   \bigskip
   To partition for this, both balance mesh vertices followed by elements with a target imbalance of 1.05. \\
