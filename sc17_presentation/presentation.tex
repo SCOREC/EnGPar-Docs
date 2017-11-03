@@ -68,7 +68,7 @@ Rensselaer Polytechnic Institute
     \item Complex relational structures.
     \item Irregular forms of computational and communication costs.
     \item Evolving imbalance of work. %Define Imbalance
-    \item Multiple levels of load.
+    \item Multiple criterias that need balancing simulataneously.
   \end{itemize}
 \end{frame}
 
@@ -86,10 +86,10 @@ Rensselaer Polytechnic Institute
     \item Recursive Inertial Bisection (RIB)
     \end{itemize}
   \item Diffusive Methods %Improve a partition efficiently
-    \begin{itemize}
-    \item ParMA
-    \item EnGPar
-    \end{itemize}
+%    \begin{itemize}
+%    \item ParMA
+%    \item EnGPar
+%    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -100,9 +100,10 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{What is EnGPar?}
   \begin{itemize}
-  \item A diffusive load balancer to deal with multi-criteria partitioning.
-  \item Utilizes a specialized graph structure to represent relation based data.
-  \item Implemented to support efficient data parallel operations on GP-GPUs and vector units in many core processors.
+  \item A partitioning tool to complement existing multi-level and graph methods.
+  \item Provides a diffusive load balancing algorithm for partition improvement and supports multi-criteria partitioning.
+  \item Utilizes a specialized multigraph structure to represent relation based data.
+  \item Implemented to support efficient data parallel operations on accelerators and vector units in many core processors.
   \end{itemize}
 \end{frame}
 
@@ -113,7 +114,7 @@ Rensselaer Polytechnic Institute
   \item Written in C++ using MPI.
   \item Utilizes CMake for building.
   \item Depends on a SCOREC developed communication library, PCU.
-  \item Future GPU work will use Kokkos.
+  \item Implementing accelerator support using Kokkos.
   \end{itemize}
 \end{frame}
 
@@ -121,7 +122,7 @@ Rensselaer Polytechnic Institute
   \frametitle{N-graph}
   %EnGPar utilizes an expanded multigraph structure called the N-graph.\\
   %THIS IS TOO MUCH TEXT PROBABLY...
-  The N-graph has two modes of operation: traditional or hypergraph.\\
+  The N-graph is a multigraph with two modes of operation: traditional or hypergraph.\\
   \smallskip
   The N-graph is defined as the following:
   \begin{itemize}
@@ -149,11 +150,10 @@ Rensselaer Polytechnic Institute
   \item Decide on the method of edges to use.
   \item Define the relations between the work as (hyper)edges.
   \end{itemize}
-  
   %Figure showing the conversion from mesh to N-graph
   \begin{figure}
     \centering
-    \includegraphics[width=.7\textwidth]{figures/exampleMesh2Graph.png}
+    \includegraphics[width=.9\textwidth,height = 1.75in]{figures/exampleMesh2Graph.png}
   \end{figure}
 \end{frame}
 
@@ -195,12 +195,12 @@ Rensselaer Polytechnic Institute
   \item Sides
     \begin{itemize}
     \item Each part determines which parts are its neighbors.
-    \item Determines a measurement of the length of the part boundary.
+    \item Determines a measurement of the area of the part boundary.
     \end{itemize}
   \item Weights
     \begin{itemize}
     \item Each part computes its weight of the current target dimension.
-    \item This weight is shared with all of the parts neighbors(sides).
+    \item This weight is shared with all of the part's neighbors(sides).
     \end{itemize}
   \item Targets
     \begin{itemize}
@@ -215,9 +215,9 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
   \item Selection
     \begin{itemize}
-    \item All (hyper)edges that cross a part boundary are iterated.
+    \item Iterates over (hyper)edges that cross a part boundary.
     \item The vertices on part that are bounded by the (hyper)edge form a cavity.
-    \item The cavity is chosen for migration if the (hyper)edge is on the boundary of a targeted part.
+    \item The cavity is chosen for migration if the (hyper)edge is on the boundary of a targeted part and the weight limit hasn't been exceeded.
     \end{itemize}
   \item Trim %This may be cut for time/understanding sake
     \begin{itemize}
@@ -245,7 +245,7 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Experiments}
   %Describe the mesh, system run on, initial partition etc.
-  We compare EnGPar's performance to its predecessor ParMA, which is specifically built for unstructured meshes for finite element analysis.\\
+  We compare EnGPar's performance to its predecessor ParMA, which is built to operate directly on unstructured meshes.\\
   \medskip
   Tests were run on a billion element mesh partitioned to 128Ki, 256Ki and 512Ki parts using ParMETIS. \\
   \medskip
@@ -263,12 +263,20 @@ Rensselaer Polytechnic Institute
 
 %More slides to go over the results in the paper
 \begin{frame}
-  \frametitle{Mesh Imbalance}
+  \frametitle{Mesh Vertex Imbalance}
   %Figure showing the conversion from mesh to N-graph
   \begin{figure}
     \centering
-    \includegraphics[width=.5\textwidth]{figures/eimb_v_cores.eps}
-    \includegraphics[width=.5\textwidth]{figures/vimb_v_cores.eps}
+    \includegraphics[width=.8\textwidth]{figures/vimb_v_cores.eps}
+  \end{figure}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Mesh Element Imbalance}
+  %Figure showing the conversion from mesh to N-graph
+  \begin{figure}
+    \centering
+    \includegraphics[width=.8\textwidth]{figures/eimb_v_cores.eps}
   \end{figure}  
 \end{frame}
 
@@ -285,19 +293,17 @@ Rensselaer Polytechnic Institute
   \frametitle{Future Work}
   Expanding the capabilities of EnGPar:
   \begin{itemize}
-    \item Improve partitioning at very high part count.
-  \item Supporting the diffusive algorithms on GPUs
+  \item Improve partitioning at very high part count.
+  \item Improve performance of the balancing procedures using accelerators.
   \end{itemize}
   Applying EnGPar to other applications:
   \begin{itemize}
-  \item CODES - a discrete event simulation for communication on supercomputer networks.
-  \item FUN3D - a computational fluid dynamic simulation...
-  \item PHASTA - I have no idea...
-  \end{itemize}
-\end{frame}
+  \item CODES - a discrete event simulation for communication on supercomputer networks. \url{press3.mcs.anl.gov/codes/}
+  \item FUN3D - a computational fluid dynamic simulation using a vertex-based partitioned mesh. \url{fun3d.larc.nasa.gov}
+  \item PHASTA - massively parallel computational fluid dynamics. \url{github.com/PHASTA/phasta}
+    %For future note: most glorious computational fluid dynamics that scales to the moon...
 
-\begin{frame}
-  \frametitle{Citations}
+  \end{itemize}
 \end{frame}
   
 \end{document}
