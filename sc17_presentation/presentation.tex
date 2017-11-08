@@ -284,18 +284,10 @@ Rensselaer Polytechnic Institute
 \section{Comparison to ParMA}
 
 \begin{frame}
-  \frametitle{Experiments}
-  %Describe the mesh, system run on, initial partition etc.
+  \frametitle{Problem Setup}
   We compare EnGPar's performance to its predecessor ParMA, which is built to operate directly on unstructured meshes.\\
   \medskip
-  Tests were run on a billion element mesh partitioned to 128Ki, 256Ki and 512Ki parts using ParMETIS. \\
-  \medskip
-  EnGPar and ParMA are used to balance the three partitions on the Mira BlueGene/Q system.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Problem Setup}
-  ParMA and EnGPar are set to balance the mesh for a standard finite element analysis where:
+  ParMA and EnGPar are set to balance a mesh for a standard finite element analysis where:
   \begin{itemize}
   \item Scalability of matrix formation is sensitive to mesh element imbalance.
   \item Linear algebra routines are sensitive to the imbalance of degrees of freedom.
@@ -304,6 +296,35 @@ Rensselaer Polytechnic Institute
   \bigskip
   To partition for this, both balance mesh vertices followed by elements with a target imbalance of 1.05. \\
   
+\end{frame}
+
+\begin{frame}
+  \frametitle{Problem Setup}
+  %Describe the mesh, system run on, initial partition etc.
+  \medskip
+  Tests were run on a billion element mesh. \\
+  \medskip
+  Initial partitions are built using:
+  \begin{itemize}
+  \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts.
+  \item Local ParMETIS part k-way from 8Ki to 128Ki, 256Ki, and 512Ki parts.
+  \end{itemize}
+  The partitions before using EnGPar or ParMA are as such:\\
+  \begin{table}[!h]
+    \centering
+    \begin{tabular}{||c|c|c|c||}
+      \hline
+      Number of Parts &128Ki&256Ki&512Ki \\
+      \hline
+      Elements per part & 9,836 & 4,918&2,459  \\
+      \hline
+      Vertex imbalance & 1.13 & 1.18 & 1.53 \\
+      \hline
+      Element imbalance & 1.02& 1.02& 1.02\\
+      \hline
+    \end{tabular}
+  \end{table}
+  All experiments were run on the Mira BlueGene/Q system with one process per hardware thread.
 \end{frame}
 
 %More slides to go over the results in the paper
