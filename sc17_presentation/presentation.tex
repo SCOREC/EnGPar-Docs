@@ -10,6 +10,7 @@
 \usepackage{subcaption}
 \usepackage{media9}
 \usepackage{bibentry}
+\usepackage[justification=centering]{caption}
 \nobibliography*
 
 \setbeamertemplate{bibliography item}[text]
@@ -152,15 +153,21 @@ Rensselaer Polytechnic Institute
   \item Decide on the mode of edges to use.
   \item Create (hyper)edges between the vertices whose corresponding work relate to each other.
   \end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{Mapping structures to the N-graph}
+
   %Figure showing the conversion from mesh to N-graph
   \begin{figure}
     \centering
-    \includegraphics[width=.9\textwidth,height = 1.75in]{figures/exampleMesh2Graph.png}
+    \includegraphics[width=.9\textwidth]{figures/exampleMesh2Graph.png}
+    \caption{Converting a triangular mesh(a) to the N-graph with an edge type for mesh vertices (b) and an additioal edge type for mesh edges (c).}
   \end{figure}
 \end{frame}
 
 \begin{frame}
   \frametitle{Diffusive Terminology}
+  \begin{minipage}{0.45\textwidth}
   \begin{itemize}
   \item Sides
     \begin{itemize}
@@ -173,10 +180,14 @@ Rensselaer Polytechnic Institute
     \item Includes all the vertices that bound the (hyper)edge.
     \end{itemize}
   \end{itemize}
+  \end{minipage} \hfill
+  \begin{minipage}{0.5\textwidth}
   \begin{figure}
     \centering
-    \includegraphics[width=\textwidth,height = 1.6in]{figures/PartBoundary.png}
+    \includegraphics[width=\textwidth]{figures/PartBoundary.png}
+    \caption{Two parts of an N-graph with a side of size 4. Two cavities are shown in red and blue for part 0.}
   \end{figure}
+  \end{minipage}
 \end{frame}
 \begin{frame}
   \frametitle{Diffusive Terminology}
@@ -220,9 +231,9 @@ Rensselaer Polytechnic Institute
       \EndFor
       \EndProcedure
 
-      \Procedure{RunStep}{$ngraph$,$d$}
+      \Procedure{RunStep}{$ngraph$,$t$}
       \State $sides = makeSides(ngraph)$
-      \State $weights = makeWeights(ngraph,sides,d)$
+      \State $weights = makeWeights(ngraph,sides,t)$
       \State $targets = makeTargets(ngraph,sides,weights)$
       \State $queue = makeIterationQueue(ngraph)$
       \State $plan = select(ngraph,targets,queue)$
@@ -248,36 +259,44 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Traversal Queue}
-  This ordering becomes more difficult to compute when any part may be disconnected into multiple components. \\
+  This ordering becomes more difficult to compute when a part is not fully connected. \\
+  
   \smallskip
   In this case, centers and distances are calculated separately for each component. \\
+  
   \smallskip
   Each disconnected component is ordered from shallowest to deepest.
-  \vspace{-.25cm}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Traversal Queue}
   \begin{figure}
     \centering
-    \includegraphics[width=.5\textwidth]{figures/Disconnected.png}
+    \includegraphics[width=.7\textwidth]{figures/Disconnected.png}
+    \caption{The traversal queue computation for two disconnected components in Part 1. The centers of each component are marked in red. The traversal queue for Part 1 is C,D,A,B}
   \end{figure}
-  \vspace{-.5cm}
-  The traversal queue for this part would be C,B,D,A.
 \end{frame}
 
 \begin{frame}
   \frametitle{Selection}
-  \begin{itemize}
-  \item Iterates over (hyper)edges that cross a part boundary.
-  \item The cavity defined by the (hyper)edge is chosen for migration if:
+  \begin{minipage}{.5\textwidth}
     \begin{itemize}
-    \item The part that the (hyper)edge is shared with is a target part.
-    \item The target part has not been sent more weight than the limit.
-    \item The size of the cavity is small.
+    \item Iterates over (hyper)edges that cross a part boundary.
+    \item The cavity defined by the (hyper)edge is chosen for migration if:
+      \begin{itemize}
+      \item The part that the (hyper)edge is shared with is a target part.
+      \item The target part has not been sent more weight than the limit.
+      \item The size of the cavity is small.
+      \end{itemize}
     \end{itemize}
-  \end{itemize}
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height = 1.6in]{figures/PartBoundary.png}
-  \end{figure}
+  \end{minipage}
+  \begin{minipage}{.45\textwidth}
 
+    \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{figures/PartBoundary.png}
+    \end{figure}
+  \end{minipage}
 \end{frame}
 
 
@@ -287,7 +306,7 @@ Rensselaer Polytechnic Institute
   \frametitle{Problem Setup}
   We compare EnGPar's performance to its predecessor ParMA, which is built to operate directly on unstructured meshes.\\
   \medskip
-  ParMA and EnGPar are set to balance a mesh for a standard finite element analysis where:
+  ParMA and EnGPar are set to balance a mesh for a finite element analysis where:
   \begin{itemize}
   \item Scalability of matrix formation is sensitive to mesh element imbalance.
   \item Linear algebra routines are sensitive to the imbalance of degrees of freedom.
