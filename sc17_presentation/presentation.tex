@@ -235,7 +235,7 @@ Rensselaer Polytechnic Institute
       \State $sides = makeSides(ngraph)$
       \State $weights = makeWeights(ngraph,sides,t)$
       \State $targets = makeTargets(ngraph,sides,weights)$
-      \State $queue = makeIterationQueue(ngraph)$
+      \State $queue = makeTraversalQueue(ngraph)$
       \State $plan = select(ngraph,targets,queue)$
       \State $ngraph.migrate(plan)$
       \EndProcedure
@@ -245,15 +245,12 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Traversal Queue}
-  %the edges on the boundary are ordered/not vertices
-  In order to make well shaped parts and minimize part boundaries, the order that vertices are selected matters. \\
-  \bigskip
-  Ordering is computed based on distance from the center of the part. \\
+  The traversal queue provides an ordering of the (hyper)edges on the part boundary for selection.\\
   \bigskip
   This is done in two steps:
   \begin{itemize}
-  \item A breadth-first traversal starting at the part boundary to determine the center of the part.
-  \item A breadth-first traversal starting at the center to compute topological distance for each vertex on the part boundary.
+  \item A breadth-first traversal starting at the part boundary to determine the furthest (hyper)edges as the center of the part.
+  \item A breadth-first traversal starting at the center (hyper)edges to compute topological distance for each (hyper)edge on the part boundary.
   \end{itemize}
 \end{frame}
 
@@ -261,10 +258,10 @@ Rensselaer Polytechnic Institute
   \frametitle{Traversal Queue}
   This ordering becomes more difficult to compute when a part is not fully connected. \\
   
-  \smallskip
+  \bigskip
   In this case, centers and distances are calculated separately for each component. \\
   
-  \smallskip
+  \bigskip
   Each disconnected component is ordered from shallowest to deepest.
 \end{frame}
 
@@ -282,6 +279,7 @@ Rensselaer Polytechnic Institute
   \begin{minipage}{.5\textwidth}
     \begin{itemize}
     \item Iterates over (hyper)edges that cross a part boundary.
+      
     \item The cavity defined by the (hyper)edge is chosen for migration if:
       \begin{itemize}
       \item The part that the (hyper)edge is shared with is a target part.
