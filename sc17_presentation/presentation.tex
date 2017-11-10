@@ -244,23 +244,15 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Traversal Queue}
   The traversal queue provides an ordering of the (hyper)edges on the part boundary for selection.\\
-  \bigskip
+  \medskip
   This is done in two steps:
   \begin{itemize}
   \item A breadth-first traversal starting at the part boundary to determine the furthest (hyper)edges as the center of the part.
   \item A breadth-first traversal starting at the center (hyper)edges to compute topological distance for each (hyper)edge on the part boundary.
   \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Traversal Queue}
-  This ordering becomes more difficult to compute when a part is not fully connected. \\
-  
-  \bigskip
-  In this case, centers and distances are calculated separately for each component. \\
-  
-  \bigskip
-  Each disconnected component is ordered from shallowest to deepest.
+  When parts are not fully connected, this operation is performed on each component separately. \\
+  \medskip
+  The queue is then ordered with shallowest components before deeper components.
 \end{frame}
 
 \begin{frame}
@@ -385,6 +377,11 @@ Rensselaer Polytechnic Institute
     %For future note: most glorious computational fluid dynamics that scales to the moon...
 
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Closing Remarks}
+  
 \end{frame}
   
 \end{document}
