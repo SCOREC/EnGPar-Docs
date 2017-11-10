@@ -69,7 +69,7 @@ Rensselaer Polytechnic Institute
     \item Complex relational structures.
     \item Irregular forms of computational and communication costs.
     \item Evolving imbalance of work. %Define Imbalance
-    \item Multiple criterias that need balancing simulataneously.
+    \item Multiple criteria that need balancing simultaneously.
   \end{itemize}
 \end{frame}
 
@@ -89,7 +89,7 @@ Rensselaer Polytechnic Institute
     \end{itemize}
   \item Diffusive Methods %Improve a partition efficiently
     \begin{itemize}
-    \item Label Propogation
+    \item Label Propagation
 %    \item ParMA
 %    \item EnGPar
     \end{itemize}
@@ -112,12 +112,10 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Software}
-  EnGPar's source can be found at \url{https://github.com/SCOREC/EnGPar}.
+  EnGPar's source can be found at \url{http://scorec.github.io/EnGPar/}.
   \begin{itemize}
   \item Written in C++ using MPI.
-  \item Utilizes CMake for building.
-  \item Depends on a SCOREC developed communication library, PCU.
-  \item Implementing accelerator support using Kokkos.
+  \item Uses PCU for sparse neighborhood exchange peer to peer communications.
   \end{itemize}
 \end{frame}
 
@@ -161,7 +159,7 @@ Rensselaer Polytechnic Institute
   \begin{figure}
     \centering
     \includegraphics[width=.9\textwidth]{figures/exampleMesh2Graph.png}
-    \caption{Converting a triangular mesh(a) to the N-graph with an edge type for mesh vertices (b) and an additioal edge type for mesh edges (c).}
+    \caption{Converting a triangular mesh(a) to the N-graph with an edge type for mesh vertices (b) and an additional edge type for mesh edges (c).}
   \end{figure}
 \end{frame}
 
