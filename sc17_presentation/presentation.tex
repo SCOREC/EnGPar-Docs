@@ -112,10 +112,14 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Software}
-  EnGPar's source can be found at \url{http://scorec.github.io/EnGPar/}.
+  EnGPar's source can be found at \url{scorec.github.io/EnGPar/}.
   \begin{itemize}
   \item Written in C++ using MPI.
+  \item Provides C/C++ and FORTRAN APIs.
   \item Uses PCU for sparse neighborhood exchange peer to peer communications.
+    \begin{itemize}
+      \item Found at \url{github.com/SCOREC/core/tree/master/pcu}
+      \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -233,7 +237,7 @@ Rensselaer Polytechnic Institute
       \State $sides = makeSides(ngraph)$
       \State $weights = makeWeights(ngraph,sides,t)$
       \State $targets = makeTargets(ngraph,sides,weights)$
-      \State $queue = makeTraversalQueue(ngraph)$
+      \State $queue = makeQueue(ngraph)$
       \State $plan = select(ngraph,targets,queue)$
       \State $ngraph.migrate(plan)$
       \EndProcedure
@@ -242,8 +246,8 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Traversal Queue}
-  The traversal queue provides an ordering of the (hyper)edges on the part boundary for selection.\\
+  \frametitle{Queue}
+  The queue provides an ordering of the (hyper)edges on the part boundary for selection.\\
   \medskip
   This is done in two steps:
   \begin{itemize}
@@ -256,11 +260,11 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Traversal Queue}
+  \frametitle{Queue}
   \begin{figure}
     \centering
     \includegraphics[width=.7\textwidth]{figures/Disconnected.png}
-    \caption{The traversal queue computation for two disconnected components in Part 1. The centers of each component are marked in red. The traversal queue for Part 1 is C,D,A,B}
+    \caption{The queue computation for two disconnected components in Part 1. The centers of each component are marked in red. The queue for Part 1 is C,D,A,B}
   \end{figure}
 \end{frame}
 
@@ -357,9 +361,26 @@ Rensselaer Polytechnic Institute
   \frametitle{RunTime Comparison}
   \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figures/time_v_cores.eps}
+    \includegraphics[width=.7\textwidth]{figures/time_v_cores.eps}
   \end{figure}
+  Local ParMETIS creates the partition from 8Ki to 512Ki in 16 seconds followed by a PUMI migration that takes 131 seconds.
   
+\end{frame}
+
+\begin{frame}
+  \frametitle{Closing Remarks}
+  Diffusive load balancing techniques are:
+  \begin{itemize}
+  \item fast neighborhood based partitioning.
+  \item used to improve the partition quality of partitions created by graph and geometric methods.
+  \end{itemize}
+  EnGPar builds off of ParMA by:
+  \begin {itemize}
+  \item generalizing the diffusive load balancing algorithm for applications without an element-based unstructured mesh.
+  \item improving the algorithm of key portions to improve overall runtime.
+  \end{itemize}
+
+    
 \end{frame}
 
 \begin{frame}
@@ -380,8 +401,7 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Closing Remarks}
+%Thank you slide
   
 \end{frame}
-  
 \end{document}
