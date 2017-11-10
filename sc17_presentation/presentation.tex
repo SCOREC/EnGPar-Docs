@@ -27,11 +27,11 @@
 
 \begin{document}
 
-\title[Unstructured Mesh Workflows]
+\title[Load Balancing of Unstructured Meshes]
 {
 Dynamic Load Balancing of Massively Parallel Unstructured Meshes
 }
-\author{Gerrett Diamond, Cameron W. Smith, Mark S. Shephard}
+\author[G. Diamond]{Gerrett Diamond, Cameron W. Smith, Mark S. Shephard}
 %\email{diamog@rpi.edu}
 %\author[smithc11@rpi.edu]{Cameron W. Smith\\
 %  \smallskip
@@ -369,17 +369,23 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Closing Remarks}
-  Diffusive load balancing techniques are:
-  \begin{itemize}
-  \item fast neighborhood based partitioning.
-  \item used to improve the partition quality of partitions created by graph and geometric methods.
-  \end{itemize}
+  %Diffusive load balancing techniques are:
+  %\begin{itemize}
+  %\item fast neighborhood based partitioning.
+  %\item used to improve the partition quality of partitions created by graph and geometric methods.
+  %\end{itemize}
   EnGPar builds off of ParMA by:
   \begin {itemize}
   \item generalizing the diffusive load balancing algorithm for applications without an element-based unstructured mesh.
   \item improving the algorithm of key portions to improve overall runtime.
   \end{itemize}
-
+  The experiments show:
+  \begin {itemize}
+  \item EnGPar reduces the high mesh vertex imbalance from the 512Ki mesh from 1.53 to 1.13.
+  \item EnGPar maintains the mesh element imbalance at the tolerance.
+  \item EnGPar runs around 33\% faster than ParMA.
+  \end{itemize}
+  
     
 \end{frame}
 
