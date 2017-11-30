@@ -1,0 +1,102 @@
+MPIDI_Process.*
+  verbose               : 22176976
+  statistics            : 1
+  contexts              : 0
+  async_progress        : 1
+  context_post          : 0
+  pt2pt.limits
+    application
+      eager
+        remote, local   : 1, 4097
+      short
+        remote, local   : 4097, 113
+    internal
+      eager
+        remote, local   : 113, 4097
+      short
+        remote, local   : 4097, 113
+  rma_pending           : 113
+  shmem_pt2pt           : 1000
+  disable_internal_eager_scale : 1
+  optimized.collectives : 524288
+  optimized.select_colls: 1
+  optimized.subcomms    : 2
+  optimized.memory      : 1
+  optimized.num_requests: 0
+  mpir_nbc              : 16
+  numTasks              : 1
+mpi thread level        : 'MPI_THREAD_SINGLE'
+MPIU_THREAD_GRANULARITY : 'per object'
+ASSERT_LEVEL            : 2
+MPICH_LIBDIR           : not defined
+The following MPICH_* environment variables were specified:
+The following PAMID_* environment variables were specified:
+  PAMID_VERBOSE=1
+The following PAMI_* environment variables were specified:
+The following COMMAGENT_* environment variables were specified:
+The following MUSPI_* environment variables were specified:
+The following BG_* environment variables were specified:
+  BG_SHAREDMEMSIZE=64MB
+model /projects/HighLift/cwsmith/phasta-boeing-1B/translated-model.dmg loaded in 1.496399 seconds
+mesh bz2:/projects/HighLift/cwsmith/phasta-boeing-1B/64Ki/reorderMdsMesh_bz2/ loaded in 7.356891 seconds
+number of tet 1289217728 hex 0 prism 0 pyramid 0
+mesh entity counts: v 223775111 e 1518185201 f 2583627817 r 1289217728
+PARMA_STATUS initial disconnected <max avg> 3 0.018
+PARMA_STATUS initial neighbors <max avg> 53 14.504
+PARMA_STATUS initial smallest side of max neighbor part 1
+PARMA_STATUS initial num parts with max neighbors 1
+PARMA_STATUS initial empty parts 0
+PARMA_STATUS initial small neighbor counts 1:21980 2:10294 3:9538 4:8392 5:8302 6:8176 7:7822 8:7960 9:7732 10:7770 
+PARMA_STATUS initial weighted vtx <tot max min avg> 266518068.0 4177.0 3550.0 4066.743
+PARMA_STATUS initial weighted edge <tot max min avg> 1640549200.0 25563.0 23609.0 25032.794
+PARMA_STATUS initial weighted face <tot max min avg> 2663314037.0 41199.0 37886.0 40638.947
+PARMA_STATUS initial weighted rgn <tot max min avg> 1289217728.0 19914.0 18177.0 19671.901
+PARMA_STATUS initial owned bdry vtx <tot max min avg> 37744773 1766 0 575.940
+PARMA_STATUS initial shared bdry vtx <tot max min avg> 80487730 1768 360 1228.145
+PARMA_STATUS initial model bdry vtx <tot max min avg> 5929470 742 0 90.477
+PARMA_STATUS initial sharedSidesToElements <max min avg> 0.183 0.036 0.124
+PARMA_STATUS initial entity imbalance <v e f r>: 1.03 1.02 1.01 1.01
+PARMA_STATUS stepFactor 0.500
+PARMA_STATUS sideTol 1228
+PARMA_STATUS vtxImb 1.027112 avgSides 1228.145294
+PARMA_STATUS vtx imbalance 1.027 avg 4066.743
+PARMA_STATUS imbSlope 1.000000 sidesSlope 1.000000
+PARMA_STATUS vertices balanced in 0 steps to 1.050000 in 2.821715 seconds
+PARMA_STATUS post vertices disconnected <max avg> 3 0.018
+PARMA_STATUS post vertices neighbors <max avg> 53 14.504
+PARMA_STATUS post vertices smallest side of max neighbor part 1
+PARMA_STATUS post vertices num parts with max neighbors 1
+PARMA_STATUS post vertices empty parts 0
+PARMA_STATUS post vertices small neighbor counts 1:21980 2:10294 3:9538 4:8392 5:8302 6:8176 7:7822 8:7960 9:7732 10:7770 
+PARMA_STATUS post vertices weighted vtx <tot max min avg> 266518068.0 4177.0 3550.0 4066.743
+PARMA_STATUS post vertices weighted edge <tot max min avg> 1640549200.0 25563.0 23609.0 25032.794
+PARMA_STATUS post vertices weighted face <tot max min avg> 2663314037.0 41199.0 37886.0 40638.947
+PARMA_STATUS post vertices weighted rgn <tot max min avg> 1289217728.0 19914.0 18177.0 19671.901
+PARMA_STATUS post vertices owned bdry vtx <tot max min avg> 37744773 1766 0 575.940
+PARMA_STATUS post vertices shared bdry vtx <tot max min avg> 80487730 1768 360 1228.145
+PARMA_STATUS post vertices model bdry vtx <tot max min avg> 5929470 742 0 90.477
+PARMA_STATUS post vertices sharedSidesToElements <max min avg> 0.183 0.036 0.124
+PARMA_STATUS post vertices entity imbalance <v e f r>: 1.03 1.02 1.01 1.01
+PARMA_STATUS stepFactor 0.500
+PARMA_STATUS maxVtx 4177.000
+PARMA_STATUS sideTol 1228
+PARMA_STATUS vtx imbalance 1.027
+PARMA_STATUS elmImb 1.012307 avgSides 1228.145294
+PARMA_STATUS elm imbalance 1.012 avg 19671.901
+PARMA_STATUS imbSlope 1.000000 sidesSlope 1.000000
+PARMA_STATUS elements balanced in 0 steps to 1.050000 in 2.850609 seconds
+PARMA_STATUS final disconnected <max avg> 3 0.018
+PARMA_STATUS final neighbors <max avg> 53 14.504
+PARMA_STATUS final smallest side of max neighbor part 1
+PARMA_STATUS final num parts with max neighbors 1
+PARMA_STATUS final empty parts 0
+PARMA_STATUS final small neighbor counts 1:21980 2:10294 3:9538 4:8392 5:8302 6:8176 7:7822 8:7960 9:7732 10:7770 
+PARMA_STATUS final weighted vtx <tot max min avg> 266518068.0 4177.0 3550.0 4066.743
+PARMA_STATUS final weighted edge <tot max min avg> 1640549200.0 25563.0 23609.0 25032.794
+PARMA_STATUS final weighted face <tot max min avg> 2663314037.0 41199.0 37886.0 40638.947
+PARMA_STATUS final weighted rgn <tot max min avg> 1289217728.0 19914.0 18177.0 19671.901
+PARMA_STATUS final owned bdry vtx <tot max min avg> 37744773 1766 0 575.940
+PARMA_STATUS final shared bdry vtx <tot max min avg> 80487730 1768 360 1228.145
+PARMA_STATUS final model bdry vtx <tot max min avg> 5929470 742 0 90.477
+PARMA_STATUS final sharedSidesToElements <max min avg> 0.183 0.036 0.124
+PARMA_STATUS final entity imbalance <v e f r>: 1.03 1.02 1.01 1.01

@@ -1,0 +1,91 @@
+MPIDI_Process.*
+  verbose               : 22453824
+  statistics            : 1
+  contexts              : 0
+  async_progress        : 1
+  context_post          : 0
+  pt2pt.limits
+    application
+      eager
+        remote, local   : 1, 4097
+      short
+        remote, local   : 4097, 113
+    internal
+      eager
+        remote, local   : 113, 4097
+      short
+        remote, local   : 4097, 113
+  rma_pending           : 113
+  shmem_pt2pt           : 1000
+  disable_internal_eager_scale : 1
+  optimized.collectives : 524288
+  optimized.select_colls: 1
+  optimized.subcomms    : 2
+  optimized.memory      : 1
+  optimized.num_requests: 0
+  mpir_nbc              : 16
+  numTasks              : 1
+mpi thread level        : 'MPI_THREAD_SINGLE'
+MPIU_THREAD_GRANULARITY : 'per object'
+ASSERT_LEVEL            : 2
+MPICH_LIBDIR           : not defined
+The following MPICH_* environment variables were specified:
+The following PAMID_* environment variables were specified:
+  PAMID_VERBOSE=1
+The following PAMI_* environment variables were specified:
+The following COMMAGENT_* environment variables were specified:
+The following MUSPI_* environment variables were specified:
+The following BG_* environment variables were specified:
+  BG_SHAREDMEMSIZE=64MB
+EnGPar Git hash cdddda758840c49758f92be995fadfbc5abd3215
+model /projects/HighLift/cwsmith/phasta-boeing-1B/translated-model.dmg loaded in 0.396167 seconds
+mesh bz2:/projects/HighLift/cwsmith/phasta-boeing-1B/64Ki/reorderMdsMesh_bz2/ loaded in 15.869758 seconds
+number of tet 1289217728 hex 0 prism 0 pyramid 0
+mesh entity counts: v 223775111 e 1518185201 f 2583627817 r 1289217728
+render vtk off
+PARMA_STATUS before disconnected <max avg> 3 0.018
+PARMA_STATUS before neighbors <max avg> 53 14.504
+PARMA_STATUS before smallest side of max neighbor part 1
+PARMA_STATUS before num parts with max neighbors 1
+PARMA_STATUS before empty parts 0
+PARMA_STATUS before small neighbor counts 1:21980 2:10294 3:9538 4:8392 5:8302 6:8176 7:7822 8:7960 9:7732 10:7770 
+PARMA_STATUS before weighted vtx <tot max min avg> 266518068.0 4177.0 3550.0 4066.743
+PARMA_STATUS before weighted edge <tot max min avg> 1640549200.0 25563.0 23609.0 25032.794
+PARMA_STATUS before weighted face <tot max min avg> 2663314037.0 41199.0 37886.0 40638.947
+PARMA_STATUS before weighted rgn <tot max min avg> 1289217728.0 19914.0 18177.0 19671.901
+PARMA_STATUS before owned bdry vtx <tot max min avg> 37744773 1766 0 575.940
+PARMA_STATUS before shared bdry vtx <tot max min avg> 80487730 1768 360 1228.145
+PARMA_STATUS before model bdry vtx <tot max min avg> 5929470 742 0 90.477
+PARMA_STATUS before sharedSidesToElements <max min avg> 0.183 0.036 0.124
+PARMA_STATUS before entity imbalance <v e f r>: 1.03 1.02 1.01 1.01
+Starting criteria type 0 with imbalances: 1.0123 1.0271 
+Completed criteria type 0 in 1 steps and took 0.007707 seconds
+Starting criteria type 1 with imbalances: 1.0123 1.0271 
+Completed criteria type 1 in 1 steps and took 1.780126 seconds
+Starting criteria type -1 with imbalances: 1.0123 1.0271 
+Completed criteria type -1 in 1 steps and took 0.020820 seconds
+EnGPar converged in 3 iterations in 1.811494 seconds
+Local Vertices <max, min, avg, imb> = <19914.000000 18177.000000 19671.901367 1.012307>
+Total Vertices <max, min, avg, imb> = <35593 22706 29648.999634 1.200479>
+Local Edges 0 <max, min, avg, imb> = <4177.000000 3550.000000 4066.742981 1.027112>
+Total Time: 6.058576
+Construct Time: 3.235221
+Balancing Time: 2.015929
+Repartition Time: 0.343013
+PARMA_STATUS after disconnected <max avg> 3 0.018
+PARMA_STATUS after neighbors <max avg> 53 14.504
+PARMA_STATUS after smallest side of max neighbor part 1
+PARMA_STATUS after num parts with max neighbors 1
+PARMA_STATUS after empty parts 0
+PARMA_STATUS after small neighbor counts 1:21980 2:10294 3:9538 4:8392 5:8302 6:8176 7:7822 8:7960 9:7732 10:7770 
+PARMA_STATUS after weighted vtx <tot max min avg> 266518068.0 4177.0 3550.0 4066.743
+PARMA_STATUS after weighted edge <tot max min avg> 1640549200.0 25563.0 23609.0 25032.794
+PARMA_STATUS after weighted face <tot max min avg> 2663314037.0 41199.0 37886.0 40638.947
+PARMA_STATUS after weighted rgn <tot max min avg> 1289217728.0 19914.0 18177.0 19671.901
+PARMA_STATUS after owned bdry vtx <tot max min avg> 37744773 1766 0 575.940
+PARMA_STATUS after shared bdry vtx <tot max min avg> 80487730 1768 360 1228.145
+PARMA_STATUS after model bdry vtx <tot max min avg> 5929470 742 0 90.477
+PARMA_STATUS after sharedSidesToElements <max min avg> 0.183 0.036 0.124
+PARMA_STATUS after entity imbalance <v e f r>: 1.03 1.02 1.01 1.01
+
+All tests passed

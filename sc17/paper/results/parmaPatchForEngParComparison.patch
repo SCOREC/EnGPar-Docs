@@ -1,0 +1,193 @@
+From 1c54400a02fbf76cbdb28288bc4ba93670c324e2 Mon Sep 17 00:00:00 2001
+From: Cameron Smith <smithc11@rpi.edu>
+Date: Fri, 11 Aug 2017 14:02:30 -0700
+Subject: [PATCH 1/6] tweaks for engpar comparison
+
+---
+ test/vtxElmBalance.cc | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/test/vtxElmBalance.cc b/test/vtxElmBalance.cc
+index 766218f..76ea670 100644
+--- a/test/vtxElmBalance.cc
++++ b/test/vtxElmBalance.cc
+@@ -46,14 +46,18 @@ int main(int argc, char** argv)
+   apf::Mesh2* m = apf::loadMdsMesh(argv[1],argv[2]);
+   Parma_PrintPtnStats(m, "initial");
+   apf::MeshTag* weights = setWeights(m);
+-  const double step = 0.5; const int verbose = 2;
++  const double step = 0.5; const int verbose = 1;
+   apf::Balancer* balancer = Parma_MakeVtxElmBalancer(m, step, verbose);
++  double t0 = PCU_Time();
+   balancer->balance(weights, 1.05);
++  double elapsed = PCU_Max_Double(PCU_Time()-t0);
++  if( !PCU_Comm_Self() )
++    fprintf(stderr, "parma max time %f\n", elapsed);
+   delete balancer;
+   clearTags(m, weights);
+   m->destroyTag(weights);
+   Parma_PrintPtnStats(m, "final");
+-  m->writeNative(argv[3]);
++  //m->writeNative(argv[3]);
+   // destroy mds
+   m->destroyNative();
+   apf::destroyMesh(m);
+-- 
+2.3.0
+
+
+From f69f6eaa57cae2845088b1ed3085a091caa60cb5 Mon Sep 17 00:00:00 2001
+From: Cameron Smith <smithc11@rpi.edu>
+Date: Wed, 30 Aug 2017 13:43:30 +0000
+Subject: [PATCH 2/6] print distance computation time on rank 0
+
+---
+ parma/diffMC/parma_graphDist.cc | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/parma/diffMC/parma_graphDist.cc b/parma/diffMC/parma_graphDist.cc
+index f42861d..d3f2873 100644
+--- a/parma/diffMC/parma_graphDist.cc
++++ b/parma/diffMC/parma_graphDist.cc
+@@ -362,8 +362,11 @@ namespace parma {
+ 
+   apf::MeshTag* measureGraphDist(apf::Mesh* m) {
+     apf::MeshTag* t = NULL;
++    double t0 = PCU_Time();
++    std::string fn = __func__;
+     if( hasDistance(m) ) {
+       t = updateDistance(m);
++      fn.append(" update ");
+     } else {
+       PCU_Debug_Print("computeDistance\n");
+       dcComponents c = dcComponents(m);
+@@ -379,6 +382,7 @@ namespace parma {
+       offset(m,c,t,rmax);
+       delete [] rmax;
+     }
++    parmaCommons::printElapsedTime(fn.c_str(),PCU_Time()-t0);
+     return t;
+   }
+ }
+-- 
+2.3.0
+
+
+From 1fcbca7b243fe0d230a7a31ea2f3efd3b0ad1f9b Mon Sep 17 00:00:00 2001
+From: Cameron Smith <smithc11@rpi.edu>
+Date: Wed, 30 Aug 2017 13:49:32 +0000
+Subject: [PATCH 3/6] vtx>elm: hard code element imbalance to 1.05
+
+---
+ parma/diffMC/parma_vtxElmBalancer.cc | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/parma/diffMC/parma_vtxElmBalancer.cc b/parma/diffMC/parma_vtxElmBalancer.cc
+index 14362e0..06cc8ca 100644
+--- a/parma/diffMC/parma_vtxElmBalancer.cc
++++ b/parma/diffMC/parma_vtxElmBalancer.cc
+@@ -75,7 +75,7 @@ class VtxElmBalancer : public parma::Balancer {
+       Parma_PrintPtnStats(mesh, "post vertices", (verbose>2));
+       double maxVtxW = parma::getMaxWeight(mesh, wtag, 0);
+       b = new ElmLtVtx(mesh, factor, maxVtxW, verbose);
+-      b->balance(wtag, tolerance);
++      b->balance(wtag, 1.05);
+       delete b;
+     }
+ };
+-- 
+2.3.0
+
+
+From fae31034cc6333f3aef3514afd8a02e7a2360c35 Mon Sep 17 00:00:00 2001
+From: Cameron Smith <smithc11@rpi.edu>
+Date: Wed, 30 Aug 2017 13:49:57 +0000
+Subject: [PATCH 4/6] vtxElmBalance: user specified target imbalance
+
+---
+ test/vtxElmBalance.cc | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/test/vtxElmBalance.cc b/test/vtxElmBalance.cc
+index 76ea670..b55a1af 100644
+--- a/test/vtxElmBalance.cc
++++ b/test/vtxElmBalance.cc
+@@ -35,9 +35,9 @@ int main(int argc, char** argv)
+   PCU_ALWAYS_ASSERT(argc == 4);
+   MPI_Init(&argc,&argv);
+   PCU_Comm_Init();
+-  if ( argc != 4 ) {
++  if ( argc != 5 ) {
+     if ( !PCU_Comm_Self() )
+-      printf("Usage: %s <model> <mesh> <out mesh>\n", argv[0]);
++      printf("Usage: %s <model> <mesh> <out mesh> <tol>\n", argv[0]);
+     MPI_Finalize();
+     exit(EXIT_FAILURE);
+   }
+@@ -49,7 +49,10 @@ int main(int argc, char** argv)
+   const double step = 0.5; const int verbose = 1;
+   apf::Balancer* balancer = Parma_MakeVtxElmBalancer(m, step, verbose);
+   double t0 = PCU_Time();
+-  balancer->balance(weights, 1.05);
++  double tol = atof(argv[4]);
++  if( !PCU_Comm_Self() )
++    fprintf(stderr, "parma target tolerance %f\n", tol);
++  balancer->balance(weights, tol);
+   double elapsed = PCU_Max_Double(PCU_Time()-t0);
+   if( !PCU_Comm_Self() )
+     fprintf(stderr, "parma max time %f\n", elapsed);
+-- 
+2.3.0
+
+
+From cc069180c3b5778b9056fef85da171b2a061bfca Mon Sep 17 00:00:00 2001
+From: Cameron Smith <smithc11@rpi.edu>
+Date: Wed, 30 Aug 2017 14:38:18 +0000
+Subject: [PATCH 5/6] vtxElmBalance: remove argument assertion
+
+---
+ test/vtxElmBalance.cc | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/test/vtxElmBalance.cc b/test/vtxElmBalance.cc
+index b55a1af..59ebd60 100644
+--- a/test/vtxElmBalance.cc
++++ b/test/vtxElmBalance.cc
+@@ -32,7 +32,6 @@ namespace {
+ 
+ int main(int argc, char** argv)
+ {
+-  PCU_ALWAYS_ASSERT(argc == 4);
+   MPI_Init(&argc,&argv);
+   PCU_Comm_Init();
+   if ( argc != 5 ) {
+-- 
+2.3.0
+
+
+From 75e01c36690c15ff048f0709e38c01c52e4c06bf Mon Sep 17 00:00:00 2001
+From: Cameron Smith <smithc11@rpi.edu>
+Date: Wed, 30 Aug 2017 14:53:06 +0000
+Subject: [PATCH 6/6] vtxElmBalancer: all reduce for distance computation time
+
+---
+ parma/diffMC/parma_graphDist.cc | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/parma/diffMC/parma_graphDist.cc b/parma/diffMC/parma_graphDist.cc
+index d3f2873..9fda5e0 100644
+--- a/parma/diffMC/parma_graphDist.cc
++++ b/parma/diffMC/parma_graphDist.cc
+@@ -382,7 +382,8 @@ namespace parma {
+       offset(m,c,t,rmax);
+       delete [] rmax;
+     }
+-    parmaCommons::printElapsedTime(fn.c_str(),PCU_Time()-t0);
++    double elapsed = PCU_Max_Double(PCU_Time()-t0);
++    parmaCommons::printElapsedTime(fn.c_str(),elapsed);
+     return t;
+   }
+ }
+-- 
+2.3.0
+

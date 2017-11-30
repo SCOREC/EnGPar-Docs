@@ -1,0 +1,18 @@
+2017-08-13 11:57:37.670 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: using properties file /bgsys/local/etc/bg.properties
+2017-08-13 11:57:37.674 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: max open file descriptors: 65536
+2017-08-13 11:57:37.674 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: core file limit: 18446744073709551615
+2017-08-13 11:57:37.678 (INFO ) [0x40001aebde0] 41223:tatu.runjob.client: scheduler job id is 1191184
+2017-08-13 11:57:37.687 (INFO ) [0x400016334e0] 41223:tatu.runjob.monitor: monitor started
+2017-08-13 11:57:42.658 (INFO ) [0x400016334e0] 41223:tatu.runjob.monitor: task record 2204502 created
+2017-08-13 11:57:42.659 (INFO ) [0x40001aebde0] MIR-08C00-3BFF1-2048:41223:ibm.runjob.client.options.Parser: set local socket to runjob_mux from properties file
+2017-08-13 11:57:50.856 (INFO ) [0x400016334e0] 41223:tatu.runjob.monitor: tracklib completed
+2017-08-13 11:58:02.351 (INFO ) [0x40001aebde0] MIR-08C00-3BFF1-2048:2334120:ibm.runjob.client.Job: job 2334120 started
+pcu peers 65536 max group size 4096 posix groups 16
+parma max time 7.156859
+2017-08-13 11:58:22.586 (INFO ) [0x40001aebde0] MIR-08C00-3BFF1-2048:2334120:ibm.runjob.client.Job: exited with status 0
+2017-08-13 11:58:22.586 (WARN ) [0x40001aebde0] MIR-08C00-3BFF1-2048:2334120:ibm.runjob.client.Job: 2 INFO RAS events
+2017-08-13 11:58:22.586 (WARN ) [0x40001aebde0] MIR-08C00-3BFF1-2048:2334120:ibm.runjob.client.Job: most recent RAS event text: DDR Correctable Error Summary : count=17 MCFIR error status:  [MEMORY_CE] This bit is set when a memory CE is detected on a non-maintenance memory read op;
+2017-08-13 11:58:22.586 (WARN ) [0x40001aebde0] MIR-08C00-3BFF1-2048:2334120:ibm.runjob.client.Job: with severity INFO
+2017-08-13 11:58:22.587 (INFO ) [0x40001aebde0] tatu.runjob.client: task exited with status 0
+2017-08-13 11:58:22.587 (INFO ) [0x400016334e0] 41223:tatu.runjob.monitor: monitor terminating
+2017-08-13 11:58:22.593 (INFO ) [0x40001aebde0] tatu.runjob.client: monitor completed

@@ -1,0 +1,19 @@
+2017-08-14 10:12:48.081 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: using properties file /bgsys/local/etc/bg.properties
+2017-08-14 10:12:48.082 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: max open file descriptors: 65536
+2017-08-14 10:12:48.082 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: core file limit: 18446744073709551615
+2017-08-14 10:12:48.083 (INFO ) [0x40001aebde0] 49760:tatu.runjob.client: scheduler job id is 1191190
+2017-08-14 10:12:48.090 (INFO ) [0x400016334e0] 49760:tatu.runjob.monitor: monitor started
+2017-08-14 10:12:52.357 (INFO ) [0x400016334e0] 49760:tatu.runjob.monitor: task record 2206147 created
+2017-08-14 10:12:52.358 (INFO ) [0x40001aebde0] MIR-08000-3BFF1-8192:49760:ibm.runjob.client.options.Parser: set local socket to runjob_mux from properties file
+2017-08-14 10:12:59.051 (INFO ) [0x400016334e0] 49760:tatu.runjob.monitor: tracklib completed
+2017-08-14 10:13:15.550 (INFO ) [0x40001aebde0] MIR-08000-3BFF1-8192:2335765:ibm.runjob.client.Job: job 2335765 started
+pcu peers 262144 max group size 4096 posix groups 64
+parma max time 7.546693
+2017-08-14 10:13:31.636 (INFO ) [0x40001aebde0] MIR-08000-3BFF1-8192:2335765:ibm.runjob.client.Job: exited with status 0
+2017-08-14 10:13:31.636 (WARN ) [0x40001aebde0] MIR-08000-3BFF1-8192:2335765:ibm.runjob.client.Job: 31 INFO RAS events
+2017-08-14 10:13:31.636 (WARN ) [0x40001aebde0] MIR-08000-3BFF1-8192:2335765:ibm.runjob.client.Job: 5 WARN RAS events
+2017-08-14 10:13:31.636 (WARN ) [0x40001aebde0] MIR-08000-3BFF1-8192:2335765:ibm.runjob.client.Job: most recent RAS event text: A BQL double bit error threshold was exceeded for Switch 1 Group EVEN and ODD
+2017-08-14 10:13:31.636 (WARN ) [0x40001aebde0] MIR-08000-3BFF1-8192:2335765:ibm.runjob.client.Job: with severity WARN
+2017-08-14 10:13:31.636 (INFO ) [0x40001aebde0] tatu.runjob.client: task exited with status 0
+2017-08-14 10:13:31.637 (INFO ) [0x400016334e0] 49760:tatu.runjob.monitor: monitor terminating
+2017-08-14 10:13:31.642 (INFO ) [0x40001aebde0] tatu.runjob.client: monitor completed

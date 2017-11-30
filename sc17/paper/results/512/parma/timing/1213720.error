@@ -1,0 +1,20 @@
+2017-09-04 22:57:38.276 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: using properties file /bgsys/local/etc/bg.properties
+2017-09-04 22:57:38.279 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: max open file descriptors: 65536
+2017-09-04 22:57:38.280 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: core file limit: 18446744073709551615
+2017-09-04 22:57:38.284 (INFO ) [0x40001aebde0] 52888:tatu.runjob.client: scheduler job id is 1213720
+2017-09-04 22:57:38.292 (INFO ) [0x400016334e0] 52888:tatu.runjob.monitor: monitor started
+2017-09-04 22:57:43.063 (INFO ) [0x400016334e0] 52888:tatu.runjob.monitor: task record 2226222 created
+2017-09-04 22:57:43.064 (INFO ) [0x40001aebde0] MIR-04000-37FF1-8192:52888:ibm.runjob.client.options.Parser: set local socket to runjob_mux from properties file
+2017-09-04 22:57:51.055 (INFO ) [0x400016334e0] 52888:tatu.runjob.monitor: tracklib completed
+2017-09-04 22:58:03.928 (INFO ) [0x40001aebde0] MIR-04000-37FF1-8192:2354719:ibm.runjob.client.Job: job 2354719 started
+pcu peers 524288 max group size 4096 posix groups 128
+parma target tolerance 1.120000
+parma max time 11.356538
+2017-09-04 22:58:51.950 (INFO ) [0x40001aebde0] MIR-04000-37FF1-8192:2354719:ibm.runjob.client.Job: exited with status 0
+2017-09-04 22:58:51.951 (WARN ) [0x40001aebde0] MIR-04000-37FF1-8192:2354719:ibm.runjob.client.Job: 238 INFO RAS events
+2017-09-04 22:58:51.951 (WARN ) [0x40001aebde0] MIR-04000-37FF1-8192:2354719:ibm.runjob.client.Job: 2 WARN RAS events
+2017-09-04 22:58:51.951 (WARN ) [0x40001aebde0] MIR-04000-37FF1-8192:2354719:ibm.runjob.client.Job: most recent RAS event text: DDR Correctable Error Summary : count=4 MCFIR error status:  [MEMORY_CE] This bit is set when a memory CE is detected on a non-maintenance memory read op;
+2017-09-04 22:58:51.951 (WARN ) [0x40001aebde0] MIR-04000-37FF1-8192:2354719:ibm.runjob.client.Job: with severity INFO
+2017-09-04 22:58:51.951 (INFO ) [0x40001aebde0] tatu.runjob.client: task exited with status 0
+2017-09-04 22:58:51.952 (INFO ) [0x400016334e0] 52888:tatu.runjob.monitor: monitor terminating
+2017-09-04 22:58:51.958 (INFO ) [0x40001aebde0] tatu.runjob.client: monitor completed
