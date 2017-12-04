@@ -307,6 +307,14 @@ Rensselaer Polytechnic Institute
 \section{Accelerating BFS}
 
 \begin{frame}
+  \frametitle{Where is time spent in EnGPar?}
+  Migration...
+
+  But, first let's see if we can accelerate something easier, BFS on a
+  hypergraph.
+\end{frame}
+
+\begin{frame}
   \frametitle{Related Work}
   lots of work on this - mostly focused on scale-free graphs and using many-core
   and GPUs
@@ -328,24 +336,62 @@ Rensselaer Polytechnic Institute
     \item ~1 TFLOPs per processor/socket, possible to get near peak
     \item many effective programming models and languages; shared memory,
       distributed, SHMEM, OpenMP, PThreads, MPI, etc.
+    \item efficient use of available memory bandwidth often yields peak performance - 
+      supported by both data parallel and message passing models
   \end{itemize}
   GPU
   \begin{itemize}
     \item many small cores organized into groups (warps) that run in lock-step
-    \item multi TFLOPs per device, hard to achieve peak
+    \item multi TFLOPs per device, hard to get near peak
     \item many effective programming models and languages; OpenMP, CUDA, OpenCL,
       OpenACC
-  \end{itemize}
-  FPGA
-  \begin{itemize}
-    \item reprogrammable device consisting of DSPs, multipliers, registers, hundreds of
-      thounsands of logic elements and ALMs
-    \item multi TFLOPs per device, frequently get near peak performance
-    \item only supported high level language is OpenCL...
+    \item wide data parallelism yields maximum performance - requires minimal divergence
+      and synchronization
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Architecture Review (cont.)}
+  FPGA
+  \begin{itemize}
+    \item reprogrammable device consisting of DSPs, multipliers, registers, hundreds of
+      thounsands of logic elements
+    \item multi TFLOPs per device, frequently get near peak performance
+    \item only supported high level language is OpenCL
+    \item data parallelism and long pipelines yield highest performance - multiple streams
+      progressing through the long pipeline concurrently
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{BFS}
+  Degree matters.  Traversal of scale free graphs introduces additional
+  complexities $\rightarrow$ specific algoritms to balance degree disparity. \\
+  Multiple approaches depending on architecture
+  \begin{itemize}
+    \item Manycore - serial and shared memory parallel vertex-based, edge-based, push (vertices
+      in the frontier push to next frontier), pull (all unvisited vertices check
+      to for inclusion in next frontier)
+    \item GPU - shared memory parallel versions of manycore procedures with data structure
+      optimizations for coalesing, algebraic methods
+    \item FPGA - all of the above, see architecture notes
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Our Approach}
+  Our N-Graph data structure is a two-level compressed sparse row (CSR):
+  \begin{itemize}
+    \item where is the documentation on this???
+  \end{itemize}
+\end{frame}
+
+
 \section{Comparison to ParMA}
+
+\begin{frame}
+  \frametitle{Comparison To Parma}
+\end{frame}
 
 \begin{frame}
   \frametitle{Problem Setup}
