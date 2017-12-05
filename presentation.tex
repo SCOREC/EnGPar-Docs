@@ -1,6 +1,7 @@
 % small.tex
 \documentclass{beamer}
 \usetheme{Boadilla}
+\usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{wrapfig}
 %algorithms and pseudo code
@@ -380,17 +381,9 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Our Approach}
-  Our current N-Graph data structure is a two-level compressed sparse row (CSR):
-  \begin{itemize}
-    \item vertex ids are implicitly stored/referenced as indexes into/of the following
-      arrays
-    \item \textit{degree\_list} - vertex-to-net offsets
-    \item \textit{edge\_list} - vertex-to-net adjacencies
-    \item net ids are implicitly stored/referenced as indexes into/of the following
-      arrays
-    \item \textit{pin\_degree\_list} - net-to-vertex offsets
-    \item \textit{pin\_list} - net-to-vertex adjacencies
-  \end{itemize}
+  Our current N-Graph data structure is two sets of compressed sparse row (CSR)
+  arrays; one for vertex-to-net adjacencies and another for net-to-vertex
+  adjacencies:
 \end{frame}
 
 \begin{frame}
@@ -402,15 +395,16 @@ Rensselaer Polytechnic Institute
   {\tiny
   \begin{table}[]
     \centering
-    \begin{tabular}{l|l|l|l|l|l|l|l|l}
-      vtx id                 & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
-      vtx-to-net offsets     & 0 & 1 & 4 & 5 & 6 &   \\
-      vtx-to-net adjacencies & a &   a & b & c &  2 & 2 \\
-      net id                 & a & b & c & d & e & f \\
-      net-to-vtx offsets     & 0 & 2 & 6 &   &   &   \\
-      net-to-vtx adjacencies & a & b & a & b & c & d
+    \label{my-label}
+    \begin{tabular}{llllllllll}
+      vtx id                 & 0     & 1     & 2     & 3       & 4         & 5     & 6   & 7   &    \\
+      vtx-to-net offsets     & 0     & 1     & 4     & 7       & 9         & 14    & 15  & 17  & 19 \\
+      vtx-to-net adjacencies & a     & a,b,c & a,b,d & c,e     & b,c,d,e,f & d     & e,f & d,f &    \\
+      net id                 & a     & b     & c     & d       & e         & f     &     &     &    \\
+      net-to-vtx offsets     & 0     & 3     & 5     & 8       & 12        & 15    & 18  &     &    \\
+      net-to-vtx adjacencies & 0,1,2 & 1,2   & 1,3,4 & 2,4,5,7 & 3,4,6     & 4,6,7 &     &     &   
     \end{tabular}
-  \end{table} 
+  \end{table}
   }
 \end{frame}
 
