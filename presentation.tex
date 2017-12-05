@@ -380,12 +380,39 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Our Approach}
-  Our N-Graph data structure is a two-level compressed sparse row (CSR):
+  Our current N-Graph data structure is a two-level compressed sparse row (CSR):
   \begin{itemize}
-    \item where is the documentation on this???
+    \item vertex ids are implicitly stored/referenced as indexes into/of the following
+      arrays
+    \item \textit{degree\_list} - vertex-to-net offsets
+    \item \textit{edge\_list} - vertex-to-net adjacencies
+    \item net ids are implicitly stored/referenced as indexes into/of the following
+      arrays
+    \item \textit{pin\_degree\_list} - net-to-vertex offsets
+    \item \textit{pin\_list} - net-to-vertex adjacencies
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Example}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.4\textwidth]{figures/hypergraph.eps}
+  \end{figure}  
+  {\tiny
+  \begin{table}[]
+    \centering
+    \begin{tabular}{l|l|l|l|l|l|l|l|l}
+      vtx id                 & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+      vtx-to-net offsets     & 0 & 1 & 4 & 5 & 6 &   \\
+      vtx-to-net adjacencies & a &   a & b & c &  2 & 2 \\
+      net id                 & a & b & c & d & e & f \\
+      net-to-vtx offsets     & 0 & 2 & 6 &   &   &   \\
+      net-to-vtx adjacencies & a & b & a & b & c & d
+    \end{tabular}
+  \end{table} 
+  }
+\end{frame}
 
 \section{Comparison to ParMA}
 
