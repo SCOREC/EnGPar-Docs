@@ -320,9 +320,9 @@ Rensselaer Polytechnic Institute
   lots of work on this - mostly focused on scale-free graphs and using many-core
   and GPUs
   \begin{itemize}
-    \item slimsell - custom data structure for algebraic BFS
-    \item slota - Local Manhattan Collapse - inner/frontier loop transformations to
-      improve load balance and reduce irregular memory access 
+    \item SlimSell - custom data structure for algebraic BFS (Hoefler)
+    \item Global and Local Manhattan Collapse - inner/frontier loop transformations to
+      improve load balance and reduce irregular memory access (Slota)
     \item guy from sc17 - runtime switching of structure depending on front size
       and other factors
 % george's BFS references 
@@ -407,23 +407,31 @@ Rensselaer Polytechnic Institute
       optimizations for coalesing, algebraic methods
     \item FPGA - all of the above, see architecture notes
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Our Approach}
   We will focus on hypergraphs created from unstructured meshes
   \begin{itemize}
     \item fairly uniform degree (!!!quantify - make a plot!!!)
     \item diameter greatly depends on the geometric model and the
       partition - high quality parts are compact and have low diameter
   \end{itemize}
-\end{frame}
+  Use a SlimSell-like datastructure - reduced memory usage and greater
+  vectorization 
+  \begin{itemize}
+    \item do we benefit by sorting nets/vertices by degree?
+    \item need weights for vertices and edges - lose some savings but retain
+      improved vectorization
+  \end{itemize}
 
-\begin{frame}
-  \frametitle{Our Approach}
-  Our current N-Graph data structure is two sets of compressed sparse row (CSR)
-  arrays; one for vertex-to-net adjacencies and another for net-to-vertex
-  adjacencies:
+  Use Local Manhattan Collapse to balance the traversal load across threads
 \end{frame}
 
 \begin{frame}
   \frametitle{Example}
+  Our current N-Graph data structure is two sets of compressed sparse row (CSR)
+  structures
   \begin{figure}
     \centering
     \includegraphics[width=.4\textwidth]{figures/hypergraph.eps}
