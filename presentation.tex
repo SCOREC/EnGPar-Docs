@@ -321,9 +321,34 @@ Rensselaer Polytechnic Institute
   and GPUs
   \begin{itemize}
     \item slimsell - custom data structure for algebraic BFS
-    \item slota - manhattan BFS
+    \item slota - Local Manhattan Collapse - inner/frontier loop transformations to
+      improve load balance and reduce irregular memory access 
     \item guy from sc17 - runtime switching of structure depending on front size
       and other factors
+% george's BFS references 
+%% [3] - S. Beamer, K. Asanovic, and D. Patterson, “Direction- ´
+%      optimizing breadth-first search,” in Proc. Int’l. Conf. for High
+%      Performance Computing, Networking, Storage and Analysis
+%      (SC), 2013.
+%% [7] F. Checconi and F. Petrini, “Traversing trillions of edges
+%      in real-time: Graph exploration on large-scale parallel machines,”
+%      in Proc. IEEE Int’l. Parallel and Distributed Proc.
+%      Symp. (IPDPS), 2014.
+%% [12] T. Gao, Y. Lu, B. Zhang, and G. Suo, “Using the Intel
+%      Many Integrated Core to accelerate graph traversal,” Sage
+%      Int’l. Journal of High Performance Computing Applications,
+%      vol. 28, no. 3, pp. 255–266, 2014.
+%% [16] S. Hong, S. K. Kim, T. Oguntebi, and K. Olukotun, “Accelerating
+%      CUDA graph algorithms at maximum warp,” in Proc.
+%      ACM SIGPLAN Symp. on Principles and Practice of Parallel
+%      Programming (PPoPP), 2011
+%% [17] S. Hong, T. Oguntebi, and K. Olukotun, “Efficient parallel
+%      graph exploration on multi-core CPU and GPU,” in Proc.
+%      Int’l. Conf. on Parallel Architectures and Compilation Techniques
+%      (PACT), 2011.
+%% [23] D. Merrill, M. Garland, and A. Grimshaw, “Scalable GPU
+%      graph traversal,” in Proc. ACM SIGPLAN Symp. on Principles
+%      and Practice of Parallel Programming (PPoPP), 2012.
   \end{itemize}
   Can we apply some of these approaches to a hyper multi-graph and run
   effectively on manycore CPUs, GPUs, and FPGAs?
@@ -366,9 +391,14 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{BFS}
-  Degree matters.  Traversal of scale free graphs introduces additional
-  complexities $\rightarrow$ specific algoritms to balance degree disparity. \\
-  Multiple approaches depending on architecture
+  Degree and diameter matters.
+  \begin{itemize}
+    \item Traversal of scale free graphs introduces additional
+      complexities $\rightarrow$ specific algoritms to balance degree disparity.
+    \item Traversal of low diameter graphs have larger frontiers and fewer
+      synchronizations.
+  \end{itemize}
+  The selected method depends on architecture and graph characteristics
   \begin{itemize}
     \item Manycore - serial and shared memory parallel vertex-based, edge-based, push (vertices
       in the frontier push to next frontier), pull (all unvisited vertices check
@@ -376,6 +406,12 @@ Rensselaer Polytechnic Institute
     \item GPU - shared memory parallel versions of manycore procedures with data structure
       optimizations for coalesing, algebraic methods
     \item FPGA - all of the above, see architecture notes
+  \end{itemize}
+  We will focus on hypergraphs created from unstructured meshes
+  \begin{itemize}
+    \item fairly uniform degree (!!!quantify - make a plot!!!)
+    \item diameter greatly depends on the geometric model and the
+      partition - high quality parts are compact and have low diameter
   \end{itemize}
 \end{frame}
 
