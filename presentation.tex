@@ -52,8 +52,7 @@ Rensselaer Polytechnic Institute
 
 %----------- abstract ----------------------------------------------%
 \begin{frame}[plain]
-\texttt{Abstract}
-
+  \frametitle{Abstract}
 \small{Simulating systems with evolving relational structures on massively
   parallel computers requires maintaining even work distribution across the
   processing resources. Adaptive, unstructured, mesh-based finite element and
@@ -63,6 +62,24 @@ Rensselaer Polytechnic Institute
   performance is compared against its predecessor, ParMA. The performance of
   intra-node data parallel procedures written in Kokkos are compared to other
   leading implementations of similar algorithms.}
+\end{frame}
+
+\begin{frame}[plain]
+  \frametitle{Session}
+  \url{http://meetings.siam.org/sess/dsp_programsess.cfm?SESSIONCODE=63562}
+  \begin{itemize}
+    \item 2:40-3:00 ``Underappreciated Bottlenecks for Graph Algorithm
+      Communication", Scott Beamer, Lawrence Berkeley National Laboratory, USA
+    \item 3:05-3:25 ``SlimSell: A Vectorized Graph Representation for
+      Breadth-First Search", Torsten Hoefler, ETH Zürich, Switzerland
+    \item 3:30-3:50 ``Triangle Counting and Truss Decomposition on Modern Parallel
+      Architectures", Ancy Tom and Shaden Smith, University of Minnesota, USA; George Karypis,
+      University of Minnesota and Army HPC Research Center, USA
+    \item 3:55-4:15 ``Dynamic Load Balancing of Massively Parallel Graphs for Scientific
+      Computing on Many Core and Gpu Based Systems", Cameron Smith, Gerrett
+      Diamond, George M. Slota, and Mark Shepard, Rensselaer Polytechnic
+      Institute, USA
+  \end{itemize}
 \end{frame}
 
 %----------- outline ----------------------------------------------%
@@ -80,6 +97,7 @@ Rensselaer Polytechnic Institute
   Many evolving distributed simulations have: \\
   \begin{itemize}
     \item Complex relational structures.
+
 
     \item Irregular forms of computational and communication costs.
     \item Evolving imbalance of work. %Define Imbalance
@@ -305,13 +323,20 @@ Rensselaer Polytechnic Institute
   \end{minipage}
 \end{frame}
 
-\section{Accelerating BFS}
+\section{Improving Performance with Accelerators}
 
 \begin{frame}
   \frametitle{Where is time spent in EnGPar?}
   Migration...
+  \begin{itemize}
+    \item General implementation sends/receives vertices and their adjacent
+      hyperedges to/from any neighbor
+    \item Rebuild hypergraph after communications complete
+  \end{itemize}
 
-  But, first let's see if we can accelerate something easier, BFS on a
+  But doing the rebuild on the accelerator will be hard...
+  
+  First let's see if we can accelerate something easier; BFS on a
   hypergraph.
 \end{frame}
 
@@ -424,8 +449,18 @@ Rensselaer Polytechnic Institute
     \item need weights for vertices and edges - lose some savings but retain
       improved vectorization
   \end{itemize}
-
   Use Local Manhattan Collapse to balance the traversal load across threads
+  \begin{itemize}
+    \item balance effects may be less critical since
+      we won't have a large skew in degree distribution
+  \end{itemize}
+  Quantifying progress
+  \begin{itemize}
+    \item GTEPS - billions of edges traversed per-second (?should this be pins
+      or nets?)
+    \item memory usage on device - exclusive use $\rightarrow$ hardware is limit
+    \item memory usage on host - minimize usage
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -456,6 +491,7 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Comparison To Parma}
+  Will have to fly through these slides.
 \end{frame}
 
 \begin{frame}
@@ -523,9 +559,10 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{RunTime Comparison}
+  \textbf{Run multiple times and report results with error bars!}
   \begin{figure}
     \centering
-    \includegraphics[width=.7\textwidth]{figures/time_v_cores.eps}
+    \includegraphics[width=.5\textwidth]{figures/time_v_cores.eps}
   \end{figure}
   Local ParMETIS creates the partition from 8Ki to 512Ki in 16 seconds followed by a PUMI migration that takes 131 seconds.
   
@@ -557,21 +594,22 @@ Rensselaer Polytechnic Institute
   \frametitle{Future Work}
   Expanding the capabilities of EnGPar:
   \begin{itemize}
-  \item Improve partitioning at very high part count.
-  \item Improve performance of the balancing procedures using accelerators.
+    \item Improve partitioning at very high part count.
+    \item Improve performance of the balancing procedures using accelerators.
+  \end{itemize}
+  Migration...
+  \begin{itemize}
+    \item Host communicates, device rebuilds (hyper)graph
   \end{itemize}
   Applying EnGPar to other applications:
   \begin{itemize}
-  \item CODES - a discrete event simulation for communication on supercomputer networks. \url{press3.mcs.anl.gov/codes/}
-  \item FUN3D - a computational fluid dynamic simulation using a vertex-based partitioned mesh. \url{fun3d.larc.nasa.gov}
-  \item PHASTA - massively parallel computational fluid dynamics. \url{github.com/PHASTA/phasta}
-    %For future note: most glorious computational fluid dynamics that scales to the moon...
-
+    \item CODES - a discrete event simulation for communication on supercomputer networks. \url{press3.mcs.anl.gov/codes/}
+    \item FUN3D - a computational fluid dynamic simulation using a vertex-based partitioned mesh. \url{fun3d.larc.nasa.gov}
+    \item PHASTA - massively parallel computational fluid dynamics. \url{github.com/PHASTA/phasta}
   \end{itemize}
 \end{frame}
 
 \begin{frame}
-%Thank you slide
   \centering
   \Huge{Thank you.}
 \end{frame}
