@@ -606,6 +606,43 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
+  \frametitle{Test Hypergraphs}
+  Hypergraphs created from unstructured tet meshes: \\
+  mesh elements $\rightarrow$ graph vertices \\
+  mesh vertices $\rightarrow$ hyperedges
+  \begin{table}[]
+    \centering
+    \label{my-label}
+    \begin{tabular}{lrrrr}
+      graph & vertices & hyperedges & bfs levels & max frontier  \\
+      67k   & 66433    & 15697      & 25         & 4432          \\
+      190k  & 192728   & 40052      & 40         & 7992          \\
+      400k  & 404613   & 88651      & 48         & 17316         \\
+      890k  & 890925   & 187380     & 70         & 26664         \\
+      1.6M  & 1580611  & 336215     & 82         & 45268         \\
+      13M   & 12831104 & 2499193    & 82         & 95798         \\
+      28M   & 27943315 & 5190006    & 210        &
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Results}
+  Timing comparison of different OpenCL kernels on NVIDIA 1080ti
+  \begin{itemize}
+    \item Includes data transfers, but not kernel JIT compilation
+    \item The average of three runs is used for the comparison
+    \item Higher is better - e.g., scg\_int\_unroll is $\sim$five times faster than csr on 28M graph
+    \item scg\_int\_unroll is up to 11 times faster than serial push on Intel Xeon
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.7\textwidth]{results/bfsNoPush.png}
+  \end{figure}  
+\end{frame}
+
+
+\begin{frame}
   \frametitle{Closing Remarks}
   %Diffusive load balancing techniques are:
   %\begin{itemize}
@@ -632,9 +669,12 @@ Rensselaer Polytechnic Institute
     \item Improve partitioning at very high part count.
     \item Improve performance of the balancing procedures using accelerators.
   \end{itemize}
-  Migration...
+  Acceleration
   \begin{itemize}
-    \item Host communicates, device rebuilds (hyper)graph
+    \item Migration - host communicates, device rebuilds (hyper)graph
+    \item FPGA - tune data parallel kernel, implement pipelined kernel
+    \item Test on bigger graphs - from meshes and discrete event simulation
+    \item Runtime switching - execute BFS kernel on device when frontier is large (Merijn)
   \end{itemize}
   Applying EnGPar to other applications:
   \begin{itemize}
@@ -669,4 +709,45 @@ Rensselaer Polytechnic Institute
     \item Argonne National Laboratory JLSE - Kazutomo Yoshii
   \end{itemize}
 \end{frame}
+
+\begin{frame}
+  \center \huge Extra Slides
+\end{frame}
+
+\begin{frame}
+  \frametitle{Other View of Results}
+  \tiny
+  Timing comparison of different kernels on NVIDIA 1080ti - includes sequential
+  push
+  \begin{itemize}
+    \item Includes data transfers, but not kernel JIT compilation
+    \item The average of three runs is used for the comparison
+    \item Higher is better - e.g., scg\_int\_unroll is $\sim$five times faster than csr on 28M graph
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{results/bfs.png}
+  \end{figure}  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gripes}
+  OpenCL 
+  \begin{itemize}
+    \item Isn't supported on Power9+V100 deployments yet - can't build kernels
+    \item OCLgrind was the only useful debugging tool I could find (github.com/jrprice/Oclgrind)
+    \item Shiny (not so) new language features (team collectives) are not supported by devices I tested on
+  \end{itemize}
+  FPGAs
+  \begin{itemize}
+    \item 5hr+ compile time
+    \item steep learning curve for development
+  \end{itemize}
+\end{frame}
+
+
+
+
 \end{document}
+
+
