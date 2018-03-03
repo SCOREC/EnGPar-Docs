@@ -323,185 +323,10 @@ Rensselaer Polytechnic Institute
   \end{minipage}
 \end{frame}
 
-\section{Improving Performance with Accelerators}
-
-\begin{frame}
-  \frametitle{Where is time spent in EnGPar?}
-  Migration...
-  \begin{itemize}
-    \item General implementation sends/receives vertices and their adjacent
-      hyperedges to/from any neighbor - communications on host
-    \item Rebuild hypergraph after communications complete
-  \end{itemize}
-
-  \begin{figure}
-    \centering
-    \includegraphics[width=.4\textwidth]{results/aero1Belm/migration.png}
-    \caption{1B elm mesh balanced on 128Ki, 256Ki, and 512Ki with EnGPar}
-  \end{figure}
-
-  But doing the rebuild on the accelerator will be hard...
-  
-  First let's see if we can accelerate something easier; BFS on a
-  hypergraph.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Related Work}
-  lots of work on this - mostly focused on scale-free graphs and using many-core
-  and GPUs
-  \begin{itemize}
-    \item SlimSell - custom data structure for algebraic BFS (Hoefler)
-    \item Global and Local Manhattan Collapse - inner/frontier loop transformations to
-      improve load balance and reduce irregular memory access (Slota)
-    \item Merijn - runtime switching of graph structure and push/pull algorithm based
-      on front size and other factors (M. Verstraaten)
-      % Merijn ---> Meer-hang
-      % https://arxiv.org/pdf/1708.01159.pdf
-      % https://github.com/merijn/GPU-benchmarks
-% george's BFS references 
-%% [3] - S. Beamer, K. Asanovic, and D. Patterson, “Direction- ´
-%      optimizing breadth-first search,” in Proc. Int’l. Conf. for High
-%      Performance Computing, Networking, Storage and Analysis
-%      (SC), 2013.
-%% [7] F. Checconi and F. Petrini, “Traversing trillions of edges
-%      in real-time: Graph exploration on large-scale parallel machines,”
-%      in Proc. IEEE Int’l. Parallel and Distributed Proc.
-%      Symp. (IPDPS), 2014.
-%% [12] T. Gao, Y. Lu, B. Zhang, and G. Suo, “Using the Intel
-%      Many Integrated Core to accelerate graph traversal,” Sage
-%      Int’l. Journal of High Performance Computing Applications,
-%      vol. 28, no. 3, pp. 255–266, 2014.
-%% [16] S. Hong, S. K. Kim, T. Oguntebi, and K. Olukotun, “Accelerating
-%      CUDA graph algorithms at maximum warp,” in Proc.
-%      ACM SIGPLAN Symp. on Principles and Practice of Parallel
-%      Programming (PPoPP), 2011
-%% [17] S. Hong, T. Oguntebi, and K. Olukotun, “Efficient parallel
-%      graph exploration on multi-core CPU and GPU,” in Proc.
-%      Int’l. Conf. on Parallel Architectures and Compilation Techniques
-%      (PACT), 2011.
-%% [23] D. Merrill, M. Garland, and A. Grimshaw, “Scalable GPU
-%      graph traversal,” in Proc. ACM SIGPLAN Symp. on Principles
-%      and Practice of Parallel Programming (PPoPP), 2012.
-  \end{itemize}
-  Can we apply some of these approaches to a hyper multi-graph and run
-  effectively on manycore CPUs, GPUs, and FPGAs?
-\end{frame}
-
-\begin{frame}
-  \frametitle{Architecture Review}
-  Manycore
-  \begin{itemize}
-    \item tens of OOO cores with hardware level pipelining
-    \item ~1 TFLOPs per processor/socket, possible to get near peak
-    \item many effective programming models and languages; shared memory,
-      distributed, SHMEM, OpenMP, PThreads, MPI, etc.
-    \item efficient use of available memory bandwidth often yields peak performance - 
-      supported by both data parallel and message passing models
-  \end{itemize}
-  GPU
-  \begin{itemize}
-    \item many small cores organized into groups (warps) that run in lock-step
-    \item multi TFLOPs per device, hard to get near peak
-    \item many effective programming models and languages; OpenMP, CUDA, OpenCL,
-      OpenACC
-    \item wide data parallelism yields maximum performance - requires minimal divergence
-      and synchronization
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Architecture Review (cont.)}
-  FPGA
-  \begin{itemize}
-    \item reprogrammable device consisting of DSPs, multipliers, registers, hundreds of
-      thounsands of logic elements
-    \item multi TFLOPs per device, frequently get near peak performance
-    \item only supported high level language is OpenCL
-    \item data parallelism and long pipelines yield highest performance - multiple streams
-      progressing through the long pipeline concurrently
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{BFS}
-  Degree and diameter matters.
-  \begin{itemize}
-    \item Traversal of scale free graphs introduces additional
-      complexities $\rightarrow$ specific algoritms to balance degree disparity.
-    \item Traversal of low diameter graphs have larger frontiers and fewer
-      synchronizations.
-  \end{itemize}
-  The selected method depends on architecture and graph characteristics
-  \begin{itemize}
-    \item Manycore - serial and shared memory parallel vertex-based, edge-based, push (vertices
-      in the frontier push to next frontier), pull (all unvisited vertices check
-      to for inclusion in next frontier)
-    \item GPU - shared memory parallel versions of manycore procedures with data structure
-      optimizations for coalesing, algebraic methods
-    \item FPGA - all of the above, see architecture notes
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Our Approach}
-  We will focus on hypergraphs created from unstructured meshes
-  \begin{itemize}
-    \item fairly uniform degree (!!!quantify - make a plot!!!)
-    \item diameter greatly depends on the geometric model and the
-      partition - high quality parts are compact and have low diameter
-  \end{itemize}
-  Use a SlimSell-like datastructure - reduced memory usage and greater
-  vectorization 
-  \begin{itemize}
-    \item do we benefit by sorting nets/vertices by degree?
-    \item need weights for vertices and edges - lose some savings but retain
-      improved vectorization
-  \end{itemize}
-  Use Local Manhattan Collapse to balance the traversal load across threads
-  \begin{itemize}
-    \item balance effects may be less critical since
-      we won't have a large skew in degree distribution
-  \end{itemize}
-  Quantifying progress
-  \begin{itemize}
-    \item GTEPS - billions of edges traversed per-second (?should this be pins
-      or nets?)
-    \item memory usage on device - exclusive use $\rightarrow$ hardware is limit
-    \item memory usage on host - minimize usage
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example}
-  Our current N-Graph data structure is two sets of compressed sparse row (CSR)
-  structures
-  \begin{figure}
-    \centering
-    \includegraphics[width=.4\textwidth]{figures/hypergraph.eps}
-  \end{figure}  
-  {\tiny
-  \begin{table}[]
-    \centering
-    \label{my-label}
-    \begin{tabular}{llllllllll}
-      vtx id                 & 0     & 1     & 2     & 3       & 4         & 5     & 6   & 7   &    \\
-      vtx-to-net offsets     & 0     & 1     & 4     & 7       & 9         & 14    & 15  & 17  & 19 \\
-      vtx-to-net adjacencies & a     & a,b,c & a,b,d & c,e     & b,c,d,e,f & d     & e,f & d,f &    \\
-      \hline
-      net id                 & a     & b     & c     & d       & e         & f     &     &     &    \\
-      net-to-vtx offsets     & 0     & 3     & 5     & 8       & 12        & 15    & 18  &     &    \\
-      net-to-vtx adjacencies & 0,1,2 & 1,2   & 1,3,4 & 2,4,5,7 & 3,4,6     & 4,6,7 &     &     &   
-    \end{tabular}
-  \end{table}
-  }
-\end{frame}
-
 \section{Comparison to ParMA}
-
 \begin{frame}
-  \frametitle{Comparison To Parma}
-  Will have to fly through these slides.
+  \frametitle{}
+  \center \huge{Comparison to ParMA}
 \end{frame}
 
 \begin{frame}
@@ -515,8 +340,11 @@ Rensselaer Polytechnic Institute
   \item For this we assume the degrees of freedom are associated with mesh vertices.
   \end{itemize}
   \bigskip
-  To partition for this, both balance mesh vertices followed by elements with a target imbalance of 1.05. \\
-  
+  To partition for this, both balance mesh vertices followed by elements with a
+  target imbalance of 1.05. \\
+  Imbalance(entity type $e$) = 
+  $maxWeight(e)_{\forall p_{i} \in P}$/$avgWeight(e)_{\forall p_{i} \in P}$ \\
+  (max part weight divided by the avg part weight) 
 \end{frame}
 
 \begin{frame}
@@ -569,13 +397,212 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{RunTime Comparison}
-  \textbf{Run multiple times and report results with error bars!}
   \begin{figure}
     \centering
     \includegraphics[width=.5\textwidth]{figures/time_v_cores.eps}
   \end{figure}
   Local ParMETIS creates the partition from 8Ki to 512Ki in 16 seconds followed by a PUMI migration that takes 131 seconds.
   
+\end{frame}
+
+\section{Improving Performance with Accelerators}
+\begin{frame}
+  \frametitle{}
+  \center \huge{Improving Performance with Accelerators}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Where is time spent in EnGPar?}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Migration...
+      \begin{itemize}
+        \item General implementation sends/receives vertices and their adjacent
+          (hyper)edges to/from any neighbor - communications on host
+        \item Each process rebuilds its hypergraph after communications complete
+      \end{itemize}
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.7\textwidth]{results/aero1Belm/migration.png}
+        \caption{LARGER FONT in FIGURE 1B elm mesh balanced on 128Ki, 256Ki, and 512Ki with EnGPar}
+      \end{figure}
+    \end{column}
+  \end{columns}
+
+  But doing the rebuild on the accelerator will be hard...
+  
+  First let's see if we can accelerate something easier; BFS on a
+  hypergraph.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Related Work on Accelerated BFS}
+  Lots of it - mostly focused on scale-free graphs and using many-core
+  and GPUs
+  \begin{itemize}
+    \item SlimSell - custom data structure for algebraic BFS (Hoefler)
+    \item Global and Local Manhattan Collapse - inner/frontier loop transformations to
+      improve load balance and reduce irregular memory access (Slota)
+    \item Merijn - runtime switching of graph structure and push/pull algorithm based
+      on front size and other factors (M. Verstraaten)
+      % Merijn ---> Meer-hang
+      % https://arxiv.org/pdf/1708.01159.pdf
+      % https://github.com/merijn/GPU-benchmarks
+% george's BFS references 
+%% [3] - S. Beamer, K. Asanovic, and D. Patterson, “Direction- ´
+%      optimizing breadth-first search,” in Proc. Int’l. Conf. for High
+%      Performance Computing, Networking, Storage and Analysis
+%      (SC), 2013.
+%% [7] F. Checconi and F. Petrini, “Traversing trillions of edges
+%      in real-time: Graph exploration on large-scale parallel machines,”
+%      in Proc. IEEE Int’l. Parallel and Distributed Proc.
+%      Symp. (IPDPS), 2014.
+%% [12] T. Gao, Y. Lu, B. Zhang, and G. Suo, “Using the Intel
+%      Many Integrated Core to accelerate graph traversal,” Sage
+%      Int’l. Journal of High Performance Computing Applications,
+%      vol. 28, no. 3, pp. 255–266, 2014.
+%% [16] S. Hong, S. K. Kim, T. Oguntebi, and K. Olukotun, “Accelerating
+%      CUDA graph algorithms at maximum warp,” in Proc.
+%      ACM SIGPLAN Symp. on Principles and Practice of Parallel
+%      Programming (PPoPP), 2011
+%% [17] S. Hong, T. Oguntebi, and K. Olukotun, “Efficient parallel
+%      graph exploration on multi-core CPU and GPU,” in Proc.
+%      Int’l. Conf. on Parallel Architectures and Compilation Techniques
+%      (PACT), 2011.
+%% [23] D. Merrill, M. Garland, and A. Grimshaw, “Scalable GPU
+%      graph traversal,” in Proc. ACM SIGPLAN Symp. on Principles
+%      and Practice of Parallel Programming (PPoPP), 2012.
+  \end{itemize}
+  Can we apply some of these approaches to a hyper multi-graph and run
+  effectively on manycore CPUs, GPUs, and FPGAs?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Architecture Review}
+  Manycore
+  \begin{itemize}
+    \item Tens of OOO cores with hardware level pipelining
+    \item $\sim$1 TFLOPs per processor/socket, possible$^{*}$ to get near
+      peak
+    \item Many effective programming models and languages; shared memory,
+      distributed, SHMEM, OpenMP, PThreads, MPI, etc.
+    \item Efficient use of available memory bandwidth often yields peak performance - 
+      supported by both data parallel and message passing models
+  \end{itemize}
+  GPU
+  \begin{itemize}
+    \item Many small cores organized into groups (warps) that run in lock-step
+    \item Multi TFLOPs per device, hard to get near peak
+    \item Many effective programming models and languages; OpenMP, CUDA, OpenCL,
+      OpenACC
+    \item Wide data parallelism yields maximum performance - requires memory
+      coalescing and minimal divergence
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Architecture Review (cont.)}
+  FPGA - \textbackslash gulp
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Reprogrammable device consisting of DSPs, multipliers, registers, hundreds of
+          thousands of logic elements
+        \item Multi TFLOPs per device, possible$^{*}$ to get near peak performance
+        \item Only supported high level language is OpenCL
+        \item Long pipelines yield highest performance - multiple streams
+          progressing through the long pipeline concurrently; data parallel can
+          also be effective
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fpga.png}
+        {\tiny https://www.altera.com/documentation/}
+      \end{figure}  
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{BFS}
+  Degree and diameter matters.
+  \begin{itemize}
+    \item Traversal of scale free graphs introduces additional
+      complexities $\rightarrow$ specific algoritms to balance degree disparity.
+    \item Traversal of low diameter graphs have larger frontiers and fewer
+      synchronizations.
+  \end{itemize}
+  The selected method depends on architecture and graph characteristics
+  \begin{itemize}
+    \item Manycore - serial and shared memory parallel vertex-based, edge-based, push (vertices
+      in the frontier push to next frontier), pull (all unvisited vertices check
+      to for inclusion in next frontier)
+    \item GPU - shared memory parallel versions of manycore procedures with data structure
+      optimizations for coalesing, algebraic methods
+    \item FPGA - all of the above... but sequential push procedure may be best if
+      pipeline dependencies and stalls (ii) can be minimized
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Our Approach}
+  We will focus on hypergraphs created from unstructured meshes
+  \begin{itemize}
+    \item Downward adjacencies have uniform degree! ... not so much for upward
+      adjacencies
+    \item Diameter greatly depends on the geometric model and the
+      partition - high quality parts are compact and have low diameter
+  \end{itemize}
+  Use a Sell-C-Sigma datastructure for coalesing 
+  \begin{itemize}
+    \item Need weights for vertices and edges - lose some savings but retain
+      improved vectorization
+  \end{itemize}
+  Use Local Manhattan Collapse to balance the traversal load across threads
+  \begin{itemize}
+    \item Will be needed for meshes with semi-structured boundary layers (tet
+      and wedge dominant with a handful of pyramids) and discrete event
+      simulation graphs
+  \end{itemize}
+  Quantifying progress
+  \begin{itemize}
+    \item Time to solution
+    \item GTEPS - billions of entities traversed per-second
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Algorithms}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Example}
+  Our current N-Graph data structure is two sets of compressed sparse row (CSR)
+  structures
+  \begin{figure}
+    \centering
+    \includegraphics[width=.4\textwidth]{figures/hypergraph.eps}
+  \end{figure}  
+  {\tiny
+  \begin{table}[]
+    \centering
+    \label{my-label}
+    \begin{tabular}{llllllllll}
+      vtx id                 & 0     & 1     & 2     & 3       & 4         & 5     & 6   & 7   &    \\
+      vtx-to-net offsets     & 0     & 1     & 4     & 7       & 9         & 14    & 15  & 17  & 19 \\
+      vtx-to-net adjacencies & a     & a,b,c & a,b,d & c,e     & b,c,d,e,f & d     & e,f & d,f &    \\
+      \hline
+      net id                 & a     & b     & c     & d       & e         & f     &     &     &    \\
+      net-to-vtx offsets     & 0     & 3     & 5     & 8       & 12        & 15    & 18  &     &    \\
+      net-to-vtx adjacencies & 0,1,2 & 1,2   & 1,3,4 & 2,4,5,7 & 3,4,6     & 4,6,7 &     &     &   
+    \end{tabular}
+  \end{table}
+  }
 \end{frame}
 
 \begin{frame}
@@ -596,8 +623,6 @@ Rensselaer Polytechnic Institute
   \item EnGPar maintains the mesh element imbalance at the tolerance.
   \item EnGPar runs around 33\% faster than ParMA.
   \end{itemize}
-  
-    
 \end{frame}
 
 \begin{frame}
@@ -628,9 +653,20 @@ Rensselaer Polytechnic Institute
       \bigskip
       \bigskip
       \bigskip
-      \large
-      Questions?
+      \huge
+      Questions?\\
+      \bigskip
+      \bigskip
+      \bigskip
     }
   \end{center}
+  \large
+  Acknowledgements:\\
+  \begin{itemize}
+    \item NSF - REWARD NUMBER
+    \item FASTMath - REWARD NUMBER
+    \item CEED ECP - system access
+    \item Argonne National Laboratory JLSE - Kazutomo Yoshii
+  \end{itemize}
 \end{frame}
 \end{document}
