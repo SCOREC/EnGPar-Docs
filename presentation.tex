@@ -578,52 +578,63 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Algorithms}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example}
-  Our current N-Graph data structure is two sets of compressed sparse row (CSR)
-  structures
+  The following variations of BFS were tested
+  \begin{itemize}
+    \item push - C++ serial push
+    \item pull - C++ serial `pull' style vtx$\rightarrow$hyperedge
+    \item csr - OpenCL parallel `pull' style vtx$\rightarrow$hyperedge using CSR data
+      structure
+    \item scg - OpenCL parallel `pull' style vtx$\rightarrow$hyperedge using
+      Sell-C-Sigma data structure
+    \item \texttt{*\_int} - use 4B int for adjacency and degree lists instead of 8B long
+    \item \texttt{*\_unroll} - unroll the loop over hyperedges
+  \end{itemize}
   \begin{figure}
     \centering
-    \includegraphics[width=.4\textwidth]{figures/hypergraph.eps}
-  \end{figure}  
-  {\tiny
-  \begin{table}[]
-    \centering
-    \label{my-label}
-    \begin{tabular}{llllllllll}
-      vtx id                 & 0     & 1     & 2     & 3       & 4         & 5     & 6   & 7   &    \\
-      vtx-to-net offsets     & 0     & 1     & 4     & 7       & 9         & 14    & 15  & 17  & 19 \\
-      vtx-to-net adjacencies & a     & a,b,c & a,b,d & c,e     & b,c,d,e,f & d     & e,f & d,f &    \\
-      \hline
-      net id                 & a     & b     & c     & d       & e         & f     &     &     &    \\
-      net-to-vtx offsets     & 0     & 3     & 5     & 8       & 12        & 15    & 18  &     &    \\
-      net-to-vtx adjacencies & 0,1,2 & 1,2   & 1,3,4 & 2,4,5,7 & 3,4,6     & 4,6,7 &     &     &   
-    \end{tabular}
-  \end{table}
-  }
+    \includegraphics[width=.6\textwidth]{figures/sellcsigma.png}\\
+    \small{Sell-C-Sigma data structure (Besta and Merending, et al.)}
+  \end{figure}
 \end{frame}
 
 \begin{frame}
   \frametitle{Test Hypergraphs}
-  Hypergraphs created from unstructured tet meshes: \\
+  Hypergraphs created from unstructured tet mesh of automotive part: \\
   mesh elements $\rightarrow$ graph vertices \\
   mesh vertices $\rightarrow$ hyperedges
-  \begin{table}[]
-    \centering
-    \label{my-label}
-    \begin{tabular}{lrrrr}
-      graph & vertices & hyperedges & bfs levels & max frontier  \\
-      67k   & 66433    & 15697      & 25         & 4432          \\
-      190k  & 192728   & 40052      & 40         & 7992          \\
-      400k  & 404613   & 88651      & 48         & 17316         \\
-      890k  & 890925   & 187380     & 70         & 26664         \\
-      1.6M  & 1580611  & 336215     & 82         & 45268         \\
-      13M   & 12831104 & 2499193    & 82         & 95798         \\
-      28M   & 27943315 & 5190006    & 210        &
-    \end{tabular}
-  \end{table}
+  \begin{columns}
+
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.6\textwidth]{figures/upright400k.png}\\
+        400k element mesh
+      \end{figure}
+    \end{column}
+
+    \begin{column}{0.55\textwidth}
+      \tiny
+      \begin{table}[]
+        \centering
+        \begin{tabular}{lrrrr}
+          graph & vertices & hyperedges & bfs levels & max frontier  \\
+          67k   & 66433    & 15697      & 25         & 4432          \\
+          190k  & 192728   & 40052      & 40         & 7992          \\
+          400k  & 404613   & 88651      & 48         & 17316         \\
+          890k  & 890925   & 187380     & 70         & 26664         \\
+          1.6M  & 1580611  & 336215     & 82         & 45268         \\
+          13M   & 12831104 & 2499193    & 82         & 95798         \\
+          28M   & 27943315 & 5190006    & 210        &
+        \end{tabular}\\
+        \small{Hypergraphs}
+      \end{table}
+      \begin{figure}
+        \vspace*{-.5cm}
+        \centering
+        \includegraphics[width=.85\textwidth]{results/frontsize/{scgopencl_chunk64_13M.frontsize}.png}
+      \end{figure}
+    \end{column}
+
+  \end{columns}
 \end{frame}
 
 \begin{frame}
@@ -632,8 +643,9 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item Includes data transfers, but not kernel JIT compilation
     \item The average of three runs is used for the comparison
-    \item Higher is better - e.g., scg\_int\_unroll is $\sim$five times faster than csr on 28M graph
-    \item scg\_int\_unroll is up to 11 times faster than serial push on Intel Xeon
+    \item \texttt{scg\_int\_unroll} is 4.78 times faster than csr on 28M graph and up to 
+      11 times faster than serial push on Intel Xeon (not shown); 33 GTEPS on 28M
+    \item Memory coalesing is critical; \texttt{csr\_int\_unroll/scg\_int\_unroll}
   \end{itemize}
   \begin{figure}
     \centering
@@ -654,11 +666,19 @@ Rensselaer Polytechnic Institute
   \item generalizing the diffusive load balancing algorithm for applications without an element-based unstructured mesh.
   \item improving the algorithm of key portions to improve overall runtime.
   \end{itemize}
-  The experiments show:
+  MPI tests show:
   \begin {itemize}
   \item EnGPar reduces the high mesh vertex imbalance from the 512Ki mesh from 1.53 to 1.13.
   \item EnGPar maintains the mesh element imbalance at the tolerance.
   \item EnGPar runs around 33\% faster than ParMA.
+  \end{itemize}
+  Initial acceleration tests indicate:
+  \begin {itemize}
+  \item Utilizing known degree of downward adjacencies enables
+    loop unrolling and improved load balance
+  \item Accelerating other EnGPar graph methods could provide significant performance
+    improvements $\rightarrow$ code rewrite
+  \item Untuned GPU kernel on FPGA is slower and uses more power than GPU...
   \end{itemize}
 \end{frame}
 
@@ -666,8 +686,7 @@ Rensselaer Polytechnic Institute
   \frametitle{Future Work}
   Expanding the capabilities of EnGPar:
   \begin{itemize}
-    \item Improve partitioning at very high part count.
-    \item Improve performance of the balancing procedures using accelerators.
+    \item Improve partitionin quality at very high part count
   \end{itemize}
   Acceleration
   \begin{itemize}
@@ -722,7 +741,7 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item Includes data transfers, but not kernel JIT compilation
     \item The average of three runs is used for the comparison
-    \item Higher is better - e.g., scg\_int\_unroll is $\sim$five times faster than csr on 28M graph
+    \item Higher is better
   \end{itemize}
   \begin{figure}
     \centering
@@ -745,8 +764,96 @@ Rensselaer Polytechnic Institute
   \end{itemize}
 \end{frame}
 
+\begin{frame}
+  \frametitle{Example of N-Graph CSR}
+  Our current N-Graph data structure is two sets of compressed sparse row (CSR)
+  structures
+  \begin{figure}
+    \centering
+    \includegraphics[width=.4\textwidth]{figures/hypergraph.eps}
+  \end{figure}  
+  {\tiny
+  \begin{table}[]
+    \centering
+    \label{my-label}
+    \begin{tabular}{llllllllll}
+      vtx id                 & 0     & 1     & 2     & 3       & 4         & 5     & 6   & 7   &    \\
+      vtx-to-net offsets     & 0     & 1     & 4     & 7       & 9         & 14    & 15  & 17  & 19 \\
+      vtx-to-net adjacencies & a     & a,b,c & a,b,d & c,e     & b,c,d,e,f & d     & e,f & d,f &    \\
+      \hline
+      net id                 & a     & b     & c     & d       & e         & f     &     &     &    \\
+      net-to-vtx offsets     & 0     & 3     & 5     & 8       & 12        & 15    & 18  &     &    \\
+      net-to-vtx adjacencies & 0,1,2 & 1,2   & 1,3,4 & 2,4,5,7 & 3,4,6     & 4,6,7 &     &     &   
+    \end{tabular}
+  \end{table}
+  }
+\end{frame}
+
+\begin{frame}{BFS SCG Kernel and Loop}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Kernel:
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/bfsScgKernelp1.png}
+      \end{figure}  
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \vspace*{-2cm}
+        \centering
+        \includegraphics[width=\textwidth]{figures/bfsScgKernelp2.png}
+      \end{figure}  
+      Loop:
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/kernelLoop.png}
+      \end{figure}  
+    \end{column}
+  \end{columns}
+\end{frame}
 
 
+\begin{frame}{Power Consumption scg\_int\_unroll}
+  \begin{table}[]
+    \centering
+    \begin{tabular}{lrrr}
+      device & 1080ti               & Arria 10             &               \\
+      graph & total power (W)      & total power (W)      & arria10/1080i \\
+      67k   & 1.17                 & 0.52                 & 0.45          \\
+      190k  & 1.59                 & 1.86                 & 1.17          \\
+      400k  & 1.68                 & 4.40                 & 2.61          \\
+      890k  & 3.46                 & 13.07                & 3.78          \\
+      1.6M  & 5.64                 & 26.48                & 4.69          \\
+      13M   & 60.50                & 488.22               & 8.07          \\
+      28M   & 151.32               & 1535.60              & 10.15
+    \end{tabular}
+  \end{table}
+  Based on GPU draw of 215W and FPGA draw of 30W\\
+  Measured with \texttt{nvidia-smi} and \texttt{aocl\_mmd\_getinfo}
+\end{frame}
+
+
+\begin{frame}{Run time}
+  \begin{table}[]
+    \small
+    \centering
+    \begin{tabular}{lrrrr}
+      device & i7           & 1080ti               & Arria 10             & i3                   \\
+      C &              & 64                   & 64                   & 64                   \\
+      graph & push bfs (s) & scg\_int\_unroll (s) & scg\_int\_unroll (s) & scg\_int\_unroll (s) \\
+      67k   & 0.011        & 0.005                & 0.017                & 0.013                \\
+      190k  & 0.037        & 0.007                & 0.062                & 0.069                \\
+      400k  & 0.076        & 0.008                & 0.147                & 0.150                \\
+      890k  & 0.169        & 0.016                & 0.436                & 0.530                \\
+      1.6M  & 0.292        & 0.026                & 0.883                & 1.196                \\
+      13M   & 2.535        & 0.281                & 16.274               & 22.727               \\
+      28M   & 5.639        & 0.704                & 51.187               & OOM                 
+    \end{tabular}
+  \end{table}
+  Includes data transfers, but not kernel JIT compilation\\
+  The average of three runs is used for the comparison
+\end{frame}
 
 \end{document}
 
