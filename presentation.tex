@@ -29,12 +29,12 @@
 \begin{document}
 
 \title[Load Balancing of Massively Parallel Graphs]
-{
+
 MS46 Architecture-Aware Graph Analytics Part II of II:
 
 \textbf{Dynamic Load Balancing of Massively Parallel Graphs for Scientific
 Computing on Many Core and Accelerator Based Systems}
-}
+
 \author[C. Smith]{Cameron W. Smith, Gerrett Diamond, George M. Slota, Mark S. Shephard}
 
 \institute[SCOREC]{
@@ -125,8 +125,6 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{N-graph}
-  %EnGPar utilizes an expanded multigraph structure called the N-graph.\\
-  %THIS IS TOO MUCH TEXT PROBABLY...
   The N-graph is a multigraph with two modes of operation: traditional or hypergraph.\\
   \smallskip
   The N-graph is defined as the following:
@@ -310,9 +308,8 @@ Rensselaer Polytechnic Institute
   \bigskip
   To partition for this, both balance mesh vertices followed by elements with a
   target imbalance of 1.05. \\
-  Imbalance(entity type $e$) = 
-  $maxWeight(e)_{\forall p_{i} \in P}$/$avgWeight(e)_{\forall p_{i} \in P}$ \\
-  (max part weight divided by the avg part weight) 
+  The imbalance of a given entity type (vtx, edge, face, or region) is defined as the 
+  max part weight divided by the avg part weight.
 \end{frame}
 
 \begin{frame}
@@ -344,13 +341,12 @@ Rensselaer Polytechnic Institute
   All experiments were run on the Mira BlueGene/Q system with one process per hardware thread.
 \end{frame}
 
-%More slides to go over the results in the paper
 \begin{frame}
   \frametitle{Mesh Vertex Imbalance}
-  %Figure showing the conversion from mesh to N-graph
   \begin{figure}
     \centering
-    \includegraphics[width=.8\textwidth]{figures/vimb_v_cores.eps}
+    \includegraphics[width=.8\textwidth]{figures/vimb_v_cores.eps}\\
+    We have more logic to port over to EnGPar from ParMA.
   \end{figure}  
 \end{frame}
 
@@ -367,10 +363,11 @@ Rensselaer Polytechnic Institute
   \frametitle{RunTime Comparison}
   \begin{figure}
     \centering
-    \includegraphics[width=.5\textwidth]{figures/time_v_cores.eps}
+    \includegraphics[width=.6\textwidth]{figures/time_v_cores.eps}
   \end{figure}
-  Local ParMETIS creates the partition from 8Ki to 512Ki in 16 seconds followed by a PUMI migration that takes 131 seconds.
-  
+  Local ParMETIS (embarrasingly parallel) creates the partition from 8Ki to 512Ki in 16
+  seconds, roughly the same amount of the time EnGPar spends to improve the mesh
+  (requires global and neighborhood communications).
 \end{frame}
 
 \section{Improving Performance with Accelerators}
@@ -394,16 +391,17 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=.7\textwidth]{results/aero1Belm/migration.png}
-        \caption{LARGER FONT in FIGURE 1B elm mesh balanced on 128Ki, 256Ki, and 512Ki with EnGPar}
+        \includegraphics[width=.8\textwidth]{results/aero1Belm/migration.png}\\
+        \tiny 1B elm mesh balanced on 128Ki, 256Ki, and 512Ki with EnGPar
       \end{figure}
     \end{column}
   \end{columns}
-
-  But doing the rebuild on the accelerator will be hard...
+  \bigskip
+  We want to improve the performance of these processess - that is a difficult
+  task to start with.
   
-  First let's see if we can accelerate something easier; BFS on a
-  hypergraph.
+  First let's see if we can accelerate something easier; breadth first
+  traversals of the hypergraph that we for deciding which vertices to migrate.
 \end{frame}
 
 \begin{frame}
@@ -452,10 +450,10 @@ Rensselaer Polytechnic Institute
   \frametitle{Architecture Review}
   Manycore
   \begin{itemize}
-    \item Tens of OOO cores with hardware level pipelining
+    \item Tens of out-of-order cores with hardware level pipelining
     \item $\sim$1 TFLOPs per processor/socket, possible$^{*}$ to get near
       peak
-    \item Many effective programming models and languages; shared memory,
+    \item Programming models and languages; shared memory,
       distributed, SHMEM, OpenMP, PThreads, MPI, etc.
     \item Efficient use of available memory bandwidth often yields peak performance - 
       supported by both data parallel and message passing models
@@ -464,7 +462,7 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item Many small cores organized into groups (warps) that run in lock-step
     \item Multi TFLOPs per device, hard to get near peak
-    \item Many effective programming models and languages; OpenMP, CUDA, OpenCL,
+    \item Programming models and languages; OpenMP, CUDA, OpenCL,
       OpenACC
     \item Wide data parallelism yields maximum performance - requires memory
       coalescing and minimal divergence
@@ -540,7 +538,6 @@ Rensselaer Polytechnic Institute
   Quantifying progress
   \begin{itemize}
     \item Time to solution
-    \item GTEPS - billions of entities traversed per-second
   \end{itemize}
 \end{frame}
 
@@ -555,7 +552,8 @@ Rensselaer Polytechnic Institute
     \item scg - OpenCL parallel `pull' style vtx$\rightarrow$hyperedge using
       Sell-C-Sigma data structure
     \item \texttt{*\_int} - use 4B int for adjacency and degree lists instead of 8B long
-    \item \texttt{*\_unroll} - unroll the loop over hyperedges
+    \item \texttt{*\_unroll} - unroll the loop over hyperedges adjacent to a
+      vertex
   \end{itemize}
   \begin{figure}
     \centering
@@ -606,29 +604,23 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Results}
-  Timing comparison of different OpenCL kernels on NVIDIA 1080ti
+  \frametitle{BFS Results}
+  Timing comparison of different OpenCL BFS kernels on NVIDIA 1080ti
   \begin{itemize}
-    \item Includes data transfers, but not kernel JIT compilation
-    \item The average of three runs is used for the comparison
-    \item \texttt{scg\_int\_unroll} is 4.78 times faster than csr on 28M graph and up to 
-      11 times faster than serial push on Intel Xeon (not shown); 33 GTEPS on 28M
-    \item Memory coalesing is critical; \texttt{csr\_int\_unroll/scg\_int\_unroll}
+    \item Includes data transfers, but not kernel JIT compilation; average of
+      three runs shown
   \end{itemize}
+  \texttt{scg\_int\_unroll} is 4.78 times faster than csr on 28M graph and up to 
+      11 times faster than serial push on Intel Xeon (not shown) \\
+  Memory coalescing is critical; \texttt{csr\_int\_unroll/scg\_int\_unroll} \\
   \begin{figure}
     \centering
-    \includegraphics[width=.7\textwidth]{results/bfsNoPush.png}
+    \includegraphics[width=.65\textwidth]{results/bfsNoPush.png}
   \end{figure}  
 \end{frame}
 
-
 \begin{frame}
   \frametitle{Closing Remarks}
-  %Diffusive load balancing techniques are:
-  %\begin{itemize}
-  %\item fast neighborhood based partitioning.
-  %\item used to improve the partition quality of partitions created by graph and geometric methods.
-  %\end{itemize}
   EnGPar builds off of ParMA by:
   \begin {itemize}
   \item generalizing the diffusive load balancing algorithm for applications without an element-based unstructured mesh.
@@ -654,14 +646,13 @@ Rensselaer Polytechnic Institute
   \frametitle{Future Work}
   Expanding the capabilities of EnGPar:
   \begin{itemize}
-    \item Improve partitionin quality at very high part count
+    \item Continue improving partition quality when parts are small (i.e., strong scaling)
   \end{itemize}
   Acceleration
   \begin{itemize}
-    \item Migration - host communicates, device rebuilds (hyper)graph
-    \item FPGA - tune data parallel kernel, implement pipelined kernel
-    \item Test on bigger graphs - from meshes and discrete event simulation
-    \item Runtime switching - execute BFS kernel on device when frontier is large (Merijn)
+    \item Support migration - host communicates, device rebuilds (hyper)graph
+    \item Tune data parallel kernel, implement pipelined kernel
+    \item Test on bigger graphs from meshes and discrete event simulation
   \end{itemize}
   Applying EnGPar to other applications:
   \begin{itemize}
@@ -690,10 +681,10 @@ Rensselaer Polytechnic Institute
   \large
   Acknowledgements:\\
   \begin{itemize}
-    \item NSF - REWARD NUMBER
-    \item FASTMath - REWARD NUMBER
-    \item CEED ECP - system access
-    \item Argonne National Laboratory JLSE - Kazutomo Yoshii
+    \item NSF SI2-SSE: Fast Dynamic Load Balancing Tools for Extreme Scale Systems
+    \item DOE FASTMath SCIDAC Institute
+    \item CEED ECP
+    \item Argonne National Laboratory - Kazutomo Yoshii
   \end{itemize}
 \end{frame}
 
@@ -723,7 +714,7 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item Isn't supported on Power9+V100 deployments yet - can't build kernels
     \item OCLgrind was the only useful debugging tool I could find (github.com/jrprice/Oclgrind)
-    \item Shiny (not so) new language features (team collectives) are not supported by devices I tested on
+    \item Shiny (not so) new language features (e.g., team collectives) are not supported by devices I tested on
   \end{itemize}
   FPGAs
   \begin{itemize}

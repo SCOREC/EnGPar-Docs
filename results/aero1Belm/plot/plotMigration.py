@@ -43,6 +43,7 @@ class processCount:
         self.data.append(int(p))
 
 
+plt.style.use(['paper.mplstyle'])
 #if len(sys.argv) is not 3:
 #    print('Usage: ', sys.argv[0], ' <log file> <log file>')
 #    sys.exit()
@@ -73,4 +74,5 @@ print('df:', df)
 ax = df.plot.bar(stacked=True)
 ax.set_xlabel('processes')
 ax.set_ylabel('time (s)')
+ax.legend(fontsize=24)
 plt.show()
