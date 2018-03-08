@@ -262,8 +262,8 @@ Rensselaer Polytechnic Institute
   \frametitle{Queue}
   \begin{figure}
     \centering
-    \includegraphics[width=.4\textwidth]{figures/2dDistance.png}
-    \includegraphics[width=.42\textwidth]{figures/2dTreeDepth.png}
+    \includegraphics[width=.4\textwidth]{figures/2dTreeDepth.png}
+    \includegraphics[width=.41\textwidth]{figures/2dDistance.png}
   \end{figure}
       (left) The distance from each vertex to the boundary and (right) the
     distance from the core vertex (marked with a zero near the
@@ -386,7 +386,7 @@ Rensselaer Polytechnic Institute
   \frametitle{Where is time currently spent in EnGPar?}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      Migration is 50\% of total time at 512Ki, 44\% at 128Ki, and 48\% at 256Ki
+      Migration is 50\% of total time at 512Ki, 48\% at 256Ki, and 44\% at 128Ki
       \begin{itemize}
         \item General implementation sends/receives vertices and their adjacent
           (hyper)edges to/from any neighbor - communications on host
@@ -408,7 +408,7 @@ Rensselaer Polytechnic Institute
   
   First let's see if we can accelerate something easier; breadth first
   traversals of the hypergraph that we use to decide which vertices to
-  migrate
+  migrate.
 \end{frame}
 
 \begin{frame}
@@ -467,7 +467,7 @@ Rensselaer Polytechnic Institute
   \end{itemize}
   GPU
   \begin{itemize}
-    \item Many small cores organized into groups (warps) that run in lock-step
+    \item Many small cores organized into groups that run in lock-step
     \item Multi TFLOPs per device, hard to get near peak
     \item Programming models and languages: OpenMP, CUDA, OpenCL,
       OpenACC
@@ -531,16 +531,12 @@ Rensselaer Polytechnic Institute
     \item Diameter greatly depends on the geometric model and the
       partition - high quality parts are compact and have low diameter
   \end{itemize}
-  Use a Sell-C-Sigma datastructure for coalesing 
+  Use Sell-C-Sigma datastructure for coalesing 
   \begin{itemize}
     \item Need weights for vertices and edges - lose some savings but retain
       improved vectorization
-  \end{itemize}
-  Use Local Manhattan Collapse to balance the traversal load across threads
-  \begin{itemize}
-    \item Will be needed for meshes with semi-structured boundary layers (tet
-      and wedge dominant with a handful of pyramids) and discrete event
-      simulation graphs
+    \item Sorting (sigma) will be needed for meshes with semi-structured boundary layers (tet
+      and wedge dominant with a handful of pyramids) and discrete event simulation graphs
   \end{itemize}
   Quantifying progress
   \begin{itemize}
@@ -644,8 +640,9 @@ Rensselaer Polytechnic Institute
   \item Utilizing known degree of downward adjacencies enables
     loop unrolling and improved load balance
   \item Accelerating other EnGPar graph methods could provide significant performance
-    improvements $\rightarrow$ code rewrite
-  \item Untuned GPU kernel on FPGA is slower and uses more power than GPU...
+    improvements $\rightarrow$ code rewrite, adjust abstraction layers
+  \item GPU kernel on FPGA (Arria 10) is slower and uses more power than GPU... low
+    hanging fruit remains for pipelined kernel
   \end{itemize}
 \end{frame}
 
@@ -655,10 +652,10 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item Continue improving partition quality when parts are small (i.e., strong scaling)
   \end{itemize}
-  Acceleration
+  Acceleration:
   \begin{itemize}
     \item Support migration - host communicates, device rebuilds (hyper)graph
-    \item Tune data parallel kernel, implement pipelined kernel
+    \item Focus on pipelined kernel implementation
     \item Test on bigger graphs from meshes and discrete event simulation
   \end{itemize}
   Applying EnGPar to other applications:
