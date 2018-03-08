@@ -262,9 +262,12 @@ Rensselaer Polytechnic Institute
   \frametitle{Queue}
   \begin{figure}
     \centering
-    \includegraphics[width=.7\textwidth]{figures/Disconnected.png}
-    \caption{The queue computation for two disconnected components in Part 1. The centers of each component are marked in red. The queue for Part 1 is C,D,A,B}
+    \includegraphics[width=.4\textwidth]{figures/2dDistance.png}
+    \includegraphics[width=.42\textwidth]{figures/2dTreeDepth.png}
   \end{figure}
+      (left) The distance from each vertex to the boundary and (right) the
+    distance from the core vertex (marked with a zero near the
+    bottom left corner).
 \end{frame}
 
 \begin{frame}
@@ -304,10 +307,10 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
   \item Scalability of matrix formation is sensitive to mesh element imbalance.
   \item Linear algebra routines are sensitive to the imbalance of degrees of freedom.
-  \item For this we assume the degrees of freedom are associated with mesh vertices.
+  \item Degrees of freedom are associated with mesh vertices.
   \end{itemize}
   \bigskip
-  To partition for this, both balance mesh vertices followed by elements with a
+  ParMA and EnGPar first balance mesh vertices then elements;
   target imbalance of 1.05. \\
   The imbalance of a given entity type (vtx, edge, face, or region) is defined as the 
   max part weight divided by the avg part weight.
@@ -315,10 +318,11 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Problem Setup}
-  %Describe the mesh, system run on, initial partition etc.
   \medskip
   Tests were run on a billion element mesh. \\
-  \medskip
+  All experiments were run on the Mira BlueGene/Q system with one process per
+  hardware thread. \\
+  \smallskip
   Initial partitions are built using:
   \begin{itemize}
   \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts.
@@ -339,7 +343,6 @@ Rensselaer Polytechnic Institute
       \hline
     \end{tabular}
   \end{table}
-  All experiments were run on the Mira BlueGene/Q system with one process per hardware thread.
 \end{frame}
 
 \begin{frame}
@@ -347,7 +350,7 @@ Rensselaer Polytechnic Institute
   \begin{figure}
     \centering
     \includegraphics[width=.8\textwidth]{figures/vimb_v_cores.eps}\\
-    We have more logic to port over to EnGPar from ParMA.
+    EnGPar does not reach the imbalance target yet - more logic to port over from ParMA.
   \end{figure}  
 \end{frame}
 
@@ -366,6 +369,8 @@ Rensselaer Polytechnic Institute
     \centering
     \includegraphics[width=.6\textwidth]{figures/time_v_cores.eps}
   \end{figure}
+  Given a tolerance they can both reach.\\
+
   Local ParMETIS (embarrassingly parallel) creates the partition from 8Ki to 512Ki in 16
   seconds, roughly the same amount of the time EnGPar spends to improve the mesh
   (requires global and neighborhood communications).
@@ -378,10 +383,10 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Where is time spent in EnGPar?}
+  \frametitle{Where is time currently spent in EnGPar?}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      Migration...
+      Migration is 50\% of total time at 512Ki, 44\% at 128Ki, and 48\% at 256Ki
       \begin{itemize}
         \item General implementation sends/receives vertices and their adjacent
           (hyper)edges to/from any neighbor - communications on host
@@ -402,7 +407,8 @@ Rensselaer Polytechnic Institute
   task to start with.
   
   First let's see if we can accelerate something easier; breadth first
-  traversals of the hypergraph that we use to decide which vertices to migrate.
+  traversals of the hypergraph that we use to decide which vertices to
+  migrate
 \end{frame}
 
 \begin{frame}
@@ -452,9 +458,9 @@ Rensselaer Polytechnic Institute
   Manycore
   \begin{itemize}
     \item Tens of out-of-order cores with hardware level pipelining
-    \item $\sim$1 TFLOPs per processor/socket, possible$^{*}$ to get near
+    \item 1-2 TFLOPs per processor/socket, possible$^{*}$ to get near
       peak
-    \item Programming models and languages; shared memory,
+    \item Programming models and languages: shared memory,
       distributed, SHMEM, OpenMP, PThreads, MPI, etc.
     \item Efficient use of available memory bandwidth often yields peak performance - 
       supported by both data parallel and message passing models
@@ -463,7 +469,7 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item Many small cores organized into groups (warps) that run in lock-step
     \item Multi TFLOPs per device, hard to get near peak
-    \item Programming models and languages; OpenMP, CUDA, OpenCL,
+    \item Programming models and languages: OpenMP, CUDA, OpenCL,
       OpenACC
     \item Wide data parallelism yields maximum performance - requires memory
       coalescing and minimal divergence
@@ -479,7 +485,7 @@ Rensselaer Polytechnic Institute
         \item Reprogrammable device consisting of DSPs, multipliers, registers, hundreds of
           thousands of logic elements
         \item Multi TFLOPs per device, possible$^{*}$ to get near peak performance
-        \item Only supported high level language is OpenCL
+        \item Programming models and languages: OpenCL, initial OpenMP support
         \item Long pipelines yield highest performance - multiple streams
           progressing through the long pipeline concurrently; data parallel can
           also be effective
@@ -511,8 +517,8 @@ Rensselaer Polytechnic Institute
       to for inclusion in next frontier)
     \item GPU - shared memory parallel versions of manycore procedures with data structure
       optimizations for coalesing, algebraic methods
-    \item FPGA - all of the above... but sequential push procedure may be best if
-      pipeline dependencies and stalls (ii) can be minimized
+    \item FPGA - all of the above... but pipelined push procedure may be best if
+      pipeline loop and stalls (ii) can be minimized
   \end{itemize}
 \end{frame}
 
@@ -538,7 +544,7 @@ Rensselaer Polytechnic Institute
   \end{itemize}
   Quantifying progress
   \begin{itemize}
-    \item Time to solution
+    \item Time to solution, energy usage, and GTEPS
   \end{itemize}
 \end{frame}
 
