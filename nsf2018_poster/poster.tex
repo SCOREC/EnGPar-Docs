@@ -17,6 +17,9 @@
 \usepackage{background}
 \usepackage{blindtext}
 \usepackage{xcolor}
+\usepackage{enumitem}
+\newlist{subquestion}{enumerate}{1}
+\setlist[subquestion,1]{label=(\alph*)}
 
 %For example blocks
 \setbeamercolor{block title example}{fg=red,bg=orange}
@@ -35,49 +38,86 @@
 \begin{document}
 \font\titlefont=cmr12 at 80pt
 \title[Load Balancing of Unstructured Meshes]
-{\titlefont
-Dynamic Load Balancing of \\[0.3cm]Massively Parallel Unstructured Meshes
-}
-\font\authorfont=cmr12 at 40pt
-\author[G. Diamond]{\authorfont
-  Gerrett Diamond, Cameron W. Smith, Mark S. Shephard\\
-  Rensselaer Polytechnic Institute, USA}
-\date{}
-%----------- titlepage ----------------------------------------------%
+      {\titlefont
+        Dynamic Load Balancing of \\[0.3cm]Massively Parallel Unstructured Meshes
+      }
+      \font\authorfont=cmr12 at 40pt
+      \author[G. Diamond]{\authorfont
+        Gerrett Diamond, Cameron W. Smith, Mark S. Shephard\\
+        Rensselaer Polytechnic Institute, USA}
+      \date{}
+      %----------- titlepage ----------------------------------------------%
 
-\begin{textblock}{15.8}(0.05,0.1)
-\titlepage
-\begin{textblock}{14}(1,-0.2)
-  \begin{block}{}
-    Abstract here
-  \end{block}
-\end{textblock}
-\end{textblock}
-\begin{textblock}{15.6}(0.2,4)
-  \begin{textblock}{5}(0,0)
-    \begin{block}{EnGPar: Diffusive Graph Partitioning}
-      
-    \end{block}
-    \begin{block}{Discrete Event Simulations}
+      \begin{textblock}{15.8}(0.05,0.1)
+        \titlepage
+        \begin{textblock}{14}(1,-0.2)
+          \begin{block}{}
+            Turn this into a paragraph
+            \begin{itemize}
+            \item A partitioning tool to complement existing multi-level and geometric methods.
+            \item Provides a diffusive load balancing algorithm for partition improvement and supports multi-criteria partitioning.
+            \item Utilizes a specialized multigraph structure to represent relation based data, called the N-graph.
+            \item Implemented to support efficient data parallel operations on accelerators and vector units in many core processors.
+            \end{itemize}
+          \end{block}
+        \end{textblock}
+      \end{textblock}
 
-    \end{block}
-  \end{textblock}
-  \begin{textblock}{5}(5.3,0)
-    \begin{block}{Finite Element Analysis}
-      
-    \end{block}
-    \begin{block}{Mira Runs}
+      \begin{textblock}{15.6}(0.2,4)
+        \begin{textblock}{5}(0,0)
+          \begin{block}{EnGPar: Diffusive Graph Partitioning}
+            The N-graph is defined as the following:
+            \begin{itemize}
+            \item A set of vertices $V$ representing the atomic units of work.
+            \item If using the traditional graph mode:
+              \begin{itemize}
+              \item $N$ sets of edges $E_0,...,E_{n-1}$ for each type of relation.
+              \item Each edge connects two vertices $u,v \in V$.
+              \end{itemize}
+            \item If using the hypergraph mode:
+              \begin{itemize}
+              \item $N$ sets of hyperedges $H_0,...,H_{n-1}$ for each type of relation.
+              \item $N$ sets of pins $P_0,...,P_{n-1}$ corresponding to each set of hyperedges.
+              \item Each pin in $P_i$ connects a vertex, $v \in V$, to a hyperedge $h \in H_i$.
+              \end{itemize}
+            \end{itemize}
+            Advantages
+            \begin{itemize}
+            \item Multiple edge types allow for partitioning of multiple criteria simultaneously.
+            \item Easy to use with diffusive procedures - compliments other partition methods via incremental refinements.
+            \end{itemize}
+            Diffusive Approach
+            \begin{itemize}
+            \item Iteratively migrate small sets of vertices to (1) reduce the peak imbalance and (2) reduce the number of (hyper)edges that are cut between part boundaries.
+            \end{itemize}
+            Diffusive Iteration Stages
+            \begin{itemize}
+            \item Weight Computation - compute weights and exchange with peers.
+            \item Targeting - determined how much weight each peer can accept.
+            \item Selection - select vertices for migration.
+            \item Migration - move elements to peers.
+            \end{itemize}
+          \end{block}
+          \begin{block}{Discrete Event Simulations}
 
-    \end{block}
-  \end{textblock}
-  \begin{textblock}{5}(10.6,0)
-    \begin{block}{Overset Meshes}
-      
-    \end{block}
-    \begin{block}{FUN3D}
+          \end{block}
+        \end{textblock}
+        \begin{textblock}{5}(5.3,0)
+          \begin{block}{Finite Element Analysis}
+            
+          \end{block}
+          \begin{block}{Mira Runs}
 
-    \end{block}
-  \end{textblock}
-\end{textblock}
+          \end{block}
+        \end{textblock}
+        \begin{textblock}{5}(10.6,0)
+          \begin{block}{Overset Meshes}
+            
+          \end{block}
+          \begin{block}{FUN3D}
+
+          \end{block}
+        \end{textblock}
+      \end{textblock}
 
 \end{document}
