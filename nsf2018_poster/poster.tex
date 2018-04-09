@@ -1,0 +1,83 @@
+% small.tex
+\documentclass{beamer}
+\usepackage[orientation=landscape, size = a0, scale=1.4]{beamerposter}
+\usepackage[relative,overlay]{textpos}
+\usetheme{Boadilla}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+%algorithms and pseudo code
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{numprint}
+\usepackage{subcaption}
+\usepackage{media9}
+\usepackage{bibentry}
+\usepackage[justification=centering]{caption}
+\usepackage{pagecolor}
+\usepackage{background}
+\usepackage{blindtext}
+\usepackage{xcolor}
+
+%For example blocks
+\setbeamercolor{block title example}{fg=red,bg=orange}
+\setbeamercolor{block body example}{fg=cyan,bg=yellow}
+
+\nobibliography*
+
+%\setbeamertemplate{bibliography item}[text]
+%\setbeamertemplate{author in head/foot}{\insertshortauthor}
+%\setbeamertemplate{navigation symbols}{}
+
+\newcommand{\lenitem}[2][.6\linewidth]{\parbox[t]{#1}{\strut #2\strut}}
+
+\setbeamercolor{background canvas}{bg=cyan!50}
+
+\begin{document}
+\font\titlefont=cmr12 at 80pt
+\title[Load Balancing of Unstructured Meshes]
+{\titlefont
+Dynamic Load Balancing of \\[0.3cm]Massively Parallel Unstructured Meshes
+}
+\font\authorfont=cmr12 at 40pt
+\author[G. Diamond]{\authorfont
+  Gerrett Diamond, Cameron W. Smith, Mark S. Shephard\\
+  Rensselaer Polytechnic Institute, USA}
+\date{}
+%----------- titlepage ----------------------------------------------%
+
+\begin{textblock}{15.8}(0.05,0.1)
+\titlepage
+\begin{textblock}{14}(1,-0.2)
+  \begin{block}{}
+    Abstract here
+  \end{block}
+\end{textblock}
+\end{textblock}
+\begin{textblock}{15.6}(0.2,4)
+  \begin{textblock}{5}(0,0)
+    \begin{block}{EnGPar: Diffusive Graph Partitioning}
+      
+    \end{block}
+    \begin{block}{Discrete Event Simulations}
+
+    \end{block}
+  \end{textblock}
+  \begin{textblock}{5}(5.3,0)
+    \begin{block}{Finite Element Analysis}
+      
+    \end{block}
+    \begin{block}{Mira Runs}
+
+    \end{block}
+  \end{textblock}
+  \begin{textblock}{5}(10.6,0)
+    \begin{block}{Overset Meshes}
+      
+    \end{block}
+    \begin{block}{FUN3D}
+
+    \end{block}
+  \end{textblock}
+\end{textblock}
+
+\end{document}
