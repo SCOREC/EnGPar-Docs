@@ -53,7 +53,7 @@
     \begin{block}{}
       \begin{center}
       \abstractfont
-      Parallel applications with complicated data structures and communicative patterns require partitioning algorithms that optimize specific metrics. While most partitioning methods can create partitions of a decent quality, further optimizations can be made for applications using diffusive load balancing techniques. EnGPar complements exisiting multi-level and geometric partitioning methods that allows multi-criteria partition improvement. EnGPar utilizes a specialized multigraph, called the N-graph, to represent relation based data and perform performant load balancing for a range of data formats.
+      Parallel applications with complicated data structures and communicative patterns require partitioning algorithms that optimize specific metrics. While most partitioning methods can create partitions of a decent quality, further optimizations can be made for applications using diffusive load balancing techniques. EnGPar complements existing multi-level and geometric partitioning methods that allows multi-criteria partition improvement. EnGPar utilizes a specialized multi-graph, called the N-graph, to represent relation based data and perform performant load balancing for a range of data formats.
               
       \end{center}
     \end{block}
@@ -102,7 +102,7 @@
       CODES is an application that simulates running an MPI application on a simulated hardware architecture. The application uses an trace of a previous run of the application and then maps it to the simulated architecture. This results in two relation based structures:
       \begin{itemize}
       \item The architecture graph consisting of compute nodes and network nodes.
-      \item The relation between mpi processes from the application trace.
+      \item The relation between MPI processes from the application trace.
       \end{itemize}
       The N-graph is constructed based on the application trace where:
       \begin{itemize}
@@ -145,7 +145,7 @@
   \end{textblock}
   \begin{textblock}{5}(10.6,0)
     \begin{block}{Overset Grids}
-      Some unstructured mesh applications are accompined with an overset grid.
+      Some unstructured mesh applications are accompanied with an overset grid.
       %More info about the overset grid applications
 
       %List assumptions
@@ -184,7 +184,7 @@
       \item create a pin for each mesh element surrounding the mesh vertex.
       \end{itemize}
 
-      The ghost layer required can be treated similarly by accounting for the weight in the diffusive iterations (supply reference for previous work on ghost balancing). Furhtermore the overset grid can be accounted for in a similar way as listed above.
+      The ghost layer can be treated by accounting for the weight of the ghosted vertices in the diffusive iterations (supply reference for previous work on ghost balancing). Furthermore the overset grid can be accounted for in a similar way as listed above.
 
       
     \end{block}
