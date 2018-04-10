@@ -104,12 +104,14 @@
         \end{textblock}
         \begin{textblock}{5}(5.3,0)
           \begin{block}{Finite Element Analysis: Unstructured Meshes}
+            %FEM description
             Applications using unstructured meshes exhibit several partitioning problems including
             \begin{itemize}
             \item Multiple coupled entity dimensions to partition.
             \item Complex communication patterns to be minimized.
             \end{itemize}
             Standard linear finite element analysis problems require that mesh vertices be balanced as well as mesh elements to get the best performance.\\
+            %N-graph construction
             To properly balance, we construct the N-graph where:
             \begin{itemize}
               \item mesh elements are represented as graph vertices,
@@ -117,17 +119,35 @@
               \item pins are created from each graph vertex to hyperedge where the mesh element is bounded by the mesh vertex.
             \end{itemize}
             See Figure (Add mesh$->$ngraph image).
+
+            %Add higher order notes if there is room
           \end{block}
           \begin{block}{Mira Runs}
             
           \end{block}
         \end{textblock}
         \begin{textblock}{5}(10.6,0)
-          \begin{block}{Overset Meshes}
+          \begin{block}{Overset Grids}
+            Some unstructured mesh applications are accompined with an overset grid.
+            %More info about the overset grid applications
+
+            %List assumptions
+            %example image of the overset grid + mesh
+            
+            %Describe the construction of the N-graph
+            To construct the N-graph for these applications we:
+            \begin{itemize}
+            \item construct the vertices and hyperedges on the unstructured mesh any way for the application,
+            \item add vertices for each element in the overset grid.
+            \item add a second edge type that connects the graph vertices from the unstructured mesh to the graph vertices from the grid when the elements overlap.
+            \end{itemize}
+
+            %Add picture showing the conversion
             
           \end{block}
-          \begin{block}{FUN3D}
-
+          
+          \begin{block}{FUN3D: Fluid dynamics simulations}
+            
           \end{block}
         \end{textblock}
       \end{textblock}
