@@ -47,18 +47,16 @@
         Rensselaer Polytechnic Institute, USA}
       \date{}
       %----------- titlepage ----------------------------------------------%
-
+\font\abstractfont=cmr12 at 40pt
       \begin{textblock}{15.8}(0.05,0.1)
         \titlepage
         \begin{textblock}{14}(1,-0.2)
           \begin{block}{}
-            Turn this into a paragraph
-            \begin{itemize}
-            \item A partitioning tool to complement existing multi-level and geometric methods.
-            \item Provides a diffusive load balancing algorithm for partition improvement and supports multi-criteria partitioning.
-            \item Utilizes a specialized multigraph structure to represent relation based data, called the N-graph.
-            \item Implemented to support efficient data parallel operations on accelerators and vector units in many core processors.
-            \end{itemize}
+            \begin{center}
+              \abstractfont
+              Parallel applications with complicated data structures and communicative patterns require partitioning algorithms that optimize specific metrics. While most partitioning methods can create partitions of a decent quality, further optimizations can be made for applications using diffusive load balancing techniques. EnGPar complements exisiting multi-level and geometric partitioning methods that allows multi-criteria partition improvement. EnGPar utilizes a specialized multigraph, called the N-graph, to represent relation based data and perform performant load balancing for a range of data formats.
+              
+            \end{center}
           \end{block}
         \end{textblock}
       \end{textblock}
