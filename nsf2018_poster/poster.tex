@@ -38,135 +38,134 @@
 \begin{document}
 \font\titlefont=cmr12 at 80pt
 \title[Load Balancing of Unstructured Meshes]
-      {\titlefont
-        Dynamic Load Balancing of \\[0.3cm]Massively Parallel Unstructured Meshes
-      }
-      \font\authorfont=cmr12 at 40pt
-      \author[G. Diamond]{\authorfont
-        Gerrett Diamond, Cameron W. Smith, Mark S. Shephard\\
-        Rensselaer Polytechnic Institute, USA}
-      \date{}
-      %----------- titlepage ----------------------------------------------%
+{\titlefont
+  Dynamic Load Balancing of \\[0.3cm]Massively Parallel Unstructured Meshes
+}
+\font\authorfont=cmr12 at 40pt
+\author[G. Diamond]{\authorfont
+  Gerrett Diamond, Cameron W. Smith, Mark S. Shephard\\
+  Rensselaer Polytechnic Institute, USA}
+\date{}
 \font\abstractfont=cmr12 at 40pt
-      \begin{textblock}{15.8}(0.05,0.1)
-        \titlepage
-        \begin{textblock}{14}(1,-0.2)
-          \begin{block}{}
-            \begin{center}
-              \abstractfont
-              Parallel applications with complicated data structures and communicative patterns require partitioning algorithms that optimize specific metrics. While most partitioning methods can create partitions of a decent quality, further optimizations can be made for applications using diffusive load balancing techniques. EnGPar complements exisiting multi-level and geometric partitioning methods that allows multi-criteria partition improvement. EnGPar utilizes a specialized multigraph, called the N-graph, to represent relation based data and perform performant load balancing for a range of data formats.
+\begin{textblock}{15.8}(0.05,0.1)
+  \titlepage
+  \begin{textblock}{14}(1,-0.2)
+    \begin{block}{}
+      \begin{center}
+      \abstractfont
+      Parallel applications with complicated data structures and communicative patterns require partitioning algorithms that optimize specific metrics. While most partitioning methods can create partitions of a decent quality, further optimizations can be made for applications using diffusive load balancing techniques. EnGPar complements exisiting multi-level and geometric partitioning methods that allows multi-criteria partition improvement. EnGPar utilizes a specialized multigraph, called the N-graph, to represent relation based data and perform performant load balancing for a range of data formats.
               
-            \end{center}
-          \end{block}
-        \end{textblock}
-      \end{textblock}
+      \end{center}
+    \end{block}
+  \end{textblock}
+\end{textblock}
 
-      \begin{textblock}{15.6}(0.2,4)
-        \begin{textblock}{5}(0,0)
-          \begin{block}{EnGPar: Diffusive Graph Partitioning}
-            The N-graph is defined as the following:
-            \begin{itemize}
-            \item A set of vertices $V$ representing the atomic units of work.
-            \item If using the traditional graph mode:
-              \begin{itemize}
-              \item $N$ sets of edges $E_0,...,E_{n-1}$ for each type of relation.
-              \item Each edge connects two vertices $u,v \in V$.
-              \end{itemize}
-            \item If using the hypergraph mode:
-              \begin{itemize}
-              \item $N$ sets of hyperedges $H_0,...,H_{n-1}$ for each type of relation.
-              \item $N$ sets of pins $P_0,...,P_{n-1}$ corresponding to each set of hyperedges.
-              \item Each pin in $P_i$ connects a vertex, $v \in V$, to a hyperedge $h \in H_i$.
-              \end{itemize}
-            \end{itemize}
-            Advantages
-            \begin{itemize}
-            \item Multiple edge types allow for partitioning of multiple criteria simultaneously.
-            \item Easy to use with diffusive procedures - compliments other partition methods via incremental refinements.
-            \end{itemize}
-            Diffusive Approach
-            \begin{itemize}
-            \item Iteratively migrate small sets of vertices to (1) reduce the peak imbalance and (2) reduce the number of (hyper)edges that are cut between part boundaries.
-            \end{itemize}
-            Diffusive Iteration Stages
-            \begin{itemize}
-            \item Weight Computation $-$ compute weights and exchange with peers.
-            \item Targeting $-$ determined how much weight each peer can accept.
-            \item Selection $-$ select vertices for migration.
-            \item Migration $-$ move elements to peers.
-            \end{itemize}
-          \end{block}
-          \begin{block}{Discrete Event Simulations}
+\begin{textblock}{15.6}(0.2,4)
+  \begin{textblock}{5}(0,0)
+    \begin{block}{EnGPar: Diffusive Graph Partitioning}
+      The N-graph is defined as the following:
+      \begin{itemize}
+      \item A set of vertices $V$ representing the atomic units of work.
+      \item If using the traditional graph mode:
+        \begin{itemize}
+        \item $N$ sets of edges $E_0,...,E_{n-1}$ for each type of relation.
+        \item Each edge connects two vertices $u,v \in V$.
+        \end{itemize}
+      \item If using the hypergraph mode:
+        \begin{itemize}
+        \item $N$ sets of hyperedges $H_0,...,H_{n-1}$ for each type of relation.
+        \item $N$ sets of pins $P_0,...,P_{n-1}$ corresponding to each set of hyperedges.
+        \item Each pin in $P_i$ connects a vertex, $v \in V$, to a hyperedge $h \in H_i$.
+        \end{itemize}
+      \end{itemize}
+      Advantages
+      \begin{itemize}
+      \item Multiple edge types allow for partitioning of multiple criteria simultaneously.
+      \item Easy to use with diffusive procedures - compliments other partition methods via incremental refinements.
+      \end{itemize}
+      Diffusive Approach
+      \begin{itemize}
+      \item Iteratively migrate small sets of vertices to (1) reduce the peak imbalance and (2) reduce the number of (hyper)edges that are cut between part boundaries.
+      \end{itemize}
+      Diffusive Iteration Stages
+      \begin{itemize}
+      \item Weight Computation $-$ compute weights and exchange with peers.
+      \item Targeting $-$ determined how much weight each peer can accept.
+      \item Selection $-$ select vertices for migration.
+      \item Migration $-$ move elements to peers.
+      \end{itemize}
+    \end{block}
+    \begin{block}{Discrete Event Simulations}
             
-          \end{block}
-        \end{textblock}
-        \begin{textblock}{5}(5.3,0)
-          \begin{block}{Finite Element Analysis: Unstructured Meshes}
-            %FEM description
-            Applications using unstructured meshes exhibit several partitioning problems including
-            \begin{itemize}
-            \item Multiple coupled entity dimensions to partition.
-            \item Complex communication patterns to be minimized.
-            \end{itemize}
-            Standard linear finite element analysis problems require that mesh vertices be balanced as well as mesh elements to get the best performance.\\
-            %N-graph construction
-            To properly balance, we construct the N-graph where:
-            \begin{itemize}
-              \item mesh elements are represented as graph vertices,
-              \item mesh vertices are represented by hyperedges, and
-              \item pins are created from each graph vertex to hyperedge where the mesh element is bounded by the mesh vertex.
-            \end{itemize}
-            See Figure (Add mesh$->$ngraph image).
+    \end{block}
+  \end{textblock}
+  \begin{textblock}{5}(5.3,0)
+    \begin{block}{Finite Element Analysis: Unstructured Meshes}
+      %FEM description
+      Applications using unstructured meshes exhibit several partitioning problems including
+      \begin{itemize}
+      \item Multiple coupled entity dimensions to partition.
+      \item Complex communication patterns to be minimized.
+      \end{itemize}
+      Standard linear finite element analysis problems require that mesh vertices be balanced as well as mesh elements to get the best performance.\\
+      %N-graph construction
+      To properly balance, we construct the N-graph where:
+      \begin{itemize}
+      \item mesh elements are represented as graph vertices,
+      \item mesh vertices are represented by hyperedges, and
+      \item pins are created from each graph vertex to hyperedge where the mesh element is bounded by the mesh vertex.
+      \end{itemize}
+      See Figure (Add mesh$->$ngraph image).
 
-            %Add higher order notes if there is room
-          \end{block}
-          \begin{block}{Strong Scaling of Unstructured Mesh}
-            %Discuss testing
-            Tests were run on a one billion element mesh created and partitioned using:
-            \begin{itemize}
-            \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts and
-            \item Local ParMETIS part k-way from 8Ki to 128Ki, 256Ki, and 512Ki parts.
-            \end{itemize}
+      %Add higher order notes if there is room
+    \end{block}
+    \begin{block}{Strong Scaling of Unstructured Mesh}
+      %Discuss testing
+      Tests were run on a one billion element mesh created and partitioned using:
+      \begin{itemize}
+      \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts and
+      \item Local ParMETIS part k-way from 8Ki to 128Ki, 256Ki, and 512Ki parts.
+      \end{itemize}
 
-            %Add results and images/graphs
-          \end{block}
-        \end{textblock}
-        \begin{textblock}{5}(10.6,0)
-          \begin{block}{Overset Grids}
-            Some unstructured mesh applications are accompined with an overset grid.
-            %More info about the overset grid applications
+      %Add results and images/graphs
+    \end{block}
+  \end{textblock}
+  \begin{textblock}{5}(10.6,0)
+    \begin{block}{Overset Grids}
+      Some unstructured mesh applications are accompined with an overset grid.
+      %More info about the overset grid applications
 
-            %List assumptions
-            %example image of the overset grid + mesh
-            
-            %Describe the construction of the N-graph
-            To construct the N-graph for these applications we:
-            \begin{itemize}
-            \item construct the vertices and hyperedges on the unstructured mesh any way for the application,
-            \item add vertices for each element in the overset grid.
-            \item add a second edge type that connects the graph vertices from the unstructured mesh to the graph vertices from the grid when the elements overlap.
-            \end{itemize}
+      %List assumptions
+      %example image of the overset grid + mesh
+      
+      %Describe the construction of the N-graph
+      To construct the N-graph for these applications we:
+      \begin{itemize}
+      \item construct the vertices and hyperedges on the unstructured mesh any way for the application,
+      \item add vertices for each element in the overset grid.
+      \item add a second edge type that connects the graph vertices from the unstructured mesh to the graph vertices from the grid when the elements overlap.
+      \end{itemize}
 
-            %Add picture showing the conversion
-            
-          \end{block}
-          
-          \begin{block}{FUN3D: Fluid dynamics simulations}
-            FUN3D is a finite element application that exhibits several partitioning problems beyond those found in standard finite element codes such as:
-            \begin{itemize}
-            \item The unstructured mesh is partitioned by mesh vertices.
-            \item The simulation requires a ghost layer at part boundaries of neighboring elements.
-            \item Supports using an overset grid to interact with other simulations.
-            \end{itemize}
+      %Add picture showing the conversion
+      
+    \end{block}
+    
+    \begin{block}{FUN3D: Fluid dynamics simulations}
+      FUN3D is a finite element application that exhibits several partitioning problems beyond those found in standard finite element codes such as:
+      \begin{itemize}
+      \item The unstructured mesh is partitioned by mesh vertices.
+      \item The simulation requires a ghost layer at part boundaries of neighboring elements.
+      \item Supports using an overset grid to interact with other simulations.
+      \end{itemize}
 
-            %Either describe parma and how it cant successfully balance this or generally discuss how partition methods fail
+      %Either describe parma and how it cant successfully balance this or generally discuss how partition methods fail
 
-            %add picture example of a FUN3D problem if possible
+      %add picture example of a FUN3D problem if possible
 
-            %Discuss construction of N-graph
-            
-          \end{block}
-        \end{textblock}
-      \end{textblock}
+      %Discuss construction of N-graph
+      
+    \end{block}
+  \end{textblock}
+\end{textblock}
 
 \end{document}
