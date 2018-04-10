@@ -18,8 +18,8 @@
 \usepackage{blindtext}
 \usepackage{xcolor}
 \usepackage{enumitem}
-\newlist{subquestion}{enumerate}{1}
-\setlist[subquestion,1]{label=(\alph*)}
+\setlist[itemize,1]{label=\textbullet}
+\setlist[itemize,2]{label=*}
 
 %For example blocks
 \setbeamercolor{block title example}{fg=red,bg=orange}
@@ -99,7 +99,7 @@
             \end{itemize}
           \end{block}
           \begin{block}{Discrete Event Simulations}
-
+            
           \end{block}
         \end{textblock}
         \begin{textblock}{5}(5.3,0)
@@ -122,8 +122,15 @@
 
             %Add higher order notes if there is room
           \end{block}
-          \begin{block}{Mira Runs}
-            
+          \begin{block}{Strong Scaling of Unstructured Mesh}
+            %Discuss testing
+            Tests were run on a one billion element mesh created and partitioned using:
+            \begin{itemize}
+            \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts and
+            \item Local ParMETIS part k-way from 8Ki to 128Ki, 256Ki, and 512Ki parts.
+            \end{itemize}
+
+            %Add results and images/graphs
           \end{block}
         \end{textblock}
         \begin{textblock}{5}(10.6,0)
@@ -147,6 +154,18 @@
           \end{block}
           
           \begin{block}{FUN3D: Fluid dynamics simulations}
+            FUN3D is a finite element application that exhibits several partitioning problems beyond those found in standard finite element codes such as:
+            \begin{itemize}
+            \item The unstructured mesh is partitioned by mesh vertices.
+            \item The simulation requires a ghost layer at part boundaries of neighboring elements.
+            \item Supports using an overset grid to interact with other simulations.
+            \end{itemize}
+
+            %Either describe parma and how it cant successfully balance this or generally discuss how partition methods fail
+
+            %add picture example of a FUN3D problem if possible
+
+            %Discuss construction of N-graph
             
           \end{block}
         \end{textblock}
