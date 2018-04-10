@@ -78,15 +78,18 @@
         \item Each pin in $P_i$ connects a vertex, $v \in V$, to a hyperedge $h \in H_i$.
         \end{itemize}
       \end{itemize}
+
       Advantages
       \begin{itemize}
       \item Multiple edge types allow for partitioning of multiple criteria simultaneously.
       \item Easy to use with diffusive procedures - compliments other partition methods via incremental refinements.
       \end{itemize}
+      
       Diffusive Approach
       \begin{itemize}
       \item Iteratively migrate small sets of vertices to (1) reduce the peak imbalance and (2) reduce the number of (hyper)edges that are cut between part boundaries.
       \end{itemize}
+      
       Diffusive Iteration Stages
       \begin{itemize}
       \item Weight Computation $-$ compute weights and exchange with peers.
@@ -95,8 +98,18 @@
       \item Migration $-$ move elements to peers.
       \end{itemize}
     \end{block}
-    \begin{block}{Discrete Event Simulations}
-            
+    \begin{block}{CODES: Discrete Event Simulations}
+      CODES is an application that simulates running an MPI application on a simulated hardware architecture. The application uses an trace of a previous run of the application and then maps it to the simulated architecture. This results in two relation based structures:
+      \begin{itemize}
+      \item The architecture graph consisting of compute nodes and network nodes.
+      \item The relation between mpi processes from the application trace.
+      \end{itemize}
+      The N-graph is constructed based on the application trace where:
+      \begin{itemize}
+        \item vertices are created from the MPI processes in the trace.
+        \item edges are created between two vertices that have an event between them.
+      \end{itemize}
+      %Add further ideas to also convert the network graph
     \end{block}
   \end{textblock}
   \begin{textblock}{5}(5.3,0)
