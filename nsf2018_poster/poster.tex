@@ -92,10 +92,10 @@
             \end{itemize}
             Diffusive Iteration Stages
             \begin{itemize}
-            \item Weight Computation - compute weights and exchange with peers.
-            \item Targeting - determined how much weight each peer can accept.
-            \item Selection - select vertices for migration.
-            \item Migration - move elements to peers.
+            \item Weight Computation $-$ compute weights and exchange with peers.
+            \item Targeting $-$ determined how much weight each peer can accept.
+            \item Selection $-$ select vertices for migration.
+            \item Migration $-$ move elements to peers.
             \end{itemize}
           \end{block}
           \begin{block}{Discrete Event Simulations}
@@ -103,11 +103,23 @@
           \end{block}
         \end{textblock}
         \begin{textblock}{5}(5.3,0)
-          \begin{block}{Finite Element Analysis}
-            
+          \begin{block}{Finite Element Analysis: Unstructured Meshes}
+            Applications using unstructured meshes exhibit several partitioning problems including
+            \begin{itemize}
+            \item Multiple coupled entity dimensions to partition.
+            \item Complex communication patterns to be minimized.
+            \end{itemize}
+            Standard linear finite element analysis problems require that mesh vertices be balanced as well as mesh elements to get the best performance.\\
+            To properly balance, we construct the N-graph where:
+            \begin{itemize}
+              \item mesh elements are represented as graph vertices,
+              \item mesh vertices are represented by hyperedges, and
+              \item pins are created from each graph vertex to hyperedge where the mesh element is bounded by the mesh vertex.
+            \end{itemize}
+            See Figure (Add mesh$->$ngraph image).
           \end{block}
           \begin{block}{Mira Runs}
-
+            
           \end{block}
         \end{textblock}
         \begin{textblock}{5}(10.6,0)
