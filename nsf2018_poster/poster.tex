@@ -172,10 +172,20 @@
       \end{itemize}
 
       %Either describe parma and how it cant successfully balance this or generally discuss how partition methods fail
+      Traditional partitioning methods have trouble balancing these metrics simultaneously and the vertex-based partition makes it difficult to use element-based tools such as ParMA (REFERENCE).
 
       %add picture example of a FUN3D problem if possible
 
       %Discuss construction of N-graph
+      For EnGPar, the construction of the graph on the mesh is as follows:
+      \begin{itemize}
+      \item create graph vertices from the mesh vertices
+      \item create hyperedges for each mesh element
+      \item create a pin for each mesh element surrounding the mesh vertex.
+      \end{itemize}
+
+      The ghost layer required can be treated similarly by accounting for the weight in the diffusive iterations (supply reference for previous work on ghost balancing). Furhtermore the overset grid can be accounted for in a similar way as listed above.
+
       
     \end{block}
   \end{textblock}
