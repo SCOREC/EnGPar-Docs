@@ -33,7 +33,8 @@
 \newcommand{\lenitem}[2][.6\linewidth]{\parbox[t]{#1}{\strut #2\strut}}
 
 \setbeamercolor{background canvas}{bg=cyan!50}
-
+\setbeamercolor{block title}{bg=blue!75}
+\setbeamercolor{block body}{bg=white,fg=black}
 \begin{document}
 \font\titlefont=cmr12 at 80pt
 \title[]
@@ -49,9 +50,12 @@
 \begin{textblock}{15.8}(0,0)
   \titlepage
   \begin{textblock}{14}(1,-0.5)
-    \begin{block}{
+    \setbeamercolor{block body}{bg=blue!75,fg=white}
+    \begin{block}{}
+      \begin{textblock}{13.5}(0.25,0.1)
       \begin{center}
-      \abstractfont
+        \abstractfont
+        
       Parallel applications with complicated data structures and communicative patterns
       require partitioning algorithms that optimize specific metrics. While most
       partitioning methods can create partitions of a decent quality, further
@@ -60,8 +64,9 @@
       multi-criteria partition improvement. EnGPar utilizes a specialized multi-graph, called
       the N-graph, to represent relation based data in order to perform load balancing for a
       range of data formats.
-              
-      \end{center}}
+      \end{center}
+      \end{textblock}
+      \vspace{6.5cm}
     \end{block}
   \end{textblock}
 \end{textblock}
