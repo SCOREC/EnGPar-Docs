@@ -55,7 +55,14 @@
     \begin{block}{}
       \begin{center}
       \abstractfont
-      Parallel applications with complicated data structures and communicative patterns require partitioning algorithms that optimize specific metrics. While most partitioning methods can create partitions of a decent quality, further optimizations can be made for applications using diffusive load balancing techniques. EnGPar complements existing multi-level and geometric partitioning methods that allows multi-criteria partition improvement. EnGPar utilizes a specialized multi-graph, called the N-graph, to represent relation based data in order to perform load balancing for a range of data formats.
+      Parallel applications with complicated data structures and communicative patterns
+      require partitioning algorithms that optimize specific metrics. While most
+      partitioning methods can create partitions of a decent quality, further
+      optimizations can be made for applications using diffusive load balancing techniques.
+      EnGPar complements existing multi-level and geometric partitioning methods that allows
+      multi-criteria partition improvement. EnGPar utilizes a specialized multi-graph, called
+      the N-graph, to represent relation based data in order to perform load balancing for a
+      range of data formats.
               
       \end{center}
     \end{block}
@@ -64,6 +71,9 @@
 
 \begin{textblock}{15.6}(0.2,4)
   \begin{textblock}{5}(0,0)
+    \begin{block}{Partitioning of Relation-based Data}
+       
+    \end{block}
     \begin{block}{EnGPar: Diffusive Graph Partitioning}
       The N-graph is defined as the following:
       \begin{itemize}
@@ -91,17 +101,12 @@
       \begin{itemize}
       \item Iteratively migrate small sets of vertices to (1) reduce the peak imbalance and (2) reduce the number of (hyper)edges that are cut between part boundaries.
       \end{itemize}
-      
-      Diffusive Iteration Stages
-      \begin{itemize}
-      \item Weight Computation $-$ compute weights and exchange with peers.
-      \item Targeting $-$ determined how much weight each peer can accept.
-      \item Selection $-$ select vertices for migration.
-      \item Migration $-$ move vertices to peers.
-      \end{itemize}
     \end{block}
     \begin{block}{CODES: Discrete Event Simulations}
-      CODES is an application that simulates running an MPI application on a simulated hardware architecture. The application uses an trace of a previous run of the application and then maps it to the simulated architecture. This results in two relation based structures:
+      CODES is an application that simulates running an MPI application on a simulated
+      hardware architecture. The application uses an trace of a previous run of the
+      application and then maps it to the simulated architecture. This results in two
+      relation based structures:
       \begin{itemize}
       \item The architecture graph consisting of compute nodes and network nodes.
       \item The relation between MPI processes from the application trace.
@@ -144,24 +149,74 @@
       \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts and
       \item Local ParMETIS part k-way from 8Ki to 128Ki, 256Ki, and 512Ki parts.
       \end{itemize}
+      \begin{textblock}{2.3}(0,0.1)
+        The initial partitions stats are: \\[1cm]
 
+        Computing the 512Ki partition from 8Ki parts took 16 seconds, followed by a migration that took 131 seconds.
+        
+      \end{textblock}
+      \begin{textblock}{2.5}(2.3,0)
+      \begin{table}[!h]
+        \centering
+        \begin{tabular}{||c|c|c|c||}
+          \hline
+          Number of Parts &128Ki&256Ki&512Ki \\
+          \hline
+          Elements per part & 9,836 & 4,918&2,459  \\
+          \hline
+          Vertex imbalance & 1.13 & 1.18 & 1.53 \\
+          \hline
+          Element imbalance & 1.02& 1.02& 1.02\\
+          \hline
+        \end{tabular}
+      \end{table}
+      \end{textblock}
+      \vspace{10cm}
+
+      Running EnGPar on the three meshes results in:
+      \begin{itemize}
+      \item reducing element imbalance to 5\%
+      \item reducing vertex imbalance to 5\% except for the 512Ki case which is reduced to 12\% imbalance.
+      \item each run took less than 10 seconds to compute and migrate the data.
+      \end{itemize}
+      
       %Add results and images/graphs
+      
     \end{block}
   \end{textblock}
   \begin{textblock}{5}(10.6,0)
     \begin{block}{Overset Grids}
       Some unstructured mesh applications are accompanied with an overset grid.
-      %More info about the overset grid applications
+      \begin{textblock}{2.7}(0,0.1)
+        %More info about the overset grid applications
+        These simulations add additional partitioning challenges such as:
+        \begin{itemize}
+        \item computational coupling between the meshes
+        \item additional communication sources
+        \item More...
+        \end{itemize}
 
-      %List assumptions
-      %example image of the overset grid + mesh
+        %List assumptions?
+        
+
+      \end{textblock}
+      \begin{textblock}{2.5}(2.5,0)
+        %example image of the overset grid + mesh
+        \begin{figure}
+          \centering
+          \includegraphics[height=.6\textwidth]{../figures/overset_grid.jpg}
+          \caption{An unstructured mesh (in red) with \\an overset grid (in black).}
+        \end{figure}
+      \end{textblock}
+      \vspace{14cm}
+
       
       %Describe the construction of the N-graph
       To construct the N-graph for these applications we:
       \begin{itemize}
       \item construct the vertices and hyperedges on the unstructured mesh any way for the application,
       \item add vertices for each element in the overset grid.
-      \item add a second edge type that connects the graph vertices from the unstructured mesh to the graph vertices from the grid when the elements overlap.
+      \item add a second edge type that connects the graph vertices from the unstructured mesh to the graph vertices from the grid where the elements overlap.
       \end{itemize}
 
       %Add picture showing the conversion
@@ -169,7 +224,7 @@
     \end{block}
     
     \begin{block}{FUN3D: Fluid dynamics simulations}
-      FUN3D is a finite element application that exhibits several partitioning problems beyond those found in standard finite element codes such as:
+      FUN3D is a finite volume application that exhibits several partitioning problems beyond those found in standard finite element codes such as:
       \begin{itemize}
       \item The unstructured mesh is partitioned by mesh vertices.
       \item The simulation requires a ghost layer at part boundaries of neighboring elements.
