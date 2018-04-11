@@ -1,6 +1,7 @@
 % small.tex
 \documentclass{beamer}
-\usetheme{Antibes}
+\usetheme{Madrid}
+%Berlin(bottom bar) / Frankfurt (more room) / Copenhagen (more room, bottom bar|split)
 \usepackage[orientation=landscape, size = a0, scale=1.4]{beamerposter}
 \usepackage[relative,overlay]{textpos}
 \usepackage{graphicx}
@@ -23,10 +24,6 @@
 \usepackage{caption}
 \captionsetup[figure]{labelformat=empty}
 
-%For example blocks
-\setbeamercolor{block title example}{fg=red,bg=orange}
-\setbeamercolor{block body example}{fg=cyan,bg=yellow}
-
 \nobibliography*
 
 %\setbeamertemplate{bibliography item}[text]
@@ -39,7 +36,7 @@
 
 \begin{document}
 \font\titlefont=cmr12 at 80pt
-\title[Load Balancing of Unstructured Meshes]
+\title[]
 {\titlefont
   Dynamic Load Balancing of \\[0.3cm]Massively Parallel Unstructured Meshes
 }
@@ -71,10 +68,10 @@
 
 \begin{textblock}{15.6}(0.1,3.75)
   \begin{textblock}{5}(0,0)
-    \begin{block}{Partitioning of Relation-based Data}
+    \begin{block}{\centering Partitioning of Relation-based Data}
        
     \end{block}
-    \begin{block}{EnGPar: Diffusive Graph Partitioning}
+    \begin{block}{\centering EnGPar: Diffusive Graph Partitioning}
       The N-graph is defined as the following:
       \begin{itemize}
       \item A set of vertices $V$ representing the atomic units of work.
@@ -102,7 +99,7 @@
       \item Iteratively migrate small sets of vertices to (1) reduce the peak imbalance and (2) reduce the number of (hyper)edges that are cut between part boundaries.
       \end{itemize}
     \end{block}
-    \begin{block}{CODES: Discrete Event Simulations}
+    \begin{block}{\centering CODES: Discrete Event Simulations}
       CODES is an application that simulates running an MPI application on a simulated
       hardware architecture. The application uses an trace of a previous run of the
       application and then maps it to the simulated architecture. This results in two
@@ -120,7 +117,7 @@
     \end{block}
   \end{textblock}
   \begin{textblock}{5}(5.3,0)
-    \begin{block}{Finite Element Analysis: Unstructured Meshes}
+    \begin{block}{\centering Finite Element Analysis: Unstructured Meshes}
       %FEM description
       Applications using unstructured meshes exhibit several partitioning problems including
       \begin{itemize}
@@ -142,7 +139,7 @@
       \end{figure}
      %Add higher order notes if there is room
     \end{block}
-    \begin{block}{Strong Scaling of Unstructured Mesh}
+    \begin{block}{\centering Strong Scaling of Unstructured Mesh}
       %Discuss testing
       Tests were run on a one billion element mesh created and partitioned using:
       \begin{itemize}
@@ -185,7 +182,7 @@
     \end{block}
   \end{textblock}
   \begin{textblock}{5}(10.6,0)
-    \begin{block}{Overset Grids}
+    \begin{block}{\centering Overset Grids}
       Some unstructured mesh applications are accompanied with an overset grid.
       \begin{textblock}{2.7}(0,0.1)
         %More info about the overset grid applications
@@ -223,7 +220,7 @@
       
     \end{block}
     
-    \begin{block}{FUN3D: Fluid dynamics simulations}
+    \begin{block}{\centering FUN3D: Fluid dynamics simulations}
       FUN3D is a finite volume application that exhibits several partitioning problems beyond those found in standard finite element codes such as:
       \begin{itemize}
       \item The unstructured mesh is partitioned by mesh vertices.
