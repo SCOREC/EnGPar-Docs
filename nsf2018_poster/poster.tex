@@ -26,6 +26,24 @@
 
 \nobibliography*
 
+\makeatletter
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor~~\beamer@ifempty{\insertshortinstitute}{}{}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
+%    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} % DELETED
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\makeatother
 %\setbeamertemplate{bibliography item}[text]
 %\setbeamertemplate{author in head/foot}{\insertshortauthor}
 %\setbeamertemplate{navigation symbols}{}
@@ -39,10 +57,10 @@
 \font\titlefont=cmr12 at 80pt
 \title[]
 {\titlefont
-  Dynamic Load Balancing of \\[0.3cm]Massively Parallel Unstructured Meshes
+Diffusive Load Balancing \\for Relation-based Data
 }
 \font\authorfont=cmr12 at 40pt
-\author[G. Diamond]{\authorfont
+\author[]{\authorfont
   Gerrett Diamond, Cameron W. Smith, Mark S. Shephard\\
   Rensselaer Polytechnic Institute, USA}
 \date{}
@@ -55,7 +73,6 @@
       \begin{textblock}{13.5}(0.25,0.1)
       \begin{center}
         \abstractfont
-        
       Parallel applications with complicated data structures and communicative patterns
       require partitioning algorithms that optimize specific metrics. While most
       partitioning methods can create partitions of a decent quality, further
@@ -71,10 +88,18 @@
   \end{textblock}
 \end{textblock}
 
-\begin{textblock}{15.6}(0.1,3.75)
+\begin{textblock}{15.6}(0.1,3.5)
   \begin{textblock}{5}(0,0)
     \begin{block}{\centering Partitioning of Relation-based Data}
-       
+      Many parallel applications running on current and next generation systems utilize some form of relational data that must be partitioned to achieve optimal runtime peformance including:
+      \begin{itemize}
+      \item Graphs/Scale-free Graphs, Structured/Unstructured Meshes, and Matrices.
+      \end{itemize}
+      Common methods applied to partition these structures are:
+      \begin{itemize}
+      \item Graph, Hypergraph, and Geometric.
+      \end{itemize}
+      However these methods are not always sufficient for an application to achieve maximum performance. Examples will show several applications that require more specific load balancing tools and how our system can be used to target each.
     \end{block}
     \begin{block}{\centering EnGPar: Diffusive Graph Partitioning}
       The N-graph is defined as the following:
@@ -95,8 +120,9 @@
 
       Advantages
       \begin{itemize}
-      \item Multiple edge types allow for partitioning of multiple criteria simultaneously.
-      \item Easy to use with diffusive procedures - compliments other partition methods via incremental refinements.
+      \item Multiple edge types allow for partitioning of multiple criteria.
+      \item Compliments other partition methods via incremental refinements.
+      \item Integrates with other partitioning tools to create initial partitions.
       \end{itemize}
       
       Diffusive Approach
@@ -105,20 +131,19 @@
       \end{itemize}
     \end{block}
     \begin{block}{\centering CODES: Discrete Event Simulations}
-      CODES is an application that simulates running an MPI application on a simulated
-      hardware architecture. The application uses an trace of a previous run of the
-      application and then maps it to the simulated architecture. This results in two
-      relation based structures:
-      \begin{itemize}
-      \item The architecture graph consisting of compute nodes and network nodes.
-      \item The relation between MPI processes from the application trace.
-      \end{itemize}
-      The N-graph is constructed based on the application trace where:
-      \begin{itemize}
-        \item vertices are created from the MPI processes in the trace.
-        \item edges are created between two vertices that have an event between them.
-      \end{itemize}
-      %Add further ideas to also convert the network graph
+%      CODES is an application that simulates running an MPI application on a simulated
+%      hardware architecture. The application uses an trace of a previous run of the
+%      application and then maps it to the simulated architecture. This results in two
+%      relation based structures:
+%      \begin{itemize}
+%      \item The architecture graph consisting of compute nodes and network nodes.
+%      \item The relation between MPI processes from the application trace.
+%      \end{itemize}
+%      The N-graph is constructed based on the application trace where:
+%      \begin{itemize}
+%        \item vertices are created from the MPI processes in the trace.
+%        \item edges are created between two vertices that have an event between them.
+%      \end{itemize}
     \end{block}
   \end{textblock}
   \begin{textblock}{5}(5.3,0)
@@ -154,7 +179,7 @@
       \begin{textblock}{2.3}(0,0.1)
         The initial partitions stats are: \\[1cm]
 
-        Computing the 512Ki partition from 8Ki parts took 16 seconds, followed by a migration that took 131 seconds.
+        Computing the 512Ki partition from 8Ki parts takes 16 seconds, followed by a migration that takes 131 seconds.
         
       \end{textblock}
       \begin{textblock}{2.5}(2.3,0)
