@@ -40,7 +40,7 @@
   \leavevmode%
   \hbox{%
   \begin{beamercolorbox}[wd=\paperwidth,ht=7ex,dp=3.5ex,center]{author in head/foot}%
-    \footerfont {\bf Contact:} Gerrett Diamond (\underline{diamog@rpi.edu}), Cameron Smith (\underline{smithc11@rpi.edu}), and Mark Shephard (\underline{shephard@rpi.edu})
+    \fontsize{45}{50}\selectfont {\bf Contact:} Gerrett Diamond (\underline{diamog@rpi.edu}), Cameron Smith (\underline{smithc11@rpi.edu}), and Mark Shephard (\underline{shephard@rpi.edu})
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=4ex,dp=1ex,center]{title in head/foot}%
     \usebeamerfont{title in head/foot}Contact:
@@ -149,7 +149,7 @@ Diffusive Load Balancing for Relation-Based Data
     \end{block}
     \begin{block}{\centering Supporting Accelerators}
       \begin{itemize}
-      \item EnGPar is designed to support many-core processors and accelerators (GPU, FGPA).
+      \item EnGPar is designed to support many-core processors and accelerators (GPU, FPGA).
       \item OpenCL implementation of BFS is 7 times faster on GPU than serial CPU (including data copy).
       \item Working on data (GPU) and pipeline (FPGA) parallel kernels of other diffusive procedures.
       \end{itemize}
@@ -222,7 +222,7 @@ Diffusive Load Balancing for Relation-Based Data
       \end{figure}
     \end{block}
 
-    \begin{block}{\centering Acknowledgement}
+    \begin{block}{\centering Acknowledgment}
       \begin{textblock}{3.5}(0,0)
       \begin{itemize}
       \item National Science Foundation Grant ACI 1533581
@@ -253,7 +253,7 @@ Diffusive Load Balancing for Relation-Based Data
       \end{textblock}
       \begin{textblock}{2.5}(2.6,0.05)
         \begin{itemize}
-        \item Discrete Event Simultations
+        \item Discrete Event Simulations
         \end{itemize}
       \end{textblock}
       \vspace{1.6cm}
@@ -315,7 +315,7 @@ Diffusive Load Balancing for Relation-Based Data
     \end{block}
     
     \begin{block}{\centering FUN3D: Fluid dynamics simulations}
-      A finite-volume application that has partitioning requirements:
+      A finite-volume application that has specific partitioning requirements:
       \begin{textblock}{3.5}(0,0.1)
       \begin{itemize}
       \item Vertex partitioned nonconforming mesh.
@@ -348,7 +348,7 @@ Diffusive Load Balancing for Relation-Based Data
 
     \begin{block}{\centering Closing Remarks}
       EnGPar utilizes diffusive methods to improve the partition of distributed data. \\
-      Furthemore, EnGPar's generalized graph structure allows for the techniques to \\
+      Furthermore, EnGPar's generalized graph structure allows for the techniques to \\
       multiple applications.
     \end{block}
   \end{textblock}
