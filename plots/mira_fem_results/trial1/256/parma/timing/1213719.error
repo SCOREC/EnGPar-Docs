@@ -1,0 +1,19 @@
+2017-09-03 23:58:46.824 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: using properties file /bgsys/local/etc/bg.properties
+2017-09-03 23:58:46.826 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: max open file descriptors: 65536
+2017-09-03 23:58:46.826 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: core file limit: 18446744073709551615
+2017-09-03 23:58:46.827 (INFO ) [0x40001aebde0] 29702:tatu.runjob.client: scheduler job id is 1213719
+2017-09-03 23:58:46.835 (INFO ) [0x400016334e0] 29702:tatu.runjob.monitor: monitor started
+2017-09-03 23:58:51.498 (INFO ) [0x400016334e0] 29702:tatu.runjob.monitor: task record 2226060 created
+2017-09-03 23:58:51.499 (INFO ) [0x40001aebde0] MIR-40000-737F1-4096:29702:ibm.runjob.client.options.Parser: set local socket to runjob_mux from properties file
+2017-09-03 23:58:57.989 (INFO ) [0x400016334e0] 29702:tatu.runjob.monitor: tracklib completed
+2017-09-03 23:59:03.813 (INFO ) [0x40001aebde0] MIR-40000-737F1-4096:2354562:ibm.runjob.client.Job: job 2354562 started
+pcu peers 262144 max group size 4096 posix groups 64
+parma target tolerance 1.050000
+parma max time 10.566115
+2017-09-03 23:59:53.061 (INFO ) [0x40001aebde0] MIR-40000-737F1-4096:2354562:ibm.runjob.client.Job: exited with status 0
+2017-09-03 23:59:53.061 (WARN ) [0x40001aebde0] MIR-40000-737F1-4096:2354562:ibm.runjob.client.Job: 75 INFO RAS events
+2017-09-03 23:59:53.061 (WARN ) [0x40001aebde0] MIR-40000-737F1-4096:2354562:ibm.runjob.client.Job: most recent RAS event text: DDR Correctable Error Summary : count=1 MCFIR error status:  [MEMORY_CE] This bit is set when a memory CE is detected on a non-maintenance memory read op;
+2017-09-03 23:59:53.061 (WARN ) [0x40001aebde0] MIR-40000-737F1-4096:2354562:ibm.runjob.client.Job: with severity INFO
+2017-09-03 23:59:53.062 (INFO ) [0x40001aebde0] tatu.runjob.client: task exited with status 0
+2017-09-03 23:59:53.062 (INFO ) [0x400016334e0] 29702:tatu.runjob.monitor: monitor terminating
+2017-09-03 23:59:53.066 (INFO ) [0x40001aebde0] tatu.runjob.client: monitor completed

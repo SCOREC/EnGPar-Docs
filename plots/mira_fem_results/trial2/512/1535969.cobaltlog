@@ -1,0 +1,5 @@
+Jobid: 1535969
+qsub -t 30 -n 8192 --mode c64 -A TRAssembly_2 -M diamog@rpi.edu --env BG_SHAREDMEMSIZE=64MB:PAMID_VERBOSE=1 /projects/TRAssembly_2/diamog/engpar_build/test/balanceMesh /projects/TRAssembly_2/cwsmith/phasta-boeing-1B//translated-model.dmg bz2:/projects/TRAssembly_2/cwsmith/phasta-boeing-1B//512Ki/mdsMesh_bz2/ 1.05 0
+Tue May 08 09:21:05 2018 +0000 (UTC) submitted with cwd set to: /gpfs/mira-fs0/projects/TRAssembly_2/diamog/engpar_parma_comp/512
+jobid 1535969 submitted from terminal /dev/pts/15
+Tue May 08 14:05:51 2018 +0000 (UTC) Info: user delete requested; removing job from the queue

@@ -1,0 +1,18 @@
+2018-05-09 02:50:18.541 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: using properties file /bgsys/local/etc/bg.properties
+2018-05-09 02:50:18.544 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: max open file descriptors: 65536
+2018-05-09 02:50:18.544 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: core file limit: 18446744073709551615
+2018-05-09 02:50:18.547 (INFO ) [0x40001aebde0] 36527:tatu.runjob.client: scheduler job id is 1536410
+2018-05-09 02:50:18.556 (INFO ) [0x400016334e0] 36527:tatu.runjob.monitor: monitor started
+2018-05-09 02:50:24.358 (INFO ) [0x400016334e0] 36527:tatu.runjob.monitor: task record 2573116 created
+2018-05-09 02:50:24.359 (INFO ) [0x40001aebde0] MIR-48000-7BFF1-8192:36527:ibm.runjob.client.options.Parser: set local socket to runjob_mux from properties file
+2018-05-09 02:50:46.632 (INFO ) [0x40001aebde0] MIR-48000-7BFF1-8192:2689712:ibm.runjob.client.Job: job 2689712 started
+2018-05-09 02:50:48.444 (INFO ) [0x400016334e0] 36527:tatu.runjob.monitor: tracklib completed
+pcu peers 524288 max group size 4096 posix groups 128
+2018-05-09 02:51:46.080 (INFO ) [0x40001aebde0] MIR-48000-7BFF1-8192:2689712:ibm.runjob.client.Job: exited with status 0
+2018-05-09 02:51:46.080 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2689712:ibm.runjob.client.Job: 100 INFO RAS events
+2018-05-09 02:51:46.081 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2689712:ibm.runjob.client.Job: 2 WARN RAS events
+2018-05-09 02:51:46.081 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2689712:ibm.runjob.client.Job: most recent RAS event text: CFAM Recoverable Error. Message= Core1 failed (ECC or parity error), DrillDown=CFAM_Status=0x90000000, RecovErr [Core 1 Chiplet recov err reg=0x2000000000000000: , Recoverable error from FIR0 [Core 1 PCB FIR0=0x0000000040000000, ICache Dir parity error]]!
+2018-05-09 02:51:46.081 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2689712:ibm.runjob.client.Job: with severity WARN
+2018-05-09 02:51:46.082 (INFO ) [0x40001aebde0] tatu.runjob.client: task exited with status 0
+2018-05-09 02:51:46.082 (INFO ) [0x400016334e0] 36527:tatu.runjob.monitor: monitor terminating
+2018-05-09 02:51:46.091 (INFO ) [0x40001aebde0] tatu.runjob.client: monitor completed

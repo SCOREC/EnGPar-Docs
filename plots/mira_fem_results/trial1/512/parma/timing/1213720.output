@@ -1,0 +1,156 @@
+MPIDI_Process.*
+  verbose               : 22176840
+  statistics            : 1
+  contexts              : 0
+  async_progress        : 1
+  context_post          : 0
+  pt2pt.limits
+    application
+      eager
+        remote, local   : 1, 4097
+      short
+        remote, local   : 4097, 113
+    internal
+      eager
+        remote, local   : 113, 0
+      short
+        remote, local   : 0, 0
+  rma_pending           : 0
+  shmem_pt2pt           : 1000
+  disable_internal_eager_scale : 1
+  optimized.collectives : 524288
+  optimized.select_colls: 1
+  optimized.subcomms    : 2
+  optimized.memory      : 1
+  optimized.num_requests: 0
+  mpir_nbc              : 16
+  numTasks              : 1
+mpi thread level        : 'MPI_THREAD_SINGLE'
+MPIU_THREAD_GRANULARITY : 'per object'
+ASSERT_LEVEL            : 2
+MPICH_LIBDIR           : not defined
+The following MPICH_* environment variables were specified:
+The following PAMID_* environment variables were specified:
+  PAMID_VERBOSE=1
+The following PAMI_* environment variables were specified:
+The following COMMAGENT_* environment variables were specified:
+The following MUSPI_* environment variables were specified:
+The following BG_* environment variables were specified:
+  BG_SHAREDMEMSIZE=64MB
+model /projects/HighLift/cwsmith/phasta-boeing-1B/translated-model.dmg loaded in 2.149741 seconds
+mesh bz2:/gpfs/mira-fs0/projects/HighLiftWing/mrasquin/Models/Boeing/Beta/Open27_B0_D30_U20/14-A2-12jets/ParmaTest2/chef/4k-4k-Sim-Adapt-6jets-UnsteadyBlowing-DDES-ts76800/8k-4k-chef-Tet-preRIBPostRIB1-SplitGlobalGraph1/512k-8k-chef-SplitLocalGraph1/mdsMesh_bz2/ loaded in 28.100132 seconds
+number of tet 1289217728 hex 0 prism 0 pyramid 0
+mesh entity counts: v 223775111 e 1518185201 f 2583627817 r 1289217728
+PARMA_STATUS initial disconnected <max avg> 82 0.006
+PARMA_STATUS initial neighbors <max avg> 85 16.632
+PARMA_STATUS initial smallest side of max neighbor part 1
+PARMA_STATUS initial num parts with max neighbors 2
+PARMA_STATUS initial empty parts 0
+PARMA_STATUS initial small neighbor counts 1:511636 2:244088 3:211194 4:208394 5:206964 6:196330 7:193678 8:188466 9:182744 10:179882 
+PARMA_STATUS initial weighted vtx <tot max min avg> 320692946.0 938.0 494.0 611.673
+PARMA_STATUS initial weighted edge <tot max min avg> 1782967988.0 4575.0 2924.0 3400.742
+PARMA_STATUS initial weighted face <tot max min avg> 2752018224.0 6103.0 4666.0 5249.058
+PARMA_STATUS initial weighted rgn <tot max min avg> 1289217728.0 2503.0 2190.0 2458.988
+PARMA_STATUS initial owned bdry vtx <tot max min avg> 73769964 476 0 140.705
+PARMA_STATUS initial shared bdry vtx <tot max min avg> 170687799 844 116 325.561
+PARMA_STATUS initial model bdry vtx <tot max min avg> 6657577 186 0 12.698
+PARMA_STATUS initial sharedSidesToElements <max min avg> 0.912 0.093 0.261
+PARMA_STATUS initial entity imbalance <v e f r>: 1.53 1.35 1.16 1.02
+PARMA_STATUS stepFactor 0.500
+PARMA_STATUS sideTol 325
+PARMA_STATUS measureGraphDist elapsed time 1.539637 seconds
+PARMA_STATUS vtxImb 1.533498 avgSides 325.561140
+PARMA_STATUS vtx imbalance 1.533 avg 611.673
+PARMA_STATUS imbSlope 1.000000 sidesSlope 1.000000
+PARMA_STATUS 6495518 elements migrated in 0.393894 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.124191 seconds
+PARMA_STATUS vtxImb 1.336669 avgSides 326.011105
+PARMA_STATUS vtx imbalance 1.337 avg 611.969
+PARMA_STATUS imbSlope 1.000000 sidesSlope 1.000000
+PARMA_STATUS 3479426 elements migrated in 0.265095 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.120858 seconds
+PARMA_STATUS vtxImb 1.271657 avgSides 325.799131
+PARMA_STATUS vtx imbalance 1.272 avg 611.800
+PARMA_STATUS imbSlope 0.579087 sidesSlope 0.926978
+PARMA_STATUS 2614896 elements migrated in 0.209132 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.117779 seconds
+PARMA_STATUS vtxImb 1.227837 avgSides 325.604952
+PARMA_STATUS vtx imbalance 1.228 avg 611.645
+PARMA_STATUS imbSlope 0.415414 sidesSlope 0.640016
+PARMA_STATUS 2184940 elements migrated in 0.193523 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.115479 seconds
+PARMA_STATUS vtxImb 1.196976 avgSides 325.476919
+PARMA_STATUS vtx imbalance 1.197 avg 611.541
+PARMA_STATUS imbSlope 0.322271 sidesSlope 0.466562
+PARMA_STATUS 1924098 elements migrated in 0.190165 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.113488 seconds
+PARMA_STATUS vtxImb 1.161142 avgSides 325.385889
+PARMA_STATUS vtx imbalance 1.161 avg 611.467
+PARMA_STATUS imbSlope 0.263830 sidesSlope 0.364379
+PARMA_STATUS 1747902 elements migrated in 0.180679 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.112574 seconds
+PARMA_STATUS vtxImb 1.138344 avgSides 325.323450
+PARMA_STATUS vtx imbalance 1.138 avg 611.415
+PARMA_STATUS imbSlope 0.220090 sidesSlope 0.297279
+PARMA_STATUS 1630115 elements migrated in 0.171850 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.111328 seconds
+PARMA_STATUS vtxImb 1.122056 avgSides 325.282455
+PARMA_STATUS vtx imbalance 1.122 avg 611.378
+PARMA_STATUS imbSlope 0.189322 sidesSlope 0.250974
+PARMA_STATUS 1546793 elements migrated in 0.173044 seconds
+PARMA_STATUS measureGraphDist update  elapsed time 0.110148 seconds
+PARMA_STATUS vtxImb 1.105745 avgSides 325.258541
+PARMA_STATUS vtx imbalance 1.106 avg 611.353
+PARMA_STATUS imbSlope 0.062287 sidesSlope 0.119782
+PARMA_STATUS vertices balanced in 8 steps to 1.120000 in 8.120230 seconds
+PARMA_STATUS post vertices disconnected <max avg> 14 0.013
+PARMA_STATUS post vertices neighbors <max avg> 82 16.590
+PARMA_STATUS post vertices smallest side of max neighbor part 1
+PARMA_STATUS post vertices num parts with max neighbors 1
+PARMA_STATUS post vertices empty parts 0
+PARMA_STATUS post vertices small neighbor counts 1:482124 2:236972 3:218014 4:207864 5:206136 6:197246 7:193330 8:189154 9:185778 10:181354 
+PARMA_STATUS post vertices weighted vtx <tot max min avg> 320524923.0 676.0 535.0 611.353
+PARMA_STATUS post vertices weighted edge <tot max min avg> 1782655447.0 3686.0 3027.0 3400.145
+PARMA_STATUS post vertices weighted face <tot max min avg> 2751872586.0 5620.0 4534.0 5248.780
+PARMA_STATUS post vertices weighted rgn <tot max min avg> 1289217728.0 2713.0 2061.0 2458.988
+PARMA_STATUS post vertices owned bdry vtx <tot max min avg> 73779338 556 0 140.723
+PARMA_STATUS post vertices shared bdry vtx <tot max min avg> 170529150 557 168 325.259
+PARMA_STATUS post vertices model bdry vtx <tot max min avg> 6686577 205 0 12.754
+PARMA_STATUS post vertices sharedSidesToElements <max min avg> 0.628 0.111 0.261
+PARMA_STATUS post vertices entity imbalance <v e f r>: 1.11 1.08 1.07 1.10
+PARMA_STATUS stepFactor 0.500
+PARMA_STATUS maxVtx 676.000
+PARMA_STATUS sideTol 325
+PARMA_STATUS vtx imbalance 1.106
+PARMA_STATUS measureGraphDist elapsed time 0.804874 seconds
+PARMA_STATUS elmImb 1.103300 avgSides 325.258541
+PARMA_STATUS elm imbalance 1.103 avg 2458.988
+PARMA_STATUS imbSlope 1.000000 sidesSlope 1.000000
+PARMA_STATUS 5476260 elements migrated in 0.271428 seconds
+PARMA_STATUS vtx imbalance 1.106
+PARMA_STATUS measureGraphDist update  elapsed time 0.107272 seconds
+PARMA_STATUS elmImb 1.057346 avgSides 325.254810
+PARMA_STATUS elm imbalance 1.057 avg 2458.988
+PARMA_STATUS imbSlope 1.000000 sidesSlope 1.000000
+PARMA_STATUS 2886870 elements migrated in 0.179645 seconds
+PARMA_STATUS vtx imbalance 1.106
+PARMA_STATUS measureGraphDist update  elapsed time 0.107066 seconds
+PARMA_STATUS elmImb 1.033759 avgSides 324.876373
+PARMA_STATUS elm imbalance 1.034 avg 2458.988
+PARMA_STATUS imbSlope 0.647621 sidesSlope 0.727874
+PARMA_STATUS elements balanced in 2 steps to 1.050000 in 2.888780 seconds
+PARMA_STATUS final disconnected <max avg> 13 0.099
+PARMA_STATUS final neighbors <max avg> 81 16.590
+PARMA_STATUS final smallest side of max neighbor part 1
+PARMA_STATUS final num parts with max neighbors 2
+PARMA_STATUS final empty parts 0
+PARMA_STATUS final small neighbor counts 1:486128 2:237476 3:210804 4:201952 5:201154 6:195590 7:193296 8:191106 9:186298 10:182700 
+PARMA_STATUS final weighted vtx <tot max min avg> 320430133.0 676.0 502.0 611.172
+PARMA_STATUS final weighted edge <tot max min avg> 1782371648.0 3620.0 3024.0 3399.604
+PARMA_STATUS final weighted face <tot max min avg> 2751682761.0 5397.0 4788.0 5248.418
+PARMA_STATUS final weighted rgn <tot max min avg> 1289217728.0 2542.0 2225.0 2458.988
+PARMA_STATUS final owned bdry vtx <tot max min avg> 73673762 521 0 140.522
+PARMA_STATUS final shared bdry vtx <tot max min avg> 170328784 537 118 324.876
+PARMA_STATUS final model bdry vtx <tot max min avg> 6694810 195 0 12.769
+PARMA_STATUS final sharedSidesToElements <max min avg> 0.572 0.095 0.261
+PARMA_STATUS final entity imbalance <v e f r>: 1.11 1.06 1.03 1.03
