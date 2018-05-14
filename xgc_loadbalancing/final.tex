@@ -1,0 +1,91 @@
+\documentclass[a4paper]{article}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{amsmath}
+\geometry{margin=1.5in}
+\usepackage[english]{babel}
+\usepackage{url}
+\usepackage{titling}
+
+\setlength{\droptitle}{-2em}
+
+\title{EnGPar - Partitioning Strategy for XGC}
+
+\author{Gerrett Diamond}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Important Questions}
+The following questions have assumed answers for the following formulation
+and N-graph construction. If these assumptions are wrong then the below
+statements are either not going to work or will require further work on
+top of it.
+\begin{enumerate}
+\item Are the safe zones defined as an integer amount of the flux faces? (Assumed yes)
+\item Do the particles have computational or communication dependencies on one another? (Assumed no)
+\end{enumerate}
+
+\section{Formulation}
+Here I define some notation to define XGC at a high level as I understand it. I tried to match the terminology that I have seen/heard used so far. \\
+
+\begin{itemize}
+\item Let $F = \{F_1,F_2, ..., F_n\}$ be the flux faces.
+\item Let $G^a = \{G_1, G_2, ..., G_n\}$ be the groups such that
+  \begin{itemize}
+  \item $G_i$ is defined by $F_i\in F$.
+  \item $G_i = \{F_{i-a},...,F_{i-1},F_i,F_{i+1},...,F_{i+a}\}$ 
+  \end{itemize}
+\item Let $S^b = \{S_1,S_2,...,S_n\}$ be the safe zones for each $G_i$ such that
+  \begin{itemize}
+  \item $b \le a$
+  \item $S_i = \{F_{i-b},...,F_{i-1},F_i,F_{i+1},...,F_{i+b}\}$ 
+  \end{itemize}
+\item Let $P$ be the set of particles.
+\item For each particle $p\in P$, Let $T_p$ be the set of safe zones in $S_b$ that p resides in.
+\item {\color{blue} Let $P_{T_p}$ be the set of particles that whose set of safe zones is $T_p$.}
+\end{itemize}
+
+Technically as long as we can determine $T_p$ easily and there are large amounts of these sets being equal both on part and across parts, then the below construction should be feasible.
+
+\section{N-graph}
+Here is an explanation of a way to build the N-graph given the information above.
+\begin{enumerate}
+\item For each process, create a vertex for each unique $T_p$ for which this process/group has a safe zone in $T_p$.
+\item The weight of the vertex initially is equal to {\color{blue} $|P_{T_p}|$.}
+\item For each unique $T_p$ set across all processes, add a hyperedge that will be shared across processes that have a vertex for $T_p$.
+\item Add pins between each hyperedge and vertex that represent $T_p$.
+\end{enumerate}
+With this formulation we can use some sort of weight diffusion that will migrate portions of the weight of vertices across the hyperedges to other processes. 
+{
+  \color{blue}
+\section{Migration of particles}
+Assuming we keep track of $P_{T_p}$ outside of EnGPar
+}
+\section{Other Questions}
+Here are some questions that may affect the above idea to a smaller degree.
+\begin{enumerate}
+\item Do particles have different computational load?
+  \begin{itemize}
+  \item Answer: No.
+  \end{itemize}
+\item How hard would it be to ``compute'' $T_p$ and the processors that have each unique $T_p$?
+\item Does the outside regions (near the X point) mess up any of the assumptions or formulations used here?
+\end{enumerate}
+
+\section{Other Pieces to Consider}
+\begin{itemize}
+\item Should we account for particles that have left the safe regions before or during EnGPar's load balancing?
+\item Is it possible to get a good partition using a standard graph partitioning method on this or a similar graph construction.
+  \item This design kind of assumes one process per flux face, which as I understand is not the case. However, we should be able to extend this idea for more processes.
+\end{itemize}
+\end{document}
