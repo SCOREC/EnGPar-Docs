@@ -123,9 +123,75 @@ Here are some questions that may affect the above idea to a smaller degree.
 \end{itemize}
 
 { \color{blue}
-\section{Weight Diffusive Selection}
-\label{sec:select}
-\section{Weight Migration}
-\label{sec:migrate}
+
+  \section{Example N-graph}
+  
+  \section{Weight Diffusive Selection}
+  \label{sec:select}
+
+  The Sides,Weights, and Targets phases of EnGPar's current diffusive algorithm do not need to be changed for the weight diffuser. However, Selection and Migration will be different since this algorithm will diffuse weight instead of vertices. Algorithm \ref{alg:select} provides pseudo code for how selection could be done. This \texttt{RUNSTEP} function would be called iteratively similar to how the current balancer does.
+
+  \begin{algorithm}
+    \caption{Seletion Algorithm}
+    \label{alg:select}
+    \small
+    \begin{algorithmic}[1]
+      \Procedure{RunStep}{$G$}
+      \State Q = an ordering of the owned vertices of $G$.
+      \For{$v \in Q$}
+      \For{vertex $u$ neighboring $v$}
+      \State O = part that owns $u$
+      \If{$target\rightarrow has(O) \And sending[O] < target[O]$}
+      \State Choose $x$ weight to send from $v$ to $u$
+      \Comment{{\tiny $x \le target[O] - sending[O]$}}
+      \State
+      \Comment{{\tiny$x \le weight(vtx) - sent(vtx)$}}
+      \State {\{$v,u,x\} \rightarrow Plan$}
+      \State $sending[O] += x$
+      \State $sent(vtx) += x$
+      \EndIf
+      \EndFor
+      \EndFor
+      \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
+
+  \noindent There are two points of this algorithm that we will have to explore what will work best:
+  \begin{itemize}
+  \item How to order the vertices in the queue
+    \begin{itemize}
+    \item heaviest/lightiest vertices first?
+    \item largets/fewest neighbors first?
+    \end{itemize}
+  \item How to decide how much weight, $x$, to send in each iteration.
+  \end{itemize}
+
+  \section{Weight Migration}
+  \label{sec:migrate}
+
+  Given a plan coming out of selection of the form
+  $$owned\_vtx \rightarrow \{neighbor\_vertex, weight\}$$
+  Algorithm \ref{alg:migrate} will migrate the weight to the neighboring parts.
+
+  \begin{algorithm}
+    \caption{Migration Algorithm}
+    \label{alg:migrate}
+    \small
+    \begin{algorithmic}[1]
+      \Procedure{Migrate}{$Plan$}
+      \For{$\{owned\_vtx,neighbor\_vtx,weight\} \in Plan$}
+      \State Send ${neighbor\_vtx,weight} \rightarrow owner(neighbor\_vtx)$
+      \State $weight(owned\_vtx) -= weight$
+      \EndFor
+      \For{each received message $\{owned\_vtx,weight\}$}
+      \State $weight(owned\_vtx) += weight$
+      \EndFor
+      \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
+
+  \section{Partition Retrieval}
+  
 }
+
 \end{document}
