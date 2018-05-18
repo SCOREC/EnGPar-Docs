@@ -3,6 +3,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{graphics}
 \usepackage{graphicx}
 \usepackage{geometry}
 \usepackage{algorithm}
@@ -15,7 +16,7 @@
 
 \setlength{\droptitle}{-2em}
 
-\title{EnGPar - Partitioning Strategy for XGC}
+\title{EnGPar - Partitioning Strategy for XGCM}
 
 \author{Gerrett Diamond}
 
@@ -26,10 +27,6 @@
 \maketitle
 
 \section{Important Questions}
-The following questions have assumed answers for the following formulation
-and N-graph construction. If these assumptions are wrong then the below
-statements are either not going to work or will require further work on
-top of it.
 \begin{enumerate}
 \item Are the safe zones defined as an integer amount of the flux faces? (Assumed yes)
   {\color{red}
@@ -46,7 +43,7 @@ top of it.
 \end{enumerate}
 
 \section{Formulation}
-Here I define some notation to define XGC at a high level as I understand it. I tried to match the terminology that I have seen/heard used so far. \\
+Here I define some notation to define XGCM at a high level as I understand it. I tried to match the terminology that I have seen/heard used so far. \\
 
 \begin{itemize}
 \item Let $F = \{F_1,F_2, ..., F_n\}$ be the flux faces.
@@ -75,61 +72,27 @@ Here is an explanation of a way to build the N-graph given the information above
 \item For each $\bar{S_i}$, add a hyperedge that will be shared across processes that have a vertex for $\bar{S_i}$.}
 \item Add pins between each hyperedge and vertex that represent {\color{blue} $\bar{S_i}$.}
 \end{enumerate}
+See Figure \ref{fig:construct} for an example of the $\bar{S_i}$s and the construction of N-graph from them. \\
+
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=.9\textwidth]{xgcm_ngraph_construction.png}
+  \caption{An example of how $\bar{S_i}$ is made from safe zones and the N-graph constructed from them.}
+  \label{fig:construct}
+\end{figure}
+
 With this formulation we can use some sort of weight diffusion that will
 migrate portions of the weight of vertices across the hyperedges to other
 processes. {\color{blue} See sections \ref{sec:select} and \ref{sec:migrate}
 for details of this method.}
-{
-  \color{blue}
-\section{Migration of particles}
-After EnGPar has run a weight diffuser, the resulting partition will
-describe the amount of particles that should exist on each process
-for each set $P_{\bar{S_i}}$. XGC can select particles to satisfy the weight
-distribution given by EnGPar. Any stategy can be employed to choose
-these particles. One such example is: for each $P_{\bar{S_i}}$, we migrate particles
-that are closer to the safe zone of the target part and prioritize sending
-the further out particles. This strategy should reduce the number of times
-a particle is migrated.
-}
-\section{Other Questions}
-Here are some questions that may affect the above idea to a smaller degree.
-\begin{enumerate}
-\item Do particles have different computational load?
-  {\color{red}
-  \begin{itemize}
-  \item Answer: No.
-  \end{itemize}
-  }
-\item How hard would it be to ``compute'' $T_p$, $\bar{S_i}$, and $P_{\bar{S_i}}$?
-\item Does the outside regions (near the X point) mess up any of the assumptions or formulations used here?
-\end{enumerate}
 
-\section{Other Pieces to Consider}
-\begin{itemize}
-\item Should we account for particles that have left the safe regions before or during EnGPar's load balancing?
-  {\color{red}
-    \begin{itemize}
-    \item Particles that have left the safe zone must be migrated to another group before the next push operation can occur. For a given process, we can subtract the number of non-safe particles from the number of safe particles to determine the current load. Ideally, we will execute at most one migration event per push to minimize communication costs.
-    \end{itemize}
-  }
-\item Is it possible to get a good partition using a standard graph partitioning method on this or a similar graph construction.
-  {\color{red}
-    \begin{itemize}
-    \item Yes, but will likely be slower than a diffusive approach. Also doesn't directly support weight diffusion.
-    \end{itemize}
-  }
 
-  \item This design kind of assumes one process per flux face, which as I understand is not the case. However, we should be able to extend this idea for more processes.
-\end{itemize}
-
-{ \color{blue}
-
-  \section{Example N-graph}
-  
+{\color{blue}
   \section{Weight Diffusive Selection}
   \label{sec:select}
 
-  The Sides,Weights, and Targets phases of EnGPar's current diffusive algorithm do not need to be changed for the weight diffuser. However, Selection and Migration will be different since this algorithm will diffuse weight instead of vertices. Algorithm \ref{alg:select} provides pseudo code for how selection could be done. This \texttt{RUNSTEP} function would be called iteratively similar to how the current balancer does.
+  The Sides,Weights, and Targets phases of EnGPar's current diffusive algorithm do not need to be changed for the weight diffuser. However, Selection and Migration will be different since this algorithm will be sending weight instead of vertices. Algorithm \ref{alg:select} provides pseudo code for how selection could be done. This \texttt{RUNSTEP} function would be called iteratively similar to how the current balancer does.
 
   \begin{algorithm}
     \caption{Seletion Algorithm}
@@ -191,7 +154,63 @@ Here are some questions that may affect the above idea to a smaller degree.
   \end{algorithm}
 
   \section{Partition Retrieval}
+  Since the partition that EnGPar will report is based on weight being diffused rather than the vertices migrating across parts, the construction of the final parts can be dealt with in several different ways. Two main concerns arise because of this:
+  \begin{itemize}
+  \item How we should report the partition?
+    \begin{itemize}
+    \item Do we report just the final weights of each vertex?
+    \item Should we give the amount of weight each vertex sent to every other vertex?
+    \end{itemize}
+  \item How to quickly construct/keep track of this partition structure?
+    \begin{itemize}
+    \item If only reporting the final weights of each vertex, it is easy to report this in a vtx->weights mapping
+    \item If reporting a plan of how much weight to send, this is a nontrivial problem with multiple solutions and approaches that could be taken.
+    \end{itemize}
+  \end{itemize}
+  {
+  \color{blue}
+  \section{Migration of particles}
+  After EnGPar has run a weight diffuser, the resulting partition will
+  describe the amount of particles that should exist on each process
+  for each set $P_{\bar{S_i}}$. XGCM can select particles to satisfy the weight
+  distribution given by EnGPar. Any stategy can be employed to choose
+  these particles. One such example is: for each $P_{\bar{S_i}}$, we migrate particles
+  that are closer to the safe zone of the target part and prioritize sending
+  the further out particles. This strategy should reduce the number of times
+  a particle is migrated.
+  }
   
 }
+
+\section{Other Questions}
+Here are some questions that may affect the above idea to a smaller degree.
+\begin{enumerate}
+\item Do particles have different computational load?
+  {\color{red}
+  \begin{itemize}
+  \item Answer: No.
+  \end{itemize}
+  }
+\item How hard would it be to ``compute'' $T_p$, $\bar{S_i}$, and $P_{\bar{S_i}}$?
+\item Does the outside regions (near the X point) mess up any of the assumptions or formulations used here?
+\end{enumerate}
+
+\section{Other Pieces to Consider}
+\begin{itemize}
+\item Should we account for particles that have left the safe regions before or during EnGPar's load balancing?
+  {\color{red}
+    \begin{itemize}
+    \item Particles that have left the safe zone must be migrated to another group before the next push operation can occur. For a given process, we can subtract the number of non-safe particles from the number of safe particles to determine the current load. Ideally, we will execute at most one migration event per push to minimize communication costs.
+    \end{itemize}
+  }
+\item Is it possible to get a good partition using a standard graph partitioning method on this or a similar graph construction.
+  {\color{red}
+    \begin{itemize}
+    \item Yes, but will likely be slower than a diffusive approach. Also doesn't directly support weight diffusion.
+    \end{itemize}
+  }
+
+  \item This design kind of assumes one process per flux face, which as I understand is not the case. However, we should be able to extend this idea for more processes.
+\end{itemize}
 
 \end{document}
