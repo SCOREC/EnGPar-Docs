@@ -2,7 +2,7 @@ if (!exists("prefix")) exit
 set title "Mesh Vertex Imbalance" font ",40"
 set yrange [1:1.09]
 set xrange [-0.5:3.5]
-set xlabel "Processes(Ki)" font ",40"
+set xlabel "Processes" font ",40"
 set ylabel "Vertex Imbalance" font ",40"
 set term postscript eps color blacktext "Helvetica" 24
 set output prefix."/vimb_v_cores.eps"

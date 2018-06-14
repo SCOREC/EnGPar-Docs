@@ -2,8 +2,8 @@ if (!exists("prefix")) exit
 set title "Mesh Edge Imbalance" font ",40"
 set xrange [-0.25:3.25]
 set yrange [1:1.8]
-set xlabel "Processes(Ki)" font ",40"
-set ylabel "Element Imbalance" font ",40"
+set xlabel "Processes" font ",40"
+set ylabel "Edge Imbalance" font ",40"
 
 set term postscript eps color blacktext "Helvetica" 24
 set output prefix."/eimb_v_cores.eps"
