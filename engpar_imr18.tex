@@ -1,0 +1,152 @@
+%%%%%%%%%%%%%%%%%%%% author.tex %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% sample root file for your "contribution" to a contributed volume
+%
+% Use this file as a template for your own input.
+%
+%%%%%%%%%%%%%%%% Springer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% RECOMMENDED %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[graybox]{svmult}
+
+% choose options for [] as required from the list
+% in the Reference Guide
+
+\usepackage{mathptmx}       % selects Times Roman as basic font
+\usepackage{helvet}         % selects Helvetica as sans-serif font
+\usepackage{courier}        % selects Courier as typewriter font
+\usepackage{type1cm}        % activate if the above 3 fonts are
+                            % not available on your system
+%
+\usepackage{makeidx}         % allows index generation
+\usepackage{url}             % links
+\usepackage{graphicx}        % standard LaTeX graphics tool
+                             % when including figure files
+\usepackage{multicol}        % used for the two-column index
+\usepackage[bottom]{footmisc}% places footnotes at page bottom
+
+% see the list of further useful packages
+% in the Reference Guide
+
+\makeindex             % used for the subject index
+                       % please use the style svind.ist with
+                       % your makeindex program
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title*{Accelerated Load Balancing of Unstructured Meshes}
+% Use \titlerunning{Short Title} for an abbreviated version of
+% your contribution title if the original one is too long
+\author{
+Cameron W. Smith
+and Lucas Davis
+and Gerrett Diamond
+and Mark S. Shephard
+}
+\institute{
+  Cameron W. Smith \at Rensselaer Polytechnic Institute, Troy, NY \email{smithc11@rpi.edu}
+  \and Lucas Davis \at Rensselaer Polytechnic Institute, Troy, NY \email{davisl3@rpi.edu}
+  \and Gerrett Diamond \at Rensselaer Polytechnic Institute, Troy, NY \email{diamog@rpi.edu}
+  \and Mark S. Shephard \at Rensselaer Polytechnic Institute, Troy, NY \email{shephard@rpi.edu}
+}
+\authorrunning{C.Smith et al.}
+
+\maketitle
+
+\abstract{
+  gpus are in lots of big systems, we need to use them for load balancing
+}
+
+\section{Introduction} \label{sec:intro}
+
+\begin{itemize}
+  \item briefly motivate dynamic load balancing
+  \item quantify how GPUs are providing the majority of computing performance (\# of systems with GPUs in top 10 systems of top500, graph500, HPCG)
+  \item end with a sentence that says what engpar does (diffusion) and how we are
+extending it to run on GPUs
+\end{itemize}
+
+\section{EnGPar Dynamic Load Balancing} \label{sec:engpar}
+
+\begin{itemize}
+  \item multi-graph, high-level diffusion algorithm (targeting, selection, migration)
+  \item indicate that we will accelerate selection via BFS for distance computation and coloring for cavity selection
+\end{itemize}
+
+\section{Accelerating Distance Computation} \label{sec:dist}
+
+provide results - serial vs kokkos w/cuda -
+\url{https://bitbucket.org/c_smith/engpar_siampp18/src/master/}
+
+\section{Accelerating Cavity Selection} \label{sec:select}
+
+We need to implement gpu-parallel selection of cavities using graph edge (edges
+form cavities!) coloring to avoid races on the writing/reading the 'needs to be
+migrated' tag of graph vertices.
+The current selection procedure traverses the each part's boundary based on
+descending distance from the topological center.
+We need to figure out how to use the distance information while allowing large
+sets of cavities to be evaluated simultaneously.
+Possible approaches:
+\begin{enumerate}
+  \item ignore use of distance - parts will be large for efficient gpu
+    computation and there will be fewer aspect ratio issues
+  \item bin the cavities based on distance - the number of bins should define
+    sets that are as large as possible without degrading the quality of
+    selection - we want to select the close cavities first
+  \item ignore distance and process all cavities simultaneously then apply a
+    filter based on distance to remove the cavities with the largest distance -
+    gpus support parallel sort so this should work - kokkos has a sorting
+    method:
+    \url{https://github.com/kokkos/kokkos/issues/422} \label{sortingSelect}
+\end{enumerate}
+
+Of the three options listed above, it seems like \#\ref{sortingSelect} will
+expose the most concurrency and require the fewest algorithm modifications.
+
+\begin{itemize}
+  \item provide results - serial vs kokkos w/cuda
+  \item may want to use a simple graph instead of waiting to have a hypergraph coloring procedure; that could be in future work/conclusion
+\end{itemize}
+
+\section{Application Results} \label{sec:results}
+
+\begin{itemize}
+  \item Figure out a better title for this section
+  \item flow control strong scaling case: \\
+64Ki \url{https://zenodo.org/record/833519#.WztuxXWYV1M} \\
+128Ki \url{https://zenodo.org/record/834946#.Wztu-HWYV1M} \\
+256Ki \url{https://zenodo.org/record/835483#.WztvCXWYV1M} \\
+512Ki \url{https://zenodo.org/record/835742#.WztvG3WYV1M}
+  \item the number of elements per-process may be too small for nodes with large GPUs to run efficiently (data transfer may become more costly than running the selection on the CPU!) - especially as we approach 512Ki parts
+  \item we may have to run the condense tool to create a 16Ki and 32Ki meshes
+  \item run on ORNL titan or summit (if accessible)
+  \item compare runtimes versus results from SC17 paper~\cite{engparSC17}
+\end{itemize}
+
+\section{Closing Remarks} \label{sec:closing}
+\begin{itemize}
+  \item summarize results
+  \item discuss hypergraph coloring and relation to distance-2 coloring for non-simplices (quads, hexs, prisms, pyramids, etc.)
+\end{itemize}
+
+\begin{acknowledgement}
+This research was supported by the U.S. Department of Energy, Office of Science,
+Office of Advanced Scientific Computing Research, under award DE-SC00066117
+(FASTMath SciDAC Institute) and by the National Science Foundation under Grant
+No. ACI 1533581, (SI2-SSE: Fast Dynamic Load Balancing Tools for Extreme Scale
+Systems).
+
+We gratefully acknowledge the use of the resources of the ABC and the XYZ.
+
+Any opinions, findings, and conclusions or recommendations expressed in this
+material are those of the author(s) and do not necessarily reflect the views
+of the National Science Foundation.
+\end{acknowledgement}
+
+\bibliographystyle{acm}
+\bibliography{scorec-refs/scorec-refs}
+\end{document}
