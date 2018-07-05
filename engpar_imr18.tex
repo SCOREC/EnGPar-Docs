@@ -125,6 +125,20 @@ expose the most concurrency and require the fewest algorithm modifications.
   \item we may have to run the condense tool to create a 16Ki and 32Ki meshes
   \item run on ORNL titan or summit (if accessible)
   \item compare runtimes versus results from SC17 paper~\cite{engparSC17}
+  \item use mesh vertex = graph vertex and mesh edge = graph edge for tests -
+    will need to run MPI only engpar to establish the baseline performance
+  \item plot the time spent in MPI only selection vs kokkos coloring selection
+    vs part size - the comparison must start and end at equivalent points in the
+    code - start before selection and end just before migration (or whatever the
+    next stage) begins
+  \item plot the breakdown of time spent in coloring selection vs part size -
+    data transfer, color computation, selection (possibly broken into cavity
+    selection and filtering for distance), tranferring the selection list
+    back to the host
+  \item I expect there will be some reduction in partition quality using the
+    coloring based selection since we won't have as fine-grained control over
+    the process as the MPI only procedure.  As long as the quality reduction is
+    controlled and performance is better we should be OK.
 \end{itemize}
 
 \section{Closing Remarks} \label{sec:closing}
