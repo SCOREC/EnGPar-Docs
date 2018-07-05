@@ -116,13 +116,16 @@ expose the most concurrency and require the fewest algorithm modifications.
 
 \begin{itemize}
   \item Figure out a better title for this section
-  \item flow control strong scaling case: \\
+  \item flow control strong scaling case with 1.3B tets: \\
 64Ki \url{https://zenodo.org/record/833519#.WztuxXWYV1M} \\
 128Ki \url{https://zenodo.org/record/834946#.Wztu-HWYV1M} \\
 256Ki \url{https://zenodo.org/record/835483#.WztvCXWYV1M} \\
 512Ki \url{https://zenodo.org/record/835742#.WztvG3WYV1M}
   \item the number of elements per-process may be too small for nodes with large GPUs to run efficiently (data transfer may become more costly than running the selection on the CPU!) - especially as we approach 512Ki parts
-  \item we may have to run the condense tool to create a 16Ki and 32Ki meshes
+  \item we will have to run the condense tool to create an 2Ki (640k elms/part),
+    4Ki (320k), 8Ki (160k), 16Ki (80k), and 32Ki (40k) meshes -
+    fun3d uses between 75M and 2.3M elements per GPU on summitdev (from siampp18
+    presentation)
   \item run on ORNL titan or summit (if accessible)
   \item compare runtimes versus results from SC17 paper~\cite{engparSC17}
   \item use mesh vertex = graph vertex and mesh edge = graph edge for tests -
