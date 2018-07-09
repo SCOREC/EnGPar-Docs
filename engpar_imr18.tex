@@ -86,6 +86,9 @@ provide results - serial vs kokkos w/cuda -
 We need to implement gpu-parallel selection of cavities using graph edge (edges
 form cavities!) coloring to avoid races on the writing/reading the 'needs to be
 migrated' tag of graph vertices.
+Briefly discuss how we use kokkos-kernels to color the hyperedges in the user's graph.
+This should include a description of the CSR derived from hyperedge-to-vertex-to-hyperedge
+second adjacencies.
 The current selection procedure traverses the each part's boundary based on
 descending distance from the topological center.
 We need to figure out how to use the distance information while allowing large
