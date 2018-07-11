@@ -89,6 +89,9 @@ migrated' tag of graph vertices.
 Briefly discuss how we use kokkos-kernels to color the hyperedges in the user's graph.
 This should include a description of the CSR derived from hyperedge-to-vertex-to-hyperedge
 second adjacencies.
+
+Kokkos-kernels has a gpu-parallel graph coloring algorithm that is utilize to color a dual graph representation of the original hypergraph. A dual graph is constructed to represent the second adjacencies from hyperedge-to-vertex-to-hyperedge by transforming vertices into edges and visa-versa. There is however, an issue with directly using Kokkos-kernels' graph coloring, it requires the input graph to be a single symmetric CRS matrix but the EnGPar hypergraph is represented by two CRS matrices. This issue is addressed during the process of constructing the dual graph by constructing it as a single CRS matrix. Kokkos-kernel's graph coloring algorithm is then called to color this dual graph which returns a coloring of the original graph's hyperedges.
+
 The current selection procedure traverses the each part's boundary based on
 descending distance from the topological center.
 We need to figure out how to use the distance information while allowing large
