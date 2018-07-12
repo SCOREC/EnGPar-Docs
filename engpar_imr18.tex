@@ -83,14 +83,25 @@ provide results - serial vs kokkos w/cuda -
 
 \section{Accelerating Cavity Selection} \label{sec:select}
 
-We need to implement gpu-parallel selection of cavities using graph edge (edges
-form cavities!) coloring to avoid races on the writing/reading the 'needs to be
-migrated' tag of graph vertices.
-Briefly discuss how we use kokkos-kernels to color the hyperedges in the user's graph.
-This should include a description of the CSR derived from hyperedge-to-vertex-to-hyperedge
-second adjacencies.
+Accelerating the selection of cavities requires simulateously evaluating many
+cavities simultaneously.
+The current single threaded selection procedure evaluates cavities in order of
+their descending distance from the topological center.
+Since the ordered selection exposes no concurrency an alternative application of
+the topological distance is needed.
+One approach is to bin the cavities by distance.
+For large parts, or parts with high surface area, this will expose a modest
+amount of concurrency.
+A second approach applies the topological distance sorting after a fully
+parallel cavity evaluation has executed.
+Given that this approach provides maximum concurrency during cavity evaluation,
+and can use a data-parallel sorting operation, it is the prodcedure used in this
+work.
 
-The Kokkos-kernels data-parallel graph coloring algorithm is used to
+Critical to concurrent cavity evaluation is avoiding race conditions when
+writing and reading the integer associated with each graph vertex indicating
+which process they will be migrated to.
+Kokkos-kernels data-parallel graph coloring algorithm is used to
 color the hyperedges of the EnGPar hypergraph.
 Transforming the hypergraph to the symmetric adjacency matrix required as input
 to the coloring procedure requires creating the dual of the hypergraph.
@@ -100,8 +111,6 @@ an edge between two hyperedges if they share at least one common vertex.
 Kokkos-kernel's graph coloring algorithm is then called to color this dual graph
 which returns a coloring of the original graph's hyperedges.
 
-The current selection procedure traverses the each part's boundary based on
-descending distance from the topological center.
 
 We need to figure out how to use the distance information while allowing large
 sets of cavities to be evaluated simultaneously.
