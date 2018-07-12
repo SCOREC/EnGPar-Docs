@@ -14,7 +14,7 @@ git submodule update
 
 ## Build
 
-```latexmk -r latexmk.<linux|osx>```
+```latexmk -r latexmk.<linux|osx|rhel7>```
 
 will produce an `out` directory with the `engpar_imr18.pdf`
 
