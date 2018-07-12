@@ -18,3 +18,9 @@ git submodule update
 
 will produce an `out` directory with the `engpar_imr18.pdf`
 
+### Rhel7
+
+The SCOREC rhel7 systems are missing the `framed.sty` latex package.  It has
+been added to the repo to support the build until the latex system install is
+updated.
+
