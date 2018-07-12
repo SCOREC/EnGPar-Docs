@@ -76,6 +76,8 @@ extending it to run on GPUs
   \item indicate that we will accelerate selection via BFS for distance computation and coloring for cavity selection
 \end{itemize}
 
+A cavity is formed by a hyperedge and the vertices pinned to it.
+
 \section{Accelerating Distance Computation} \label{sec:dist}
 
 provide results - serial vs kokkos w/cuda -
@@ -101,8 +103,18 @@ work.
 Critical to concurrent cavity evaluation is avoiding race conditions when
 writing and reading the integer associated with each graph vertex indicating
 which process they will be migrated to.
-Kokkos-kernels data-parallel graph coloring algorithm is used to
+Hyperedge coloring ensures that any two hyperedges that share a common vertex
+will be assigned a different color.
+Hyperedges with the same color can be processed, race-free, concurrently
+{\color{red}WORDING IS ODD}.
+
+{\color{red}A figure showing hyperedge cavity selection and conflicts would be
+helpful}
+
+Kokkos-kernels data-parallel graph coloring procedure REFERENCE is used to
 color the hyperedges of the EnGPar hypergraph.
+{\color{red}NOTE, we only really need to color the hyperedges on the part boundary,
+but I doubt it is worth the work, or minor performance gain, to pass a reduced CSR.}
 Transforming the hypergraph to the symmetric adjacency matrix required as input
 to the coloring procedure requires creating the dual of the hypergraph.
 The dual graph represents the second adjacencies of
@@ -111,29 +123,9 @@ an edge between two hyperedges if they share at least one common vertex.
 Kokkos-kernel's graph coloring algorithm is then called to color this dual graph
 which returns a coloring of the original graph's hyperedges.
 
-
-We need to figure out how to use the distance information while allowing large
-sets of cavities to be evaluated simultaneously.
-Possible approaches:
-\begin{enumerate}
-  \item ignore use of distance - parts will be large for efficient gpu
-    computation and there will be fewer aspect ratio issues
-  \item bin the cavities based on distance - the number of bins should define
-    sets that are as large as possible without degrading the quality of
-    selection - we want to select the close cavities first
-  \item ignore distance and process all cavities simultaneously then apply a
-    filter based on distance to remove the cavities with the largest distance -
-    gpus support parallel sort so this should work - kokkos has a sorting
-    method:
-    \url{https://github.com/kokkos/kokkos/issues/422} \label{sortingSelect}
-\end{enumerate}
-
-Of the three options listed above, it seems like \#\ref{sortingSelect} will
-expose the most concurrency and require the fewest algorithm modifications.
-
 \begin{itemize}
-  \item provide results - serial vs kokkos w/cuda
-  \item may want to use a simple graph instead of waiting to have a hypergraph coloring procedure; that could be in future work/conclusion
+  \item do we need to provide coloring-only timings here or will that all go in
+    the results section?
 \end{itemize}
 
 \section{Application Results} \label{sec:results}
