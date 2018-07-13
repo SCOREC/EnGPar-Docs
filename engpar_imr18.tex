@@ -105,8 +105,8 @@ writing and reading the integer associated with each graph vertex indicating
 which process they will be migrated to.
 Hyperedge coloring ensures that any two hyperedges that share a common vertex
 will be assigned a different color.
-Hyperedges with the same color can be processed, race-free, concurrently
-{\color{red}WORDING IS ODD}.
+Hyperedges with the same color can be evaluated concurrently without
+race conditions.
 
 {\color{red}A figure showing hyperedge cavity selection and conflicts would be
 helpful}
