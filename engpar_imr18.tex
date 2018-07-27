@@ -98,7 +98,28 @@ mesh vertices are represented by hyperedges.
 
 {\color{red} add ngraph Figure here}
 
-A cavity is formed by a hyperedge and the vertices pinned to it.
+\subsection{Diffusive Load Balancing}
+
+EnGPar's diffusive algorithm is an iterative local refinement strategy where in each
+iteration the target criteria is improved until the imbalance is under a given
+tolerance or the imbalance cannot be improved further. Each iteration consists of three
+steps: targeting, selection, and migration. The targeting phase consists of gathering
+metrics on the part and its neighbors in order to determine which neighboring parts to
+send weight to and how much weight to send. The selection step is where graph vertices
+on the boundary are chosen to be sent to neighboring parts in order to satisfy the
+weights determined by the targeting phase. Finally, the migration phase sends the graph
+entities that were selected to the destination parts and the graph is reconstructed.
+
+In this work, we target accelerating two sections of the selection phase. The first is
+the distance computation where hyperedges on the boundary are ordered based on their
+distance from the center of the part from furthest to closest.
+{\color{red}Should give more details as to why this is important.}
+The second is the selection of which cavities, defined by a hyperedge and the
+vertices that are connected by it, on the part boundary to send to neighboring parts.
+
+{\color{red} We could add one of the cavity images from the presentations?}
+
+%A cavity is formed by a hyperedge and the vertices pinned to it.
 
 \section{Accelerating Distance Computation} \label{sec:dist}
 
