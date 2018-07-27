@@ -86,6 +86,18 @@ for the relatively small changes to imbalance that are seen in adaptive mesh sim
   \item indicate that we will accelerate selection via BFS for distance computation and coloring for cavity selection
 \end{itemize}
 
+\subsection{N-graph}
+
+EnGPar is a partition improvement tool that utilizes a specialized multi-hypergraph,
+called the N-graph, to describe the portions of the mesh that require load balancing.
+The N-graph consists of vertices which represent the primary dimension entities of the
+mesh. The vertices are connected by hyperedges created from the secondary dimensions of
+the mesh that require load balancing. Figure \ref{fig:ngraph} shows the conversion from
+mesh (a) to hypergraph (b) where mesh faces are used to create the graph vertices and
+mesh vertices are represented by hyperedges.
+
+{\color{red} add ngraph Figure here}
+
 A cavity is formed by a hyperedge and the vertices pinned to it.
 
 \section{Accelerating Distance Computation} \label{sec:dist}
