@@ -70,6 +70,15 @@ and Mark S. Shephard
 extending it to run on GPUs
 \end{itemize}
 
+Unstructured mesh applications running on current and next generation machines require the
+computational work related to mesh entities to be evenly distruibuted across processes in
+order to achieve maximal performance. While common partitioning techniques such as multilevel
+[REFERENCES] or geometric [REFERENCES] methods are good for creating an initial distribution
+of load, evolving simulations where the mesh and computational load changes during the
+simulation require dynamic load balancing techniques that are quick to improve the partition
+as the work load changes. Diffusive load balancing methods allow quick partition refinement
+for the relatively small changes to imbalance that are seen in adaptive mesh simulations.
+
 \section{EnGPar Dynamic Load Balancing} \label{sec:engpar}
 
 \begin{itemize}
