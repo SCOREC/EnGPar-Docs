@@ -157,6 +157,30 @@ will be assigned a different color.
 Hyperedges with the same color can be evaluated concurrently without
 race conditions.
 
+\begin{verbatim}
+edge_vertex_edge_adjacencies(G):
+  N = |E|
+  A = [N*N]
+  parallel for each vertex:
+    parallel for i in hyperedges(v):
+     parallel for j!=i in hyperedges(v):
+       A(i,j) = 1
+  deg = [N+1]
+  deg(0)=0
+  parallel for row i in A:
+    deg(i+1) = sum( A(i,j=0..N-1) )
+  parallel prefix sum:
+    deg(i) = sum(deg(j=0,i))
+  edgelist = [deg(N)]
+  parallel for row i in A:
+    idx = deg(i)
+    while i != deg(i+1):
+      for column j in A:
+        if( A(i,j) == 1 ):
+          edgelist(idx++) = j
+\end{verbatim}
+
+
 {\color{red}A figure showing hyperedge cavity selection and conflicts would be
 helpful}
 
