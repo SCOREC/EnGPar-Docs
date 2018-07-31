@@ -156,7 +156,9 @@ Hyperedge coloring ensures that any two hyperedges that share a common vertex
 will be assigned a different color.
 Hyperedges with the same color can be evaluated concurrently without
 race conditions.
+
 \subsubsection{Parallel EVE Construction}
+
 \begin{verbatim}
 edge_vertex_edge_adjacencies(G):
   N = |E|
@@ -179,9 +181,22 @@ edge_vertex_edge_adjacencies(G):
         if( A(i,j) == 1 ):
           edgelist(idx++) = j
 \end{verbatim}
-The construction of the crs matrix starts by making a matrix that stores edge adjacencies.
-Because the information being read and written should not overlap or change due to race conditions multiple levels or parallelism can be leveraged to improve performance. Then the matrix is converted to compressed row storage form using two single dimension arrays, \verb|deg| and \verb|edgelist|. Because \verb|deg| stores cumulative number of entries by row, a parallel reduction is utilized to find the total number of entries in a row then a parallel prefix sum  modifies the \verb|deg| array to store the total number of entries up to row \verb|i| exclusively. \verb|edgelist| stores the column index of the non-zero matrix entries which are the hyperedge labels in this construction.
-\verb|edgelist| stores the column index of each entry in row-major order. 
+
+The construction of the crs matrix starts by making a matrix that stores edge
+adjacencies.
+Because the information being read and written should not overlap or change due
+to race conditions multiple levels or parallelism can be leveraged to improve
+performance.
+Then the matrix is converted to compressed row storage form using two single
+dimension arrays, \verb|deg| and \verb|edgelist|.
+Because \verb|deg| stores cumulative number of entries by row, a parallel
+reduction is utilized to find the total number of entries in a row then a
+parallel prefix sum  modifies the \verb|deg| array to store the total number of
+entries up to row \verb|i| exclusively.
+\verb|edgelist| stores the column index of the non-zero matrix entries which are
+the hyperedge labels in this construction.
+\verb|edgelist| stores the column index of each entry in row-major order.
+
 \subsubsection{Coloring Call}
 \begin{verbatim}
 agi::lid_t EnGPar_KokkosColoring(ColoringInput* in, agi::lid_t** colors) {
@@ -241,13 +256,17 @@ agi::lid_t EnGPar_KokkosColoring(ColoringInput* in, agi::lid_t** colors) {
   return 0;
 }
 \end{verbatim}
-This code is mostly setup to call kokkos coloring on a device. many typedefs are used and views are created to properly take advantage or the portability features of kokkos.
+
+This code is mostly setup to call kokkos coloring on a device. many typedefs are
+used and views are created to properly take advantage or the portability
+features of kokkos.
 
 {\color{red}A figure showing hyperedge cavity selection and conflicts would be
 helpful}
 
 Kokkos-kernels data-parallel graph coloring procedure REFERENCE is used to
 color the hyperedges of the EnGPar hypergraph.
+
 {\color{red}NOTE, we only really need to color the hyperedges on the part boundary,
 but I doubt it is worth the work, or minor performance gain, to pass a reduced CSR.}
 Transforming the hypergraph to the symmetric adjacency matrix required as input
