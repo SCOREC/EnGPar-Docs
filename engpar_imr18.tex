@@ -94,9 +94,15 @@ The N-graph consists of vertices which represent the primary dimension entities 
 mesh. The vertices are connected by hyperedges created from the secondary dimensions of
 the mesh that require load balancing. Figure \ref{fig:ngraph} shows the conversion from
 mesh (a) to hypergraph (b) where mesh faces are used to create the graph vertices and
-mesh vertices are represented by hyperedges.
+mesh vertices are represented by hyperedges. A second edge type is used to represent mesh edges in (c). 
 
-{\color{red} add ngraph Figure here}
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=3.5in]{exampleMesh2Graph.png}
+  \caption{A triangular mesh (a) converted to the N-graph with mesh faces represented by graph vertices and mesh vertices as hyperedges (b) and mesh edges as a second hyperedge type (c).}
+  \label{fig:edgecounts}
+\end{figure}
+
 
 \subsection{Diffusive Load Balancing}
 
