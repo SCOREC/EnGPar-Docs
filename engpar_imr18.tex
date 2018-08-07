@@ -26,6 +26,9 @@
 \usepackage{multicol}        % used for the two-column index
 \usepackage[bottom]{footmisc}% places footnotes at page bottom
 
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
 % see the list of further useful packages
 % in the Reference Guide
 
@@ -109,12 +112,41 @@ mesh vertices are represented by hyperedges. A second edge type is used to repre
 EnGPar's diffusive algorithm is an iterative local refinement strategy where in each
 iteration the target criteria is improved until the imbalance is under a given
 tolerance or the imbalance cannot be improved further. Each iteration consists of three
-steps: targeting, selection, and migration. The targeting phase consists of gathering
+steps: targeting, selection, and migration.
+Algorithm~\ref{alg:engpar} lists the pseudo code.
+The targeting phase consists of gathering
 metrics on the part and its neighbors in order to determine which neighboring parts to
 send weight to and how much weight to send. The selection step is where graph vertices
 on the boundary are chosen to be sent to neighboring parts in order to satisfy the
 weights determined by the targeting phase. Finally, the migration phase sends the graph
 entities that were selected to the destination parts and the graph is reconstructed.
+
+\begin{algorithm}[H]
+  \caption{Diffusive Load Balancing Framework}
+  \label{alg:engpar}
+  \small
+  \begin{algorithmic}[1]
+    \Procedure{Balance}{$ngraph$,$entity\_types$}
+    \ForAll{$t \in entity\_types$}
+    \While{imbalance of $t >$ tolerance}
+    \Call{RunStep}{$ngraph$,$t$}
+    \If{Balancing Stagnates}
+    \State break
+    \EndIf
+    \EndWhile
+    \EndFor
+    \EndProcedure
+
+    \Procedure{RunStep}{$ngraph$,$t$}
+    \State $sides = makeSides(ngraph)$
+    \State $weights = makeWeights(ngraph,sides,t)$
+    \State $targets = makeTargets(ngraph,sides,weights)$
+    \State $queue = makeQueue(ngraph)$
+    \State $plan = select(ngraph,targets,queue)$
+    \State $ngraph.migrate(plan)$
+    \EndProcedure
+  \end{algorithmic}
+\end{algorithm}
 
 In this work, we target accelerating two sections of the selection phase. The first is
 the distance computation where hyperedges on the boundary are ordered based on their
