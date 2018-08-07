@@ -98,7 +98,7 @@ mesh vertices are represented by hyperedges. A second edge type is used to repre
 
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=3.5in]{exampleMesh2Graph.png}
+  \includegraphics[width=3.5in]{images/exampleMesh2Graph.png}
   \caption{A triangular mesh (a) converted to the N-graph with mesh faces represented by graph vertices and mesh vertices as hyperedges (b) and mesh edges as a second hyperedge type (c).}
   \label{fig:edgecounts}
 \end{figure}
@@ -191,29 +191,37 @@ the hyperedge labels in this construction.
 
 \begin{verbatim}
 edge_vertex_edge_adjacencies(G):
+  parallel for each vertex
+    for i in hyperedges(v)
+      for j!=i in hyperedges(v)
+        numAdj += 1 
+  // value set to void works as True/False indicator
+  Kokkos::UnorderedMap<Kokkos::pair<uint,uint>,void> m (numAdj)
+  parallel for each vertex
+    for i in hyperedges(v)
+      for j!=i in hyperedges(v)
+        Kokkos::pair<uint,uint> p( i , j )
+        m.insert(p)       
   N = |E|
-  A = [N*N]
-  parallel for each vertex:
-    parallel for i in hyperedges(v):
-     parallel for j!=i in hyperedges(v):
-       A(i,j) = 1
   deg = [N+1]
-  deg(0)=0
-  parallel for row i in A:
-    deg(i+1) = parallel reduction sum( A(i,j=0..N-1) )
-  parallel prefix sum:
-    deg(i) = sum( deg(j=0,i) )
-  edgelist = [deg(N)]
-  parallel for row i in A:
-    idx = deg(i)
-    while i != deg(i+1):
-      for column j in A:
-        if( A(i,j) == 1 ):
-          edgelist(idx++) = j
+  deg(0) = 0
+  parallel for each key in m
+    Kokkos::pair<uint,uint> p = m.get(i).key 
+    deg(p.first+1)++; //atomic add    
+  parallel prefix sum 
+    deg(i) = sum(deg(j=0,i))  
+  edgeList = [deg(N)]
+  adjCount = [N]
+  parallel for each key in m
+    Kokkos::pair<uint,uint> p = m.get(i).key
+    e = degS(p.first)
+    idx = adjCount(p.first)++
+    edgeListS(e+idx) = p.second
 \end{verbatim}
 
 
 \subsubsection{Coloring Call}
+{\small
 \begin{verbatim}
 agi::lid_t EnGPar_KokkosColoring(ColoringInput* in, agi::lid_t** colors) {
   agi::PNgraph* pg = in->g->publicize();
@@ -272,6 +280,7 @@ agi::lid_t EnGPar_KokkosColoring(ColoringInput* in, agi::lid_t** colors) {
   return 0;
 }
 \end{verbatim}
+}
 
 This code is mostly setup to call kokkos coloring on a device.
 The portability of Kokkos relies on the creation of the 'View' array
@@ -284,6 +293,15 @@ Typedefs are extensively used to help readability.
 \end{itemize}
 
 \section{Application Results} \label{sec:results}
+
+% TIMING RESULTS
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[width=3in]{images/Parallel_Speedup.png}
+	\caption{The ratio of serial time compared to parallel for eve construction and coloring }
+	\label{fig:edgecounts}
+\end{figure}
+The timing speedup results shown in \textbf{Fig. 2} demonstrate that parallelism speeds up both coloring and graph construction. However the speedup to graph construction is nearly constant while the speedup to graph coloring continues to increase with the problem size.
 
 \begin{itemize}
   \item Figure out a better title for this section
