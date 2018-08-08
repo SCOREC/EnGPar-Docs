@@ -320,15 +320,14 @@ race conditions.
 In Figure~\ref{fig:partBdry}, the red and blue colored cavities do not share any
 vertices and thus could be processed simultaneously.
 
-Kokkos-kernels data-parallel graph coloring procedure REFERENCE is used to
+The Kokkos-kernels data-parallel graph coloring procedure~\cite{kokkosColoring} is used to
 color the hyperedges of the EnGPar hypergraph.
-
-Transforming the hypergraph to the symmetric adjacency matrix required as input
-to the coloring procedure requires creating the dual of the hypergraph.
-The dual graph represents the second adjacencies of
-hyperedge-to-vertex-to-hyperedge (herein referred to as `EVE') by creating one
-vertex for each hyperedge, and an edge between two hyperedges if they share at
-least one common vertex.
+This procedure is driven by a symmetrix adjacency matrix.
+To color hyperedges that don't share vertices we must create the
+hyperedge-to-vertex-to-hyperedge adjacency matrix (herein referred to as `EVE');
+the dual of the hypergraph.
+The EVE graph has one vertex for each hyperedge, and an edge between two
+hyperedges if they share at least one common vertex.
 Kokkos-kernel's graph coloring algorithm is then called to color this dual graph
 which returns a coloring of the original graph's hyperedges.
 
