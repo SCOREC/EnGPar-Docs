@@ -153,9 +153,18 @@ In this work, we target accelerating distance computation and cavity selection.
 %communication and the trim procedures that will not be accelerated in this
 %work.  Timings show that distance computation takes between 5\% and 16\% of the
 %total time.  Need to re-run with selection timers.
-These two procedures consume up to 50\% of the total execution time and are well
-suited to acceleration as they do not require communications.
-MORE
+As shown by the 'Balancing' bar in Figure~\ref{fig:partsgraph}, these two
+procedures consume up to 50\% of the total execution time and are well suited to
+acceleration as they do not require communications~\cite{engparSC17}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=3in]{images/timeparts_v_cores.png}
+  \caption{A breakdown of timing for each step of the EnGPar runs. The
+    bottom part of the bar for balancing represents the migration
+    component of the balancer.~\cite{engparSC17}}
+  \label{fig:partsgraph}
+\end{figure}
 
 Distance computation is performed by the $makeQueue$ function of
 Algorithm~\ref{alg:engpar} where hyperedges on the boundary are ordered based on
@@ -182,21 +191,25 @@ three) to the part boundary.
 Cavity selection, the $select$ function of Algorithm~\ref{alg:engpar},
 determines if a cavity, defined as a hyperedge and the vertices that are
 connected by it, on the part boundary should be sent to neighboring parts.
-Figure~\ref{fig:cavity} depicts two cavities on the part boundary being
+Figure~\ref{fig:partBdry} depicts two cavities on the part boundary being
 evaluated for migration from part 0 (bottom) to part 1 (top).
 A cavity is selected for migration if (1) the part that the hyperedge is shared
 with is a target part, (2) the target part has not been sent more weight than
 the limit, and (3) the size of the cavity is small.
 
 \begin{figure}
+  \label{fig:partBdry}
   \centering
   \includegraphics[width=0.8\textwidth]{images/PartBoundary.png}
-  \caption{Two parts of an N-graph with a side of size 4.
-    Two cavities are shown in red and blue for part 0.
+  \caption{Two parts of an N-graph sharing four hyperedges at the part boundary.
+    Two of the four cavities formed from the hyperedges on part 0 are shown in
+    red and blue.
   }
 \end{figure}
 
 \section{Accelerating Distance Computation} \label{sec:dist}
+
+
 
 provide results - serial vs kokkos w/cuda -
 \url{https://bitbucket.org/c_smith/engpar_siampp18/src/master/}
