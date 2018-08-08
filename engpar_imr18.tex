@@ -164,12 +164,15 @@ acceleration as they do not require communications~\cite{engparSC17}.
 Distance computation is performed by the $makeQueue$ function of
 Algorithm~\ref{alg:engpar} where hyperedges on the boundary are ordered based on
 their distance from the center of the part from furthest to closest.
+EnGPar computes this distance with two breadth first traversals of the graph.
 Figure~\ref{fig:distQueue} depicts the topological distances on a single part of
 a 2D triangular mesh.
 The vertices in the left side of Figure~\ref{fig:distQueue} are labelled with
-the topological distance from the part boundary inward.
+the topological distance from the part boundary that results from the first
+traversal from the outside-in.
 The right side shows the distance from one of the deepest vertices (distance
-three) to the part boundary.
+three) to the part boundary that results from the second traversal from the
+inside-out.
 
 \begin{figure}
   \centering
