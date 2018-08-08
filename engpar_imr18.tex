@@ -66,12 +66,12 @@ and Mark S. Shephard
 
 \section{Introduction} \label{sec:intro}
 
-\begin{itemize}
-  \item briefly motivate dynamic load balancing
-  \item quantify how GPUs are providing the majority of computing performance (\# of systems with GPUs in top 10 systems of top500, graph500, HPCG)
-  \item end with a sentence that says what engpar does (diffusion) and how we are
-extending it to run on GPUs
-\end{itemize}
+%\begin{itemize}
+%  \item briefly motivate dynamic load balancing
+%  \item quantify how GPUs are providing the majority of computing performance (\# of systems with GPUs in top 10 systems of top500, graph500, HPCG)
+%  \item end with a sentence that says what engpar does (diffusion) and how we are
+%extending it to run on GPUs
+%\end{itemize}
 
 Unstructured mesh applications running on current and next generation machines require the
 computational work related to mesh entities to be evenly distruibuted across processes in
@@ -84,10 +84,10 @@ for the relatively small changes to imbalance that are seen in adaptive mesh sim
 
 \section{EnGPar Dynamic Load Balancing} \label{sec:engpar}
 
-\begin{itemize}
-  \item multi-graph, high-level diffusion algorithm (targeting, selection, migration)
-  \item indicate that we will accelerate selection via BFS for distance computation and coloring for cavity selection
-\end{itemize}
+%\begin{itemize}
+%  \item multi-graph, high-level diffusion algorithm (targeting, selection, migration)
+%  \item indicate that we will accelerate selection via BFS for distance computation and coloring for cavity selection
+%\end{itemize}
 
 \subsection{N-graph}
 
@@ -299,11 +299,6 @@ The portability of Kokkos relies on the creation of the 'View' array
 abstraction.
 Typedefs are extensively used to help readability.
 
-\begin{itemize}
-  \item do we need to provide coloring-only timings here or will that all go in
-    the results section?
-\end{itemize}
-
 \section{Application Results} \label{sec:results}
 
 % TIMING RESULTS
@@ -315,35 +310,35 @@ Typedefs are extensively used to help readability.
 \end{figure}
 The timing speedup results shown in \textbf{Fig. 2} demonstrate that parallelism speeds up both coloring and graph construction. However the speedup to graph construction is nearly constant while the speedup to graph coloring continues to increase with the problem size.
 
-\begin{itemize}
-  \item Figure out a better title for this section
-  \item flow control strong scaling case with 1.3B tets: \\
-64Ki \url{https://zenodo.org/record/833519#.WztuxXWYV1M} \\
-128Ki \url{https://zenodo.org/record/834946#.Wztu-HWYV1M} \\
-256Ki \url{https://zenodo.org/record/835483#.WztvCXWYV1M} \\
-512Ki \url{https://zenodo.org/record/835742#.WztvG3WYV1M}
-  \item the number of elements per-process may be too small for nodes with large GPUs to run efficiently (data transfer may become more costly than running the selection on the CPU!) - especially as we approach 512Ki parts
-  \item we will have to run the condense tool to create an 2Ki (640k elms/part),
-    4Ki (320k), 8Ki (160k), 16Ki (80k), and 32Ki (40k) meshes -
-    fun3d uses between 75M and 2.3M elements per GPU on summitdev (from siampp18
-    presentation)
-  \item run on ORNL titan or summit (if accessible)
-  \item compare runtimes versus results from SC17 paper~\cite{engparSC17}
-  \item use mesh vertex = graph vertex and mesh edge = graph edge for tests -
-    will need to run MPI only engpar to establish the baseline performance
-  \item plot the time spent in MPI only selection vs kokkos coloring selection
-    vs part size - the comparison must start and end at equivalent points in the
-    code - start before selection and end just before migration (or whatever the
-    next stage) begins
-  \item plot the breakdown of time spent in coloring selection vs part size -
-    data transfer, color computation, selection (possibly broken into cavity
-    selection and filtering for distance), tranferring the selection list
-    back to the host
-  \item I expect there will be some reduction in partition quality using the
-    coloring based selection since we won't have as fine-grained control over
-    the process as the MPI only procedure.  As long as the quality reduction is
-    controlled and performance is better we should be OK.
-\end{itemize}
+%\begin{itemize}
+%  \item Figure out a better title for this section
+%  \item flow control strong scaling case with 1.3B tets: \\
+%64Ki \url{https://zenodo.org/record/833519#.WztuxXWYV1M} \\
+%128Ki \url{https://zenodo.org/record/834946#.Wztu-HWYV1M} \\
+%256Ki \url{https://zenodo.org/record/835483#.WztvCXWYV1M} \\
+%512Ki \url{https://zenodo.org/record/835742#.WztvG3WYV1M}
+%  \item the number of elements per-process may be too small for nodes with large GPUs to run efficiently (data transfer may become more costly than running the selection on the CPU!) - especially as we approach 512Ki parts
+%  \item we will have to run the condense tool to create an 2Ki (640k elms/part),
+%    4Ki (320k), 8Ki (160k), 16Ki (80k), and 32Ki (40k) meshes -
+%    fun3d uses between 75M and 2.3M elements per GPU on summitdev (from siampp18
+%    presentation)
+%  \item run on ORNL titan or summit (if accessible)
+%  \item compare runtimes versus results from SC17 paper~\cite{engparSC17}
+%  \item use mesh vertex = graph vertex and mesh edge = graph edge for tests -
+%    will need to run MPI only engpar to establish the baseline performance
+%  \item plot the time spent in MPI only selection vs kokkos coloring selection
+%    vs part size - the comparison must start and end at equivalent points in the
+%    code - start before selection and end just before migration (or whatever the
+%    next stage) begins
+%  \item plot the breakdown of time spent in coloring selection vs part size -
+%    data transfer, color computation, selection (possibly broken into cavity
+%    selection and filtering for distance), tranferring the selection list
+%    back to the host
+%  \item I expect there will be some reduction in partition quality using the
+%    coloring based selection since we won't have as fine-grained control over
+%    the process as the MPI only procedure.  As long as the quality reduction is
+%    controlled and performance is better we should be OK.
+%\end{itemize}
 
 \section{Closing Remarks} \label{sec:closing}
 \begin{itemize}
