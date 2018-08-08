@@ -257,51 +257,56 @@ which returns a coloring of the original graph's hyperedges.
 \subsubsection{Parallel EVE Construction}
 
 The construction of the second adjacency crs matrix starts by making a
-map that stores hyperedge-to-hyperedge adjacencies. Because the information being read and written should not overlap or change due to race conditions parallelism can be leveraged to improve performance. Using the map two single dimension arrays, \verb|deg| and \verb|edgeList|, are created to represent the graph. Because \verb|deg| stores degree of each edge, a parallel reduction is utilized to find the total degree of an edge then a parallel prefix sum modifies the \verb|deg| array to store the total number of entries up to row \verb|i| exclusively. \verb|edgeList| stores the column index of the non-zero matrix entries which are the hyperedge labels in this construction. The column index in this case represents the edge adjacent to the edge labeled by the row index.
+set that stores hyperedge-to-hyperedge adjacencies. Because the information being read and written should not overlap or change due to race conditions parallelism can be leveraged to improve performance. Using the map two single dimension arrays, \verb|deg| and \verb|edgeList|, are created to represent the graph. Because \verb|deg| stores degree of each edge, a parallel reduction is utilized to find the total degree of an edge then a parallel prefix sum modifies the \verb|deg| array to store the total number of entries up to row \verb|i| exclusively. \verb|edgeList| stores the column index of the non-zero matrix entries which are the hyperedge labels in this construction. The column index in this case represents the edge adjacent to the edge labeled by the row index.
 
-\begin{verbatim}
-edge_vertex_edge_adjacencies(G):
-  parallel for each vertex
-    for i in hyperedges(v)
-      for j!=i in hyperedges(v)
-        numAdj += 1 
-  // value set to void works as True/False indicator
-  Kokkos::UnorderedMap<Kokkos::pair<uint,uint>,void> m (numAdj)
-  parallel for each vertex
-    for i in hyperedges(v)
-      for j!=i in hyperedges(v)
-        Kokkos::pair<uint,uint> p( i , j )
-        m.insert(p)       
-  N = |E|
-  deg = [N+1]
-  deg(0) = 0
-  parallel for each key in m
-    Kokkos::pair<uint,uint> p = m.get(i).key 
-    deg(p.first+1)++; //atomic add    
-  parallel prefix sum 
-    deg(i) = sum(deg(j=0,i))  
-  edgeList = [deg(N)]
-  adjCount = [N]
-  parallel for each key in m
-    Kokkos::pair<uint,uint> p = m.get(i).key
-    e = degS(p.first)
-    idx = adjCount(p.first)++
-    edgeListS(e+idx) = p.second
-\end{verbatim}
+\begin{algorithm}[H]
+	\caption{Dual Graph Converter}
+	\label{alg:engpar}
+	\algloopdefx{PFor}[1]{\textbf{parallel for} #1 \textbf{do}}
+	\small
+	\begin{algorithmic}[1]
+		\Procedure{CREATE DUAL CSR}{$G=(V,E)$}
+		\State $n = 0$
+		\PFor{$v \in V$}
+			\ForAll{$(i,v) \in E$}
+				\ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
+					\State $n$++
+				\EndFor
+			\EndFor
+		\State set of int pair $m$ (n) \Comment{n is a upper bound on the set's size}
+		\PFor{$v \in V$}
+			\ForAll{$(i,v) \in E$}
+			\ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
+					\State m.insert ( $(i,j)$ )
+				\EndFor
+			\EndFor
+		\State $N=|E|$
+		\State deg = [$N+1$]
+		\PFor {$k\in m$}
+			\State deg($k$.first+1)++
+		\PFor{$i=0,1,\ldots,N$}
+			\State deg[$i$] = sum(deg[$0:i$])
+		\State edgeList = [deg[N]]
+		\State degreeCount = [N]
+		\PFor {$k\in m$}
+			\State $e$ = deg[$k$.first]
+			\State $i$ = degreeCount($k$.first)++
+			\State edgeList[e+i] = $k$.second
+		\EndProcedure
+	\end{algorithmic}
+\end{algorithm}
+This algorithm converts a hypergrpah to its dual. The number of adjacencies are counted then used to initialize the set to avoid needing to allocate more memory later in the algorithm. Two arrays are created to store the graph information, deg and edgeList. These store the offset of a vertex into the list of vertices adjacent to it. The construction is able to take advantage of parallelism to parse the graph and write the arrays. Together the two arrays represent the graph in compressed sparse row format which can be passed directly to a parallel graph coloring algorithm. This coloring algorithm is implemented in Kokkos Kernels \textbf{REFERENCE}.
 
-This code is mostly setup to call kokkos coloring on a device.
-The portability of Kokkos relies on the creation of the 'View' array
-abstraction.
-Typedefs are extensively used to help readability.
+\section{Application Results} \label{sec:results}
 
 % TIMING RESULTS
 \begin{figure}[!ht]
 	\centering
-	\includegraphics[width=3in]{images/Parallel_Speedup.png}
-	\caption{The ratio of serial time compared to parallel for eve construction and coloring }
+	\includegraphics[width=4in]{images/Parallel_Speedup.png}
+	\caption{The ratio of serial execution time to parallel for dual graph construction and graph coloring}
 	\label{fig:coloringSpeedup}
 \end{figure}
-The timing speedup results shown in \textbf{Fig. 2} demonstrate that parallelism speeds up both coloring and graph construction. However the speedup to graph construction is nearly constant while the speedup to graph coloring continues to increase with the problem size.
+The timing speedup results shown in \textbf{Fig. 2} demonstrate that parallelism speeds up both coloring and dual graph construction. The compiler used was gcc 4.8.5 with compiler flags -O2 on a redhat 7 OS with a GeForce GTX 1080 Ti running nvidia 396.26 and cuda version 9.2. It is notable that the speedup to graph construction is nearly constant while the increase to graph coloring continues to grow with the problem size.
 
 %\begin{itemize}
 %  \item Figure out a better title for this section
