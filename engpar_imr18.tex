@@ -207,15 +207,91 @@ the limit, and (3) the size of the cavity is small.
 
 \section{Accelerating Distance Computation} \label{sec:dist}
 
+Distance computation's breadth first traversal is accelerated with a OpenCL
+data-parallel ND-Range kernel for execution on GPUs and many-core processors.
+The host process calls the kernel once for each frontier in the traversal.
+The kernel implementation iterates over the graph vertices
+pinned to each hyperedge twice.
+The first iteration determines if in the previous iteration any vertices were
+marked with a distance equal to the current frontier depth.
+If a vertex is found then the second iteration updates the distance of the other
+vertices.
+This `pull' based-implementation is well explored in literature REFERENCES.
 
+The OpenCL pull implementation executes on a compressed sparse row (CSR) hypergraph
+representation and is compared to additional implementations that
+optimize the data structure and loops for uniform hypergraph-to-vertex
+connectivity.
+When the hypergraph is constructed from a unstructured mesh of tetrahedron, such
+that mesh vertices map to graph vertices and mesh elements to
+hyperedges, the number of vertices pinned to each hyperedge is exactly four.
+The uniform structure is leveraged by an implementation using the Sell-C-Sigma
+BESTA-and-MERENDING and manual hyperedge-to-vertex loop unrolling.
+In addition to these variants performance comparison is also provided for
+implementations using four byte integers, instead of eight byte, and a serial
+C++ `push` implementation.
 
-provide results - serial vs kokkos w/cuda -
-\url{https://bitbucket.org/c_smith/engpar_siampp18/src/master/}
+Figure~\ref{fig:bfs} depicts the performance of the different implementations
+relative to the `csr' implementation using the pull approach and a CSR
+hypergraph data structure.
+`scg' in the name of the implementation indicates that use of the Sell-C-Sigma
+data structure, `int' indicates use of four byte integers, and `unroll'
+indicates manual vertex loop unrolling.
+Runs were executed on the graphs listed in Table~\ref{tbl:uprightCounts} created
+from meshes of the 2014 RPI Formula Hybrid suspension upright depicted in
+Figure~\ref{fig:upright}.
+All tests were executed on an NVIDIA 1080ti using CUDA 9.2 (driver 396.26) on
+RedHat7 with GCC 4.8.5.
+The chunk size of the `scg' tests was fixed at 64; given the uniform degree of
+the test meshes there was no appreciable performance difference between
+different chunk size settings.
+Reported timings are the average of three runs.
+Timings include data transfers to and from the GPU.
+The OpenCL JIT compilation time is not included in the timing as this one-time
+cost would be amortized across tens of diffusive iterations.
 
-discuss slota, torsten, and Merijn work
+\begin{figure}
+  \begin{minipage}{0.4\textwidth}
+    \label{fig:upright}
+    \centering
+    \includegraphics[width=.4\textwidth]{images/upright400k.png}
+    \caption{400k element mesh of the 2014 RPI Formula Hybrid suspension upright.}
+  \end{minipage}\hfill
+  \begin{minipage}{0.5\textwidth}
+    \label{tbl:uprightCounts}
+    \begin{tabular}{l|rrrr}
+      graph & vertices & hyperedges & bfs levels & max frontier  \\
+      \hline
+      67k   & 66433    & 15697      & 25         & 4432          \\
+      190k  & 192728   & 40052      & 40         & 7992          \\
+      400k  & 404613   & 88651      & 48         & 17316         \\
+      890k  & 890925   & 187380     & 70         & 26664         \\
+      1.6M  & 1580611  & 336215     & 82         & 45268         \\
+      13M   & 12831104 & 2499193    & 82         & 95798         \\
+      28M   & 27943315 & 5190006    & 210        & 128035
+    \end{tabular}
+    \caption{Hypergraphs created from upright meshes. The suffix 'k' is shorthand
+    for thousand and 'M' is for million.}
+  \end{minipage}
+\end{figure}
 
-discuss implementation approach using uniform number of downward adjacencies to
-a hyperedge - due to elements -> hyperedges, and each element being a tet
+\begin{figure}
+  \centering
+  \label{fig:bfs}
+  \includegraphics[width=0.8\textwidth]{images/bfsPerformance.png}
+  \caption{
+    Performance of various breadth first traversal OpenCL data-parallel implementations
+    relative to the baseline `csr' implementation.
+  }
+\end{figure}
+
+On the largest mesh with 28 million elements, the `scg\_int\_unroll' is 11 times
+faster than the serial C++ push based implementation and 4.78 times faster than
+the `csr' implementation.
+The performance boost given by loop unrolling and use of the Sell-C-Sigma data
+structure are the result of improved memory coalesing.
+Reducing the integer size by half improves performance by 24\% for the 28
+million element mesh.
 
 \section{Accelerating Cavity Selection} \label{sec:select}
 
