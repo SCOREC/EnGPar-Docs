@@ -61,7 +61,13 @@ and Mark S. Shephard
 \maketitle
 
 \abstract{
-  In order to take advantage of distributed systems it is necessary to parallelize as many steps as possible in a work flow. Adaptive meshes often need load balancing to properly utilize the available concurrent computing resources. By representing the mesh as a hypergraph and utilizing coloring algorithms a desirable geometric partitioning can be achieved. By taking advantage of parallel architecture throughout the cost the process of creating a hypergraph and coloring is less than a typical geometric partitioning.
+Unstructured mesh applications running on current and next generation machines
+require the computational work related to mesh entities to be evenly
+distributed across processes in order to achieve maximal performance.
+To quickly balance large meshes on systems with accelerators the balancing
+procedure must also utilize the accelerator.
+This work presents algorithms and speedup results using OpenCL and Kokkos to
+accelerate portions of the EnGPar partition improvement diffusive load balancer.
 }
 
 \section{Introduction} \label{sec:intro}
@@ -73,14 +79,14 @@ and Mark S. Shephard
 %extending it to run on GPUs
 %\end{itemize}
 
-Unstructured mesh applications running on current and next generation machines require the
-computational work related to mesh entities to be evenly distruibuted across processes in
-order to achieve maximal performance. While common partitioning techniques such as multilevel
-[REFERENCES] or geometric [REFERENCES] methods are good for creating an initial distribution
-of load, evolving simulations where the mesh and computational load changes during the
-simulation require dynamic load balancing techniques that are quick to improve the partition
-as the work load changes. Diffusive load balancing methods allow quick partition refinement
-for the relatively small changes to imbalance that are seen in adaptive mesh simulations.
+While common partitioning techniques such as multilevel or geometric methods are
+good for creating an initial distribution of load, evolving simulations where
+the mesh and computational load changes during the simulation require dynamic
+load balancing techniques that are quick to improve the partition as the work
+load changes.
+Diffusive load balancing methods allow quick partition refinement for the
+relatively small changes to imbalance that are seen in adaptive mesh
+simulations.
 
 \section{EnGPar Dynamic Load Balancing} \label{sec:engpar}
 
@@ -93,187 +99,76 @@ EnGPar is a partition improvement tool that utilizes a specialized multi-hypergr
 called the N-graph, to describe the portions of the mesh that require load balancing.
 The N-graph consists of vertices which represent the primary dimension entities of the
 mesh. The vertices are connected by hyperedges created from the secondary dimensions of
-the mesh that require load balancing. Figure \ref{fig:ngraph} shows the conversion from
-mesh (a) to hypergraph (b) where mesh faces are used to create the graph vertices and
-mesh vertices are represented by hyperedges. A second edge type is used to represent mesh edges in (c). 
+the mesh that require load balancing.
 
-\begin{figure}[!ht]
-  \centering
-  \includegraphics[width=3.5in]{images/exampleMesh2Graph.png}
-  \caption{A triangular mesh (a) converted to the N-graph with mesh faces represented by graph vertices and mesh vertices as hyperedges (b) and mesh edges as a second hyperedge type (c).}
-  \label{fig:ngraph}
-\end{figure}
-
-EnGPar's diffusive algorithm is an iterative local refinement strategy where in each
-iteration the target criteria is improved until the imbalance is under a given
-tolerance or the imbalance cannot be improved further. Each iteration consists of three
-steps: targeting, selection, and migration.
-Algorithm~\ref{alg:engpar} lists the pseudo code.
-The targeting phase consists of gathering
-metrics on the part and its neighbors in order to determine which neighboring parts to
-send weight to and how much weight to send. The selection step is where graph vertices
-on the boundary are chosen to be sent to neighboring parts in order to satisfy the
-weights determined by the targeting phase. Finally, the migration phase sends the graph
-entities that were selected to the destination parts and the graph is reconstructed.
-
-\begin{algorithm}[H]
-  \caption{Diffusive Load Balancing Framework}
-  \label{alg:engpar}
-  \small
-  \begin{algorithmic}[1]
-    \Procedure{Balance}{$ngraph$,$entity\_types$}
-    \ForAll{$t \in entity\_types$}
-    \While{imbalance of $t >$ tolerance}
-    \Call{RunStep}{$ngraph$,$t$}
-    \If{Balancing Stagnates}
-    \State break
-    \EndIf
-    \EndWhile
-    \EndFor
-    \EndProcedure
-
-    \Procedure{RunStep}{$ngraph$,$t$}
-    \State $sides = makeSides(ngraph)$
-    \State $weights = makeWeights(ngraph,sides,t)$
-    \State $targets = makeTargets(ngraph,sides,weights)$
-    \State $queue = makeQueue(ngraph)$
-    \State $plan = select(ngraph,targets,queue)$
-    \State $ngraph.migrate(plan)$
-    \EndProcedure
-  \end{algorithmic}
-\end{algorithm}
+EnGPar's diffusive algorithm is an iterative local refinement strategy where in
+each iteration the target criteria is improved until the imbalance is under a
+given tolerance or the imbalance cannot be improved further.
+Each iteration consists of three steps: targeting, selection, and migration.
+The targeting phase consists of gathering metrics on the part and its neighbors
+in order to determine which neighboring parts to send weight to and how much
+weight to send.
+The selection step is where graph vertices on the boundary are chosen to be sent
+to neighboring parts in order to satisfy the weights determined by the targeting
+phase.
+Finally, the migration phase sends the graph entities that were selected to the
+destination parts and the graph is reconstructed.
 
 In this work, we target accelerating distance computation and cavity selection.
-%This estimate is high as the timings for the 'planning' includes some
-%communication and the trim procedures that will not be accelerated in this
-%work.  Timings show that distance computation takes between 5\% and 16\% of the
-%total time.  Need to re-run with selection timers.
-As shown by the `Balancing' bar in Figure~\ref{fig:partsgraph}, these two
-procedures consume up to 50\% of the total execution time and are well suited to
-acceleration as they do not require communications~\cite{engparSC17}.
+These two procedures consume up to 50\% of the total execution time and are well
+suited to acceleration as they do not require communications~\cite{engparSC17}.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=3in]{images/timeparts_v_cores.png}
-  \caption{A breakdown of timing for each step of the EnGPar runs. The
-    bottom part of the bar for balancing represents the migration
-    component of the balancer.~\cite{engparSC17}}
-  \label{fig:partsgraph}
-\end{figure}
-
-Distance computation is performed by the $makeQueue$ function of
-Algorithm~\ref{alg:engpar} where hyperedges on the boundary are ordered based on
-their distance from the center of the part from furthest to closest.
+Distance computation is performed during selection by ordering hyperedges on the
+boundary based on their distance from the center of the part from furthest to
+closest.
 EnGPar computes this distance with two breadth first traversals of the graph.
-Figure~\ref{fig:distQueue} depicts the topological distances on a single part of
-a 2D triangular mesh.
-The vertices in the left side of Figure~\ref{fig:distQueue} are labelled with
-the topological distance from the part boundary that results from the first
-traversal from the outside-in.
-The right side shows the distance from one of the deepest vertices (distance
-three) to the part boundary that results from the second traversal from the
-inside-out.
+The first traversal works outside-in starting at the part boundary.
+The second traversal starts from one of the hyperedges with the largest depth
+and works its way out to the boundary marking the distance from the starting
+point as it proceeds.
 
-\begin{figure}
-  \centering
-  \label{fig:distQueue}
-  \includegraphics[width=.4\textwidth]{images/2dTreeDepth.png}
-  \includegraphics[width=.41\textwidth]{images/2dDistance.png}
-  \caption{
-    (left) The distance from each vertex to the boundary and (right) the
-    distance from the core vertex (marked with a zero near the
-    bottom left corner).~\cite{SmithParma2015}
-  }
-\end{figure}
-
-Cavity selection, the $select$ function of Algorithm~\ref{alg:engpar},
-determines if a cavity, defined as a hyperedge and the vertices that are
-connected by it, on the part boundary should be sent to neighboring parts.
-Figure~\ref{fig:partBdry} depicts two cavities on the part boundary being
-evaluated for migration from part 0 (bottom) to part 1 (top).
+Cavity selection determines if a cavity, defined as a hyperedge and the vertices
+that are connected by it, on the part boundary should be sent to one of the
+neighboring parts.
 A cavity is selected for migration if (1) the part that the hyperedge is shared
 with is a target part, (2) the target part has not been sent more weight than
 the limit, and (3) the size of the cavity is small.
-
-\begin{figure}
-  \label{fig:partBdry}
-  \centering
-  \includegraphics[width=0.8\textwidth]{images/PartBoundary.png}
-  \caption{Two parts of an N-graph sharing four hyperedges at the part boundary.
-    Two of the four cavities formed from the hyperedges on part 0 are shown in
-    red and blue.
-  }
-\end{figure}
 
 \section{Accelerating Distance Computation} \label{sec:dist}
 
 Distance computation's breadth first traversal is accelerated with a OpenCL
 data-parallel ND-Range kernel for execution on GPUs and many-core processors.
 The host process calls the kernel once for each frontier in the traversal.
-The kernel implementation iterates over the graph vertices
-pinned to each hyperedge twice.
+The kernel implements a `pull' based approach by iterating over the graph
+vertices pinned to each hyperedge twice.
 The first iteration determines if in the previous iteration any vertices were
 marked with a distance equal to the current frontier depth.
 If a vertex is found then the second iteration updates the distance of the other
 vertices.
-This `pull' based-implementation is well explored in literature REFERENCES.
 
 The OpenCL pull implementation executes on a compressed sparse row (CSR) hypergraph
 representation and is compared to additional implementations that
 optimize the data structure and loops for uniform hypergraph-to-vertex
 connectivity.
-When the hypergraph is constructed from a unstructured mesh of tetrahedron, such
-that mesh vertices map to graph vertices and mesh elements to
-hyperedges, the number of vertices pinned to each hyperedge is exactly four.
-The uniform structure is leveraged by an implementation using the Sell-C-Sigma
-BESTA-and-MERENDING and manual hyperedge-to-vertex loop unrolling.
-In addition to these variants performance comparison is also provided for
-implementations using four byte integers, instead of eight byte, and a serial
-C++ `push` implementation.
-
 Figure~\ref{fig:bfs} depicts the performance of the different implementations
 relative to the `csr' implementation using the pull approach and a CSR
 hypergraph data structure.
-`scg' in the name of the implementation indicates that use of the Sell-C-Sigma
-data structure, `int' indicates use of four byte integers, and `unroll'
-indicates manual vertex loop unrolling.
-Runs were executed on the graphs listed in Table~\ref{tbl:uprightCounts} created
-from meshes of the 2014 RPI Formula Hybrid suspension upright depicted in
-Figure~\ref{fig:upright}.
-All tests were executed on an NVIDIA 1080ti using CUDA 9.2 (driver 396.26) on
-RedHat7 with GCC 4.8.5.
+`scg' in the name of the implementation indicates that use of the
+Sell-C-$\sigma$ data structure~\cite{sellCSigma}, `int' indicates use of four
+byte ints instead of eight byte ints, and `unroll' indicates manual vertex loop
+unrolling.
+Runs were executed on graphs created from a range of meshes of the 2014 RPI
+Formula Hybrid suspension upright with up to 28M (million) tetrahedron
+(DOI:~\url{10.
+5281/zenodo.1194576}).
+All tests were executed on an NVIDIA 1080ti using CUDA 9.2 (driver 396.26).
 The chunk size of the `scg' tests was fixed at 64; given the uniform degree of
-the test meshes there was no appreciable performance difference between
-different chunk size settings.
-Reported timings are the average of three runs.
-Timings include data transfers to and from the GPU.
-The OpenCL JIT compilation time is not included in the timing as this one-time
-cost would be amortized across tens of diffusive iterations.
-
-\begin{figure}
-  \begin{minipage}{0.4\textwidth}
-    \label{fig:upright}
-    \centering
-    \includegraphics[width=.4\textwidth]{images/upright400k.png}
-    \caption{400k element mesh of the 2014 RPI Formula Hybrid suspension upright.}
-  \end{minipage}\hfill
-  \begin{minipage}{0.5\textwidth}
-    \label{tbl:uprightCounts}
-    \begin{tabular}{l|rrrr}
-      graph & vertices & hyperedges & bfs levels & max frontier  \\
-      \hline
-      67k   & 66433    & 15697      & 25         & 4432          \\
-      190k  & 192728   & 40052      & 40         & 7992          \\
-      400k  & 404613   & 88651      & 48         & 17316         \\
-      890k  & 890925   & 187380     & 70         & 26664         \\
-      1.6M  & 1580611  & 336215     & 82         & 45268         \\
-      13M   & 12831104 & 2499193    & 82         & 95798         \\
-      28M   & 27943315 & 5190006    & 210        & 128035
-    \end{tabular}
-    \caption{Hypergraphs created from upright meshes. The suffix 'k' is shorthand
-    for thousand and 'M' is for million.}
-  \end{minipage}
-\end{figure}
+the element to vertex downward adjacencies there was no appreciable performance
+difference between different chunk size settings.
+The given results are the average of three runs and include data transfers to
+and from the GPU.
+The OpenCL JIT compilation is not included in the timing as this one-time
+cost would be amortized across many diffusive iterations.
 
 \begin{figure}
   \centering
@@ -286,7 +181,7 @@ cost would be amortized across tens of diffusive iterations.
 \end{figure}
 
 On the largest mesh with 28 million elements, the `scg\_int\_unroll' is 11 times
-faster than the serial C++ push based implementation and 4.78 times faster than
+faster than the serial push based implementation and 4.78 times faster than
 the `csr' implementation.
 The performance boost given by loop unrolling and use of the Sell-C-Sigma data
 structure are the result of improved memory coalesing.
@@ -301,94 +196,107 @@ The current single threaded selection procedure evaluates cavities in order of
 their descending distance from the topological center.
 Since the ordered selection exposes no concurrency an alternative application of
 the topological distance is needed.
-One approach is to bin the cavities by distance.
-For large parts, or parts with high surface area, this will expose a modest
-amount of concurrency.
-A second approach applies the topological distance sorting after a fully
-parallel cavity evaluation has executed.
-Given that this approach provides maximum concurrency during cavity evaluation,
-and can use a data-parallel sorting operation, it is the procedure guiding this
-work.
+The proposed approach applies a parallel topological distance sorting after a
+coloring based parallel cavity evaluation has executed.
 
 Critical to concurrent cavity evaluation is avoiding race conditions when
 writing and reading the integer associated with each graph vertex indicating
 which process they will be migrated to.
 Hyperedge coloring ensures that any two hyperedges that share a common vertex
-will be assigned a different color.
-Hyperedges with the same color can be evaluated concurrently without
-race conditions.
-In Figure~\ref{fig:partBdry}, the red and blue colored cavities do not share any
-vertices and thus could be processed simultaneously.
+will be assigned a different color, and thus entire sets of like-colored
+hyperedges can be evaluated concurrently.
 
-The Kokkos-kernels data-parallel graph coloring procedure~\cite{kokkosColoring} is used to
-color the hyperedges of the EnGPar hypergraph.
-This procedure is driven by a symmetrix adjacency matrix.
-To color hyperedges that don't share vertices we must create the
-hyperedge-to-vertex-to-hyperedge adjacency matrix (herein referred to as `EVE');
-the dual of the hypergraph.
-The EVE graph has one vertex for each hyperedge, and an edge between two
+The Kokkos-kernels data-parallel graph coloring procedure~\cite{kokkosColoring}
+is used to color the hyperedges of the EnGPar hypergraph.
+This procedure is driven by a symmetric adjacency matrix.
+To color hyperedges we must create the hyperedge-to-vertex-to-hyperedge
+adjacency matrix; the dual of the hypergraph.
+The dual graph has one vertex for each hyperedge, and an edge between two
 hyperedges if they share at least one common vertex.
-Kokkos-kernel's graph coloring algorithm is then called to color this dual graph
-which returns a coloring of the original graph's hyperedges.
+Kokkos-kernel's graph coloring algorithm is then called to color this dual
+graph.
 
-\subsubsection{Parallel EVE Construction}
+The construction of the dual is listed in Algorithm~\ref{alg:dual}.
+It starts by making a set, using a Kokkos unordered map, that stores
+hyperedge-to-hyperedge adjacencies ($l.$\ref{alg:mapStart}-$l.$\ref{alg:mapEnd}).
+A parallel reduction and exclusive prefix sum then compute the degree list \verb|deg|
+($l.$\ref{alg:degStart}-$l.$\ref{alg:degEnd}).
+The hyperedge list, \verb|edgeList|, is then filled with a parallel loop over
+the hyperedges that utilizes an atomic read-then-increment operation
+($l.$\ref{alg:atomic}) to determine the position of the hyperedge in the list of
+adjacent hyperedges.
+Together, the CSR arrays \verb|deg| and \verb|edgeList| are passed directly to
+the Kokkos coloring procedure.
 
-The construction of the second adjacency crs matrix starts by making a
-set that stores hyperedge-to-hyperedge adjacencies. Because the information being read and written should not overlap or change due to race conditions parallelism can be leveraged to improve performance. Using the map two single dimension arrays, \verb|deg| and \verb|edgeList|, are created to represent the graph. Because \verb|deg| stores degree of each edge, a parallel reduction is utilized to find the total degree of an edge then a parallel prefix sum modifies the \verb|deg| array to store the total number of entries up to row \verb|i| exclusively. \verb|edgeList| stores the column index of the non-zero matrix entries which are the hyperedge labels in this construction. The column index in this case represents the edge adjacent to the edge labeled by the row index.
-
-\begin{algorithm}[H]
-\caption{Dual Graph Converter}
 \label{alg:dual}
 \algloopdefx[PFor]{PFor}[1]{\textbf{parallel for} #1 \textbf{do}}
 \algblock[Name]{Start}{End}
 \algblockdefx[NAME]{START}{END}
   [1][a]{\textbf{parallel for} #1 \textbf{do}}
+
+\begin{algorithm}
+\caption{Dual Graph Converter}
 \small
+\begin{multicols}{2}
 \begin{algorithmic}[1]
-\Procedure{CREATE DUAL CSR}{$G=(V,E)$}
-  \State $n = 0$
+\Procedure{dual}{$G=(V,E)$}
+  \State $n = 0$ \label{alg:mapStart}
   \PFor{$v \in V$}
     \ForAll{$(i,v) \in E$}
       \ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
         \State $n$++
       \EndFor
-    \EndFor
-  \State set of int pair $m$ (n) \Comment{n is a upper bound on the set's size}
+    \EndFor 
+  \State //n is an upper bound on the set's size
+  \State set of int pair $m$ (n)
   \PFor{$v \in V$}
     \ForAll{$(i,v) \in E$}
       \ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
-        \State m.insert ( $(i,j)$ )
+        \State m.
+        insert ( $(i,j)$ )
       \EndFor
-    \EndFor
+    \EndFor \label{alg:mapEnd}
+  \algstore{convert}
+  \end{algorithmic}
+  \columnbreak
+\begin{algorithmic}[1]
+  \algrestore{convert}
   \State $N=|E|$
-  \State deg = [$N+1$]
+  \State deg = [$N+1$] \label{alg:degStart}
   \PFor {$k\in m$}
     \State deg($k$.first+1)++
   \PFor{$i=0,1,\ldots,N$}
-    \State deg[$i$] = sum(deg[$0:i$])
+    \State deg[$i$] = sum(deg[$0:i$]) \label{alg:degEnd}
   \State edgeList = [deg[N]]
   \State degreeCount = [N]
   %\PFor {$k\in m$}
   \START[$k\in m$]
-  	\State e = deg[k.first] 
-    \State i = degreeCount[k.first]++
-  	\State edgeList[e+i] = k.second
+    \State e = deg[k.first] 
+    \State i = degreeCount[k.first]++ \label{alg:atomic}
+    \State edgeList[e+i] = k.second
   \END
   \EndProcedure
 \end{algorithmic}
+\end{multicols}
 \end{algorithm}
-This algorithm converts a hypergrpah to its dual. The number of adjacencies are counted then used to initialize the set to avoid needing to allocate more memory later in the algorithm. Two arrays are created to store the graph information, deg and edgeList. These store the offset of a vertex into the list of vertices adjacent to it. The construction is able to take advantage of parallelism to parse the graph and write the arrays. Together the two arrays represent the graph in compressed sparse row format which can be passed directly to a parallel graph coloring algorithm. This coloring algorithm is implemented in Kokkos Kernels \textbf{REFERENCE}.
 
-\section{Application Results} \label{sec:results}
+The speedup of the dual and coloring procedures relative to serial
+implementations is shown in Figure~\ref{fig:coloringSpeedup} for the series of
+graphs used in Section~\ref{sec:dist}.
+Likewise, the same test system was used here.
+Construction of the dual has a nearly flat speedup relative to the size of the
+graphs.
+Conversely, the speedup of Kokkos coloring improves as the graphs increase in
+size.
+Profiling of these tests is required to determine how effectively GPU resources
+are utilized and identify bottlenecks.
 
-% TIMING RESULTS
-\begin{figure}[!ht]
-	\centering
-	\includegraphics[width=4in]{images/Parallel_Speedup.png}
-	\caption{The ratio of serial execution time to parallel for dual graph construction and graph coloring}
-	\label{fig:coloringSpeedup}
+\begin{figure}
+  \centering
+  \includegraphics[width=4in]{images/Parallel_Speedup.png}
+  \caption{The ratio of serial execution time to parallel for dual graph construction and graph coloring}
+  \label{fig:coloringSpeedup}
 \end{figure}
-The timing speedup results shown in \textbf{Fig. 2} demonstrate that parallelism speeds up both coloring and dual graph construction. The compiler used was gcc 4.8.5 with compiler flags -O2 on a redhat 7 OS with a GeForce GTX 1080 Ti running nvidia 396.26 and cuda version 9.2. It is notable that the speedup to graph construction is nearly constant while the increase to graph coloring continues to grow with the problem size.
 
 %\begin{itemize}
 %  \item Figure out a better title for this section
@@ -421,10 +329,14 @@ The timing speedup results shown in \textbf{Fig. 2} demonstrate that parallelism
 %\end{itemize}
 
 \section{Closing Remarks} \label{sec:closing}
-\begin{itemize}
-  \item summarize results
-  \item discuss hypergraph coloring and relation to distance-2 coloring for non-simplices (quads, hexs, prisms, pyramids, etc.)
-\end{itemize}
+Speedup results of two critical procedures used by the EnGPar partition
+improvement were demonstrated.
+Parallel distance computation performance is over an order of magnitude greater
+and is a direct replacement for the existing procedure.
+Parallel coloring to support the diffusive selection process demonstrates high
+performance across a range of mesh sizes.
+Ongoing work is focused on fully integrating these advances into the production
+version for evaluation of overall performance and partition quality.
 
 \begin{acknowledgement}
 This research was supported by the U.S. Department of Energy, Office of Science,
