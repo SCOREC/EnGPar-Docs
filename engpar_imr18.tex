@@ -103,7 +103,7 @@ mesh vertices are represented by hyperedges. A second edge type is used to repre
   \centering
   \includegraphics[width=3.5in]{images/exampleMesh2Graph.png}
   \caption{A triangular mesh (a) converted to the N-graph with mesh faces represented by graph vertices and mesh vertices as hyperedges (b) and mesh edges as a second hyperedge type (c).}
-  \label{fig:edgecounts}
+  \label{fig:ngraph}
 \end{figure}
 
 
@@ -386,7 +386,7 @@ Typedefs are extensively used to help readability.
 	\centering
 	\includegraphics[width=3in]{images/Parallel_Speedup.png}
 	\caption{The ratio of serial time compared to parallel for eve construction and coloring }
-	\label{fig:edgecounts}
+	\label{fig:coloringSpeedup}
 \end{figure}
 The timing speedup results shown in \textbf{Fig. 2} demonstrate that parallelism speeds up both coloring and graph construction. However the speedup to graph construction is nearly constant while the speedup to graph coloring continues to increase with the problem size.
 
