@@ -89,8 +89,6 @@ for the relatively small changes to imbalance that are seen in adaptive mesh sim
 %  \item indicate that we will accelerate selection via BFS for distance computation and coloring for cavity selection
 %\end{itemize}
 
-\subsection{N-graph}
-
 EnGPar is a partition improvement tool that utilizes a specialized multi-hypergraph,
 called the N-graph, to describe the portions of the mesh that require load balancing.
 The N-graph consists of vertices which represent the primary dimension entities of the
@@ -105,9 +103,6 @@ mesh vertices are represented by hyperedges. A second edge type is used to repre
   \caption{A triangular mesh (a) converted to the N-graph with mesh faces represented by graph vertices and mesh vertices as hyperedges (b) and mesh edges as a second hyperedge type (c).}
   \label{fig:ngraph}
 \end{figure}
-
-
-\subsection{Diffusive Load Balancing}
 
 EnGPar's diffusive algorithm is an iterative local refinement strategy where in each
 iteration the target criteria is improved until the imbalance is under a given
