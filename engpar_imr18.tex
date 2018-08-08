@@ -220,7 +220,7 @@ a hyperedge - due to elements -> hyperedges, and each element being a tet
 \section{Accelerating Cavity Selection} \label{sec:select}
 
 Accelerating the selection of cavities requires simulateously evaluating many
-cavities simultaneously.
+cavities.
 The current single threaded selection procedure evaluates cavities in order of
 their descending distance from the topological center.
 Since the ordered selection exposes no concurrency an alternative application of
@@ -231,7 +231,7 @@ amount of concurrency.
 A second approach applies the topological distance sorting after a fully
 parallel cavity evaluation has executed.
 Given that this approach provides maximum concurrency during cavity evaluation,
-and can use a data-parallel sorting operation, it is the procedure used in this
+and can use a data-parallel sorting operation, it is the procedure guiding this
 work.
 
 Critical to concurrent cavity evaluation is avoiding race conditions when
@@ -241,9 +241,8 @@ Hyperedge coloring ensures that any two hyperedges that share a common vertex
 will be assigned a different color.
 Hyperedges with the same color can be evaluated concurrently without
 race conditions.
-
-{\color{red}A figure showing hyperedge cavity selection and conflicts would be
-helpful}
+In Figure~\ref{fig:partBdry}, the red and blue colored cavities do not share any
+vertices and thus could be processed simultaneously.
 
 Kokkos-kernels data-parallel graph coloring procedure REFERENCE is used to
 color the hyperedges of the EnGPar hypergraph.
