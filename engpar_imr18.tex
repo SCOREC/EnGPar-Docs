@@ -260,40 +260,43 @@ The construction of the second adjacency crs matrix starts by making a
 set that stores hyperedge-to-hyperedge adjacencies. Because the information being read and written should not overlap or change due to race conditions parallelism can be leveraged to improve performance. Using the map two single dimension arrays, \verb|deg| and \verb|edgeList|, are created to represent the graph. Because \verb|deg| stores degree of each edge, a parallel reduction is utilized to find the total degree of an edge then a parallel prefix sum modifies the \verb|deg| array to store the total number of entries up to row \verb|i| exclusively. \verb|edgeList| stores the column index of the non-zero matrix entries which are the hyperedge labels in this construction. The column index in this case represents the edge adjacent to the edge labeled by the row index.
 
 \begin{algorithm}[H]
-	\caption{Dual Graph Converter}
-	\label{alg:engpar}
-	\algloopdefx{PFor}[1]{\textbf{parallel for} #1 \textbf{do}}
-	\small
-	\begin{algorithmic}[1]
-		\Procedure{CREATE DUAL CSR}{$G=(V,E)$}
-		\State $n = 0$
-		\PFor{$v \in V$}
-			\ForAll{$(i,v) \in E$}
-				\ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
-					\State $n$++
-				\EndFor
-			\EndFor
-		\State set of int pair $m$ (n) \Comment{n is a upper bound on the set's size}
-		\PFor{$v \in V$}
-			\ForAll{$(i,v) \in E$}
-			\ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
-					\State m.insert ( $(i,j)$ )
-				\EndFor
-			\EndFor
-		\State $N=|E|$
-		\State deg = [$N+1$]
-		\PFor {$k\in m$}
-			\State deg($k$.first+1)++
-		\PFor{$i=0,1,\ldots,N$}
-			\State deg[$i$] = sum(deg[$0:i$])
-		\State edgeList = [deg[N]]
-		\State degreeCount = [N]
-		\PFor {$k\in m$}
-			\State $e$ = deg[$k$.first]
-			\State $i$ = degreeCount($k$.first)++
-			\State edgeList[e+i] = $k$.second
-		\EndProcedure
-	\end{algorithmic}
+\caption{Dual Graph Converter}
+\label{alg:dual}
+\algloopdefx{PFor}[1]{\textbf{parallel for} #1 \textbf{do}}
+\algblock[]{PFOR}{EndPFOR}
+\small
+\begin{algorithmic}[1]
+\Procedure{CREATE DUAL CSR}{$G=(V,E)$}
+  \State $n = 0$
+  \PFor{$v \in V$}
+    \ForAll{$(i,v) \in E$}
+      \ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
+        \State $n$++
+      \EndFor
+    \EndFor
+  \State set of int pair $m$ (n) \Comment{n is a upper bound on the set's size}
+  \PFor{$v \in V$}
+    \ForAll{$(i,v) \in E$}
+      \ForAll{$(j,v) \in E\setminus\{(i,v)\}$}
+        \State m.insert ( $(i,j)$ )
+      \EndFor
+    \EndFor
+  \State $N=|E|$
+  \State deg = [$N+1$]
+  \PFor {$k\in m$}
+    \State deg($k$.first+1)++
+  \PFor{$i=0,1,\ldots,N$}
+    \State deg[$i$] = sum(deg[$0:i$])
+  \State edgeList = [deg[N]]
+  \State degreeCount = [N]
+  %\PFor{$k\in m$}
+  \PFOR
+  	\State e = deg[k.first] 
+    \State i = degreeCount[k.first]++
+  	\State edgeList[e+i] = k.second
+  \EndPFOR
+  \EndProcedure
+\end{algorithmic}
 \end{algorithm}
 This algorithm converts a hypergrpah to its dual. The number of adjacencies are counted then used to initialize the set to avoid needing to allocate more memory later in the algorithm. Two arrays are created to store the graph information, deg and edgeList. These store the offset of a vertex into the list of vertices adjacent to it. The construction is able to take advantage of parallelism to parse the graph and write the arrays. Together the two arrays represent the graph in compressed sparse row format which can be passed directly to a parallel graph coloring algorithm. This coloring algorithm is implemented in Kokkos Kernels \textbf{REFERENCE}.
 
