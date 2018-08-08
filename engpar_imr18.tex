@@ -262,8 +262,10 @@ set that stores hyperedge-to-hyperedge adjacencies. Because the information bein
 \begin{algorithm}[H]
 \caption{Dual Graph Converter}
 \label{alg:dual}
-\algloopdefx{PFor}[1]{\textbf{parallel for} #1 \textbf{do}}
-\algblock[]{PFOR}{EndPFOR}
+\algloopdefx[PFor]{PFor}[1]{\textbf{parallel for} #1 \textbf{do}}
+\algblock[Name]{Start}{End}
+\algblockdefx[NAME]{START}{END}
+  [1][a]{\textbf{parallel for} #1 \textbf{do}}
 \small
 \begin{algorithmic}[1]
 \Procedure{CREATE DUAL CSR}{$G=(V,E)$}
@@ -289,12 +291,12 @@ set that stores hyperedge-to-hyperedge adjacencies. Because the information bein
     \State deg[$i$] = sum(deg[$0:i$])
   \State edgeList = [deg[N]]
   \State degreeCount = [N]
-  %\PFor{$k\in m$}
-  \PFOR
+  %\PFor {$k\in m$}
+  \START[$k\in m$]
   	\State e = deg[k.first] 
     \State i = degreeCount[k.first]++
   	\State edgeList[e+i] = k.second
-  \EndPFOR
+  \END
   \EndProcedure
 \end{algorithmic}
 \end{algorithm}
