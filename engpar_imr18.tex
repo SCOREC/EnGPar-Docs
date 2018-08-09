@@ -61,13 +61,13 @@ and Mark S. Shephard
 \maketitle
 
 \abstract{
-Unstructured mesh applications running on current and next generation machines
-require the computational work related to mesh entities to be evenly
+Unstructured mesh applications running on large, parallel, distributed memory
+systems require the computational work related to mesh entities to be evenly
 distributed across processes in order to achieve maximal performance.
-To quickly balance large meshes on systems with accelerators the balancing
-procedure must also utilize the accelerator.
+To efficiently balance meshes on systems with accelerators the balancing
+procedure must utilize the accelerator.
 This work presents algorithms and speedup results using OpenCL and Kokkos to
-accelerate portions of the EnGPar partition improvement diffusive load balancer.
+accelerate critical portions of the EnGPar diffusive load balancer.
 }
 
 \section{Introduction} \label{sec:intro}
@@ -80,13 +80,15 @@ accelerate portions of the EnGPar partition improvement diffusive load balancer.
 %\end{itemize}
 
 While common partitioning techniques such as multilevel or geometric methods are
-good for creating an initial distribution of load, evolving simulations where
-the mesh and computational load changes during the simulation require dynamic
-load balancing techniques that are quick to improve the partition as the work
-load changes.
+good for creating an initial distribution of load, those techniques are not as
+applicable  to simulations where the mesh and load changes.
+These evolving simulations require dynamic load balancing techniques that are
+quick to improve the partition.
 Diffusive load balancing methods allow quick partition refinement for the
 relatively small changes to imbalance that are seen in adaptive mesh
 simulations.
+EnGPar's diffusive balancer has been shown to quickly produce high quality
+partitions at up to 512Ki processes~\cite{engparSC17}.
 
 \section{EnGPar Dynamic Load Balancing} \label{sec:engpar}
 
@@ -95,37 +97,37 @@ simulations.
 %  \item indicate that we will accelerate selection via BFS for distance computation and coloring for cavity selection
 %\end{itemize}
 
-EnGPar is a partition improvement tool that utilizes a specialized multi-hypergraph,
+EnGPar is a partition improvement tool that utilizes a multi-hypergraph,
 called the N-graph, to describe the portions of the mesh that require load balancing.
 The N-graph consists of vertices which represent the primary dimension entities of the
 mesh. The vertices are connected by hyperedges created from the secondary dimensions of
 the mesh that require load balancing.
 
-EnGPar's diffusive algorithm is an iterative local refinement strategy where in
-each iteration the target criteria is improved until the imbalance is under a
+EnGPar's diffusive algorithm is an iterative local refinement strategy.
+In each iteration the target criteria is improved until the imbalance is under a
 given tolerance or the imbalance cannot be improved further.
 Each iteration consists of three steps: targeting, selection, and migration.
-The targeting phase consists of gathering metrics on the part and its neighbors
+The targeting step gathers metrics on the part and its neighbors
 in order to determine which neighboring parts to send weight to and how much
 weight to send.
 The selection step is where graph vertices on the boundary are chosen to be sent
 to neighboring parts in order to satisfy the weights determined by the targeting
 phase.
-Finally, the migration phase sends the graph entities that were selected to the
+Finally, the migration step sends the graph entities that were selected to the
 destination parts and the graph is reconstructed.
 
 In this work, we target accelerating distance computation and cavity selection.
 These two procedures consume up to 50\% of the total execution time and are well
-suited to acceleration as they do not require communications~\cite{engparSC17}.
+suited to acceleration as they do not require inter-process communications~\cite{engparSC17}.
 
 Distance computation is performed during selection by ordering hyperedges on the
 boundary based on their distance from the center of the part from furthest to
 closest.
 EnGPar computes this distance with two breadth first traversals of the graph.
-The first traversal works outside-in starting at the part boundary.
-The second traversal starts from one of the hyperedges with the largest depth
-and works its way out to the boundary marking the distance from the starting
-point as it proceeds.
+The first traversal starts at the part boundary and works its way in while
+marking the depth of visited hyperedges.
+The second traversal starts from a hyperedge with the largest depth and works
+its way out to the boundary while marking the distance from the starting point.
 
 Cavity selection determines if a cavity, defined as a hyperedge and the vertices
 that are connected by it, on the part boundary should be sent to one of the
@@ -136,61 +138,56 @@ the limit, and (3) the size of the cavity is small.
 
 \section{Accelerating Distance Computation} \label{sec:dist}
 
-Distance computation's breadth first traversal is accelerated with a OpenCL
+Distance computation's breadth first traversal is accelerated with an OpenCL
 data-parallel ND-Range kernel for execution on GPUs and many-core processors.
 The host process calls the kernel once for each frontier in the traversal.
 The kernel implements a `pull' based approach by iterating over the graph
 vertices pinned to each hyperedge twice.
-The first iteration determines if in the previous iteration any vertices were
-marked with a distance equal to the current frontier depth.
-If a vertex is found then the second iteration updates the distance of the other
+The first iteration determines if in the previous kernel call which vertices were
+updated.
+If a vertex is found, then the second iteration updates the distance of the other
 vertices.
 
-The OpenCL pull implementation executes on a compressed sparse row (CSR) hypergraph
-representation and is compared to additional implementations that
-optimize the data structure and loops for uniform hypergraph-to-vertex
-connectivity.
-Figure~\ref{fig:bfs} depicts the performance of the different implementations
-relative to the `csr' implementation using the pull approach and a CSR
-hypergraph data structure.
+The baseline OpenCL implementation uses a compressed sparse row (CSR)
+hypergraph representation and a pull based traversal.
+In Figure~\ref{fig:bfs} the performance of optimized implementations
+relative to the baseline `csr' implementation are shown.
 `scg' in the name of the implementation indicates that use of the
 Sell-C-$\sigma$ data structure~\cite{sellCSigma}, `int' indicates use of four
 byte ints instead of eight byte ints, and `unroll' indicates manual vertex loop
 unrolling.
-Runs were executed on graphs created from a range of meshes of the 2014 RPI
+Runs were executed on graphs created from meshes of the 2014 RPI
 Formula Hybrid suspension upright with up to 28M (million) tetrahedron
-(DOI:~\url{10.
-5281/zenodo.1194576}).
-All tests were executed on an NVIDIA 1080ti using CUDA 9.2 (driver 396.26).
+(DOI:~\url{10.5281/zenodo.1194576}).
+All tests were executed on an NVIDIA 1080ti using CUDA 9.2.
 The chunk size of the `scg' tests was fixed at 64; given the uniform degree of
-the element to vertex downward adjacencies there was no appreciable performance
+the element to vertex adjacencies, there was little performance
 difference between different chunk size settings.
 The given results are the average of three runs and include data transfers to
 and from the GPU.
 The OpenCL JIT compilation is not included in the timing as this one-time
-cost would be amortized across many diffusive iterations.
+cost would be amortized across an entire run.
 
 \begin{figure}
   \centering
   \label{fig:bfs}
   \includegraphics[width=0.8\textwidth]{images/bfsPerformance.png}
   \caption{
-    Performance of various breadth first traversal OpenCL data-parallel implementations
-    relative to the baseline `csr' implementation.
+    Performance of breadth first traversal implementations.
   }
 \end{figure}
 
-On the largest mesh with 28 million elements, the `scg\_int\_unroll' is 11 times
-faster than the serial push based implementation and 4.78 times faster than
+On the 28M mesh, the `scg\_int\_unroll' is 11 times
+faster than the serial, C++, push implementation, and 4.78 times faster than
 the `csr' implementation.
-The performance boost given by loop unrolling and use of the Sell-C-Sigma data
-structure are the result of improved memory coalesing.
+The performance boost given by loop unrolling and use of Sell-C-$\sigma$ are the
+result of improved memory coalescing.
 Reducing the integer size by half improves performance by 24\% for the 28
 million element mesh.
 
 \section{Accelerating Cavity Selection} \label{sec:select}
 
-Accelerating the selection of cavities requires simulateously evaluating many
+Accelerating the selection of cavities requires simultaneously evaluating many
 cavities.
 The current single threaded selection procedure evaluates cavities in order of
 their descending distance from the topological center.
@@ -200,32 +197,30 @@ The proposed approach applies a parallel topological distance sorting after a
 coloring based parallel cavity evaluation has executed.
 
 Critical to concurrent cavity evaluation is avoiding race conditions when
-writing and reading the integer associated with each graph vertex indicating
-which process they will be migrated to.
+deciding which part to migrate a given graph vertex.
 Hyperedge coloring ensures that any two hyperedges that share a common vertex
 will be assigned a different color, and thus entire sets of like-colored
 hyperedges can be evaluated concurrently.
 
-The Kokkos-kernels data-parallel graph coloring procedure~\cite{kokkosColoring}
+The Kokkos-kernels graph coloring procedure~\cite{kokkosColoring}
 is used to color the hyperedges of the EnGPar hypergraph.
 This procedure is driven by a symmetric adjacency matrix.
 To color hyperedges we must create the hyperedge-to-vertex-to-hyperedge
-adjacency matrix; the dual of the hypergraph.
+graph; the dual of the hypergraph.
 The dual graph has one vertex for each hyperedge, and an edge between two
 hyperedges if they share at least one common vertex.
-Kokkos-kernel's graph coloring algorithm is then called to color this dual
-graph.
 
 The construction of the dual is listed in Algorithm~\ref{alg:dual}.
-It starts by making a set, using a Kokkos unordered map, that stores
+It starts by making a set, using a Kokkos \texttt{unordered\_map}, that stores
 hyperedge-to-hyperedge adjacencies ($l.$\ref{alg:mapStart}-$l.$\ref{alg:mapEnd}).
-A parallel reduction and exclusive prefix sum then compute the degree list \verb|deg|
+A parallel reduction and prefix sum then compute the degree list \verb|deg|
 ($l.$\ref{alg:degStart}-$l.$\ref{alg:degEnd}).
 The hyperedge list, \verb|edgeList|, is then filled with a parallel loop over
-the hyperedges that utilizes an atomic read-then-increment operation
+the hyperedges.
+This loop utilizes a Kokkos atomic read-then-increment operation
 ($l.$\ref{alg:atomic}) to determine the position of the hyperedge in the list of
 adjacent hyperedges.
-Together, the CSR arrays \verb|deg| and \verb|edgeList| are passed directly to
+The resulting CSR, \verb|deg| and \verb|edgeList|, are passed directly to
 the Kokkos coloring procedure.
 
 \label{alg:dual}
@@ -281,20 +276,19 @@ the Kokkos coloring procedure.
 \end{algorithm}
 
 The speedup of the dual and coloring procedures relative to serial
-implementations is shown in Figure~\ref{fig:coloringSpeedup} for the series of
-graphs used in Section~\ref{sec:dist}.
-Likewise, the same test system was used here.
-Construction of the dual has a nearly flat speedup relative to the size of the
-graphs.
-Conversely, the speedup of Kokkos coloring improves as the graphs increase in
-size.
+implementations is shown in Figure~\ref{fig:coloringSpeedup}.
+Tests were executed on the same system and series of graphs used in
+Section~\ref{sec:dist}.
+Construction of the dual has a nearly flat speedup relative to the graphs.
+Conversely, the speedup of Kokkos coloring improves with graph size.
 Profiling of these tests is required to determine how effectively GPU resources
 are utilized and identify bottlenecks.
 
 \begin{figure}
   \centering
-  \includegraphics[width=4in]{images/Parallel_Speedup.png}
-  \caption{The ratio of serial execution time to parallel for dual graph construction and graph coloring}
+  \includegraphics[width=.7\textwidth]{images/Parallel_Speedup.png}
+  \caption{The ratio of serial execution time to parallel for dual graph
+  construction and graph coloring.}
   \label{fig:coloringSpeedup}
 \end{figure}
 
@@ -329,12 +323,11 @@ are utilized and identify bottlenecks.
 %\end{itemize}
 
 \section{Closing Remarks} \label{sec:closing}
-Speedup results of two critical procedures used by the EnGPar partition
-improvement were demonstrated.
+Speedup results of two critical procedures used by EnGPar were demonstrated.
 Parallel distance computation performance is over an order of magnitude greater
 and is a direct replacement for the existing procedure.
-Parallel coloring to support the diffusive selection process demonstrates high
-performance across a range of mesh sizes.
+Parallel coloring for the selection process demonstrates high performance
+across a range of mesh sizes.
 Ongoing work is focused on fully integrating these advances into the production
 version for evaluation of overall performance and partition quality.
 
