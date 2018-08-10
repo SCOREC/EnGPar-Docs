@@ -1,0 +1,21 @@
+2018-01-03 13:23:44.007 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: using properties file /bgsys/local/etc/bg.properties
+2018-01-03 13:23:44.009 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: max open file descriptors: 65536
+2018-01-03 13:23:44.009 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: core file limit: 18446744073709551615
+2018-01-03 13:23:44.012 (INFO ) [0x40001aebde0] 17602:tatu.runjob.client: scheduler job id is 1365917
+2018-01-03 13:23:44.019 (INFO ) [0x400016334e0] 17602:tatu.runjob.monitor: monitor started
+2018-01-03 13:23:48.194 (INFO ) [0x400016334e0] 17602:tatu.runjob.monitor: task record 2385036 created
+2018-01-03 13:23:48.195 (INFO ) [0x40001aebde0] MIR-08800-3BBF1-2048:17602:ibm.runjob.client.options.Parser: set local socket to runjob_mux from properties file
+2018-01-03 13:23:56.262 (INFO ) [0x40001aebde0] MIR-08800-3BBF1-2048:2510616:ibm.runjob.client.Job: job 2510616 started
+pcu peers 131072 max group size 4096 posix groups 32
+2018-01-03 13:23:59.344 (INFO ) [0x400016334e0] 17602:tatu.runjob.monitor: tracklib completed
+max migration time (s) <total, setup, comm, build> = <2.476273, 1.100351, 0.632470, 0.988977>
+max migration ratios <setup/total, comm/total, build/total, (setup+comm+build)/total> = <0.444391, 0.255563, 0.399641, 0.999826>
+min migration ratios <setup/total, comm/total, build/total, (setup+comm+build)/total> = <0.344702, 0.175085, 0.367361, 0.999163>
+2018-01-03 13:24:42.476 (INFO ) [0x40001aebde0] MIR-08800-3BBF1-2048:2510616:ibm.runjob.client.Job: exited with status 0
+2018-01-03 13:24:42.476 (WARN ) [0x40001aebde0] MIR-08800-3BBF1-2048:2510616:ibm.runjob.client.Job: 34 INFO RAS events
+2018-01-03 13:24:42.476 (WARN ) [0x40001aebde0] MIR-08800-3BBF1-2048:2510616:ibm.runjob.client.Job: 5 WARN RAS events
+2018-01-03 13:24:42.477 (WARN ) [0x40001aebde0] MIR-08800-3BBF1-2048:2510616:ibm.runjob.client.Job: most recent RAS event text: A BQL double bit error threshold was exceeded for Switch 1 Group EVEN and ODD
+2018-01-03 13:24:42.477 (WARN ) [0x40001aebde0] MIR-08800-3BBF1-2048:2510616:ibm.runjob.client.Job: with severity WARN
+2018-01-03 13:24:42.477 (INFO ) [0x40001aebde0] tatu.runjob.client: task exited with status 0
+2018-01-03 13:24:42.477 (INFO ) [0x400016334e0] 17602:tatu.runjob.monitor: monitor terminating
+2018-01-03 13:24:42.481 (INFO ) [0x40001aebde0] tatu.runjob.client: monitor completed
