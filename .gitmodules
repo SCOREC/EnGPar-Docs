@@ -4,3 +4,6 @@
 [submodule "scorec-refs"]
 	path = scorec-refs
 	url = https://github.com/SCOREC/scorec-refs.git
+[submodule "scala18/scorec-refs"]
+	path = scala18/scorec-refs
+	url = git@github.com:SCOREC/scorec-refs.git
