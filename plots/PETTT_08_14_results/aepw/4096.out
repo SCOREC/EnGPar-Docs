@@ -1,0 +1,89 @@
+ENGPAR Git hash e195a3cd47a4daaa1043943278ca507e71283d12
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/barn/aepw/4096/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 18416056
+ENGPAR Edges: Type 0: 57808404 
+ENGPAR Pins: Type 0: 281984140 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 16.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 37.000 5.000 12.843 2.881
+ENGPAR PARTITION : Edge Cut: <max,min,avg,imb> 11612.000 1805.000 4928.667 2.356
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 4720.000 2740.000 4496.107 1.050
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 7268.000 4209.000 6262.742 1.161
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 33133.000 6853.000 16670.026 1.988
+ENGPAR Starting criteria type -1 with imbalances: 1.0498 1.9876 
+ENGPAR Side Tolerance is: 4928
+ENGPAR Completed criteria type -1 in 0 steps and took 0.003469 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0498 1.9876 
+ENGPAR Side Tolerance is: 4928
+ENGPAR   Step took 16.742811 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9483 
+ENGPAR   Step took 18.041579 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9201 
+ENGPAR   Step took 20.749995 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9006 
+ENGPAR   Step took 23.109943 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8814 
+ENGPAR   Step took 21.911724 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8718 
+ENGPAR   Step took 22.836185 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8606 
+ENGPAR   Step took 11.161151 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8511 
+ENGPAR   Step took 11.196991 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8443 
+ENGPAR   Step took 11.203751 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8379 
+ENGPAR   Step took 11.212925 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8305 
+ENGPAR   Step took 11.210880 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8231 
+ENGPAR   Step took 11.213508 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8160 
+ENGPAR   Step took 11.210260 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8108 
+ENGPAR   Step took 11.191575 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8056 
+ENGPAR   Step took 11.176482 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8007 
+ENGPAR   Step took 11.208672 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7958 
+ENGPAR   Step took 11.236286 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7890 
+ENGPAR   Step took 11.216012 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7853 
+ENGPAR   Step took 11.198952 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7806 
+ENGPAR   Step took 11.227022 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7768 
+ENGPAR   Step took 11.238372 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7718 
+ENGPAR   Step took 11.217479 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7682 
+ENGPAR   Step took 11.228693 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7630 
+ENGPAR   Step took 11.216954 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7559 
+ENGPAR   Step took 11.208219 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7506 
+ENGPAR   Step took 11.206863 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7455 
+ENGPAR   Step took 11.224892 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7408 
+ENGPAR   Step took 11.196952 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7345 
+ENGPAR   Step took 11.216531 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7294 
+ENGPAR   Step took 11.242078 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7230 
+ENGPAR   Step took 11.243589 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.7164 
+ENGPAR Completed criteria type 0 in 31 steps and took 421.605379 seconds
+ENGPAR EnGPar converged in 30 iterations in 424.172153 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 26.000 2097.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 135.000 5.000 19.952 6.766
+ENGPAR PARTITION : Edge Cut: <max,min,avg,imb> 71548.000 2202.000 6890.950 10.383
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 9527.000 2858.000 4496.107 2.119
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 25169.000 4416.000 6893.618 3.651
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 94822.000 10023.000 17847.595 5.313
