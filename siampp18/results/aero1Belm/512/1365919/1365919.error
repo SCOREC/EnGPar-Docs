@@ -1,0 +1,21 @@
+2018-01-03 16:31:21.684 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: using properties file /bgsys/local/etc/bg.properties
+2018-01-03 16:31:21.685 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: max open file descriptors: 65536
+2018-01-03 16:31:21.685 (INFO ) [0x40001aebde0] ibm.runjob.AbstractOptions: core file limit: 18446744073709551615
+2018-01-03 16:31:21.687 (INFO ) [0x40001aebde0] 39973:tatu.runjob.client: scheduler job id is 1365919
+2018-01-03 16:31:21.696 (INFO ) [0x400016334e0] 39973:tatu.runjob.monitor: monitor started
+2018-01-03 16:31:25.947 (INFO ) [0x400016334e0] 39973:tatu.runjob.monitor: task record 2385050 created
+2018-01-03 16:31:25.948 (INFO ) [0x40001aebde0] MIR-48000-7BFF1-8192:39973:ibm.runjob.client.options.Parser: set local socket to runjob_mux from properties file
+2018-01-03 16:31:32.933 (INFO ) [0x400016334e0] 39973:tatu.runjob.monitor: tracklib completed
+2018-01-03 16:31:46.746 (INFO ) [0x40001aebde0] MIR-48000-7BFF1-8192:2510630:ibm.runjob.client.Job: job 2510630 started
+pcu peers 524288 max group size 4096 posix groups 128
+max migration time (s) <total, setup, comm, build> = <2.790836, 1.256253, 0.937315, 0.883237>
+max migration ratios <setup/total, comm/total, build/total, (setup+comm+build)/total> = <0.450162, 0.335985, 0.316589, 0.999660>
+min migration ratios <setup/total, comm/total, build/total, (setup+comm+build)/total> = <0.347087, 0.266249, 0.272158, 0.999254>
+2018-01-03 16:32:36.274 (INFO ) [0x40001aebde0] MIR-48000-7BFF1-8192:2510630:ibm.runjob.client.Job: exited with status 0
+2018-01-03 16:32:36.274 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2510630:ibm.runjob.client.Job: 101 INFO RAS events
+2018-01-03 16:32:36.274 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2510630:ibm.runjob.client.Job: 8 WARN RAS events
+2018-01-03 16:32:36.274 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2510630:ibm.runjob.client.Job: most recent RAS event text: DDR Correctable Error Summary : count=3 MCFIR error status:  [MEMORY_CE] This bit is set when a memory CE is detected on a non-maintenance memory read op;
+2018-01-03 16:32:36.274 (WARN ) [0x40001aebde0] MIR-48000-7BFF1-8192:2510630:ibm.runjob.client.Job: with severity INFO
+2018-01-03 16:32:36.275 (INFO ) [0x40001aebde0] tatu.runjob.client: task exited with status 0
+2018-01-03 16:32:36.275 (INFO ) [0x400016334e0] 39973:tatu.runjob.monitor: monitor terminating
+2018-01-03 16:32:36.280 (INFO ) [0x40001aebde0] tatu.runjob.client: monitor completed
