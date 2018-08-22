@@ -55,10 +55,35 @@ component, formatting, style, styling, insert
 \section{EnGPar}
 
 \begin{itemize}
-\item Discuss the Ngraph in general graph terms with some figures
+%\item Discuss the Ngraph in general graph terms with some figures
 \item Discuss the construction for a element-partitioned mesh as an example with figure
-\item Discuss dynamic load balancing and the general diffusive steps
+%\item Discuss dynamic load balancing and the general diffusive steps
 \end{itemize}
+
+EnGPar is a tool for partition improvement and dynamic load balancing. EnGPar
+utilizes a multi-hypergraph, called the N-graph, to represent the data of an
+application in a relational format that allows load balancing of the vertices
+and edges simultaneously. The N-graph is defined as $G^n = \{V, H^n, P^n\}$ where
+$V$ is the set of vertices in the graph. The vertices are uniquely owned by a single
+process and are used to represent the main source of data in an application.
+$H^n = \{H_1, ..., H_n\}$ are sets of hyperedges where each hyperedge connects a
+subset of vertices in $V$. The pins, $P^n = \{P_1,...,P_n\}$, represent the connections from
+vertices to hyperedges. Each application that utilizes EnGPar represents the data
+that needs partitioning as an N-graph before running any of the partitioning tools.
+The general design of the N-graph allows easy representation for different applications
+that use structures such as meshes, graphs, and other relational structures.
+
+%Add an example of constructing the n-graph
+
+EnGPar's partition improvement is driven by local diffusive techniques that migrate weight
+from heavily weighted parts to lightly weighted parts. This is done by iteratively running
+a set of steps until the target imbalance is met or no further improvements can be met.
+A diffusive iteration consists of three steps: targeting, selection, and migration.
+The targeting step consists of gathering information about the current partiton and deciding
+which neighbors should be sent weight and how much weight to send. The selection step constructs
+a plan of what vertices should be sent to each neighbor in order to satisfy the weights in
+the targeting step. The final step, migration, is where the vertices are sent to their
+destinations and the partition is changed.
 
 \section{Particle In Cell}
 
