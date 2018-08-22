@@ -68,9 +68,17 @@ component, formatting, style, styling, insert
 \item Describe the weight diffusion algorithm.
 \end{itemize}
 
-Since the mesh partitions in XGCM are fixed based on the geometry, we only consider load balancing the particles. The main consideration when migrating particles in XGCM is that a particle must always be in an element that is in the safe zone of a part. This means that if a particle moves outside the safe zone, it must be migrated to a new process where it is safe and when load balancing particles we must ensure that every particle is migrated to a process where it is in the safe zone of the part.
+Since the mesh partitions in XGCM are fixed based on the geometry, we only consider
+load balancing the particles. The main consideration when migrating particles in XGCM
+is that a particle must always be in an element that is in the safe zone of a part.
+This means that if a particle moves outside the safe zone, it must be migrated to a
+new process where it is safe and when load balancing particles we must ensure that every
+particle is migrated to a process where it is in the safe zone of the part.
 
-To handle both cases, we construct the N-graph carefully such that any partition decision in EnGPar will always maintain this requirement in XGCM. First we define the components of XGCM by the following: {\color{red} Probably should turn these lists into full text instead.}
+To handle both cases, we construct the N-graph carefully such that any partition
+decision in EnGPar will always maintain this requirement in XGCM. First we define
+the components of XGCM by the following: {\color{red} Probably should turn these lists
+  into full text instead.}
 \begin{itemize}
 \item Let $F = \{F_1,F_2, ..., F_n\}$ be the flux faces.
 \item Let $G = \{G_1, G_2, ..., G_n\}$ be the groups such that $G_i$
@@ -79,7 +87,8 @@ To handle both cases, we construct the N-graph carefully such that any partition
   It is required that $S_i \subset G_i$.
 \item Define $\bar{S_j}$ for each set of overlapping safe zones.
 \item Let $P$ be the set of particles.
-\item For each particle $p\in P$, Let $T_p$ be the set of safe zones in $S$ that $p$ resides in.  $\forall p \in P, \exists ! i$ such that $T_p = \bar{S_i}$.
+\item For each particle $p\in P$, Let $T_p$ be the set of safe zones in $S$ that $p$ resides
+  in.  $\forall p \in P, \exists ! i$ such that $T_p = \bar{S_i}$.
 \item  Let $P_{\bar{S_i}}$ be the set of particles such that $\forall p \in P_{\bar{S_i}}, T_p = \bar{S_i}$.
 \end{itemize}
 
@@ -90,7 +99,8 @@ With these definitions, we define the Ngraph as $G = \{V, H, P\}$ where:
 \item $H = \{ h_i$ for each $\bar{S_i} \}$.
 \item $P = \{ p_{i,j}$ connecting $v_{i,j}$ to $h_i \}$.
 \end{enumerate}
-Figure \ref{fig:sbars} shows an example of the $\bar{S_i}$ and the construction of N-graph from them. {\color{red} Make example figure smaller so it is visible in paper.}
+Figure \ref{fig:sbars} shows an example of the $\bar{S_i}$ and the construction of N-graph from
+them. {\color{red} Make example figure smaller so it is visible in paper.}
 
 \begin{figure}[!ht]
   \centering
@@ -99,6 +109,15 @@ Figure \ref{fig:sbars} shows an example of the $\bar{S_i}$ and the construction 
   \label{fig:sbars}
 \end{figure}
 
+In order to load balance this graph, we run diffusive techniques on the weights of the vertices
+rather than the vertices. This means that instead of migrating graph vertices, we migrate the
+weight of the vertices across hyperedges to reduce the imbalance of load in the graph.
+
+\begin{itemize}
+\item Add particle selection after engpar.
+\item Add results of using engpar vs not using engpar
+\item Add timing results compared to an iteration of XGCM.
+\end{itemize}
 
 \section{Computational Fluid Dynamics}
 
