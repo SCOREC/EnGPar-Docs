@@ -56,6 +56,7 @@ component, formatting, style, styling, insert
 
 \begin{itemize}
 \item Discuss the Ngraph in general graph terms with some figures
+\item Discuss the construction for a element-partitioned mesh as an example with figure
 \item Discuss dynamic load balancing and the general diffusive steps
 \end{itemize}
 
@@ -122,12 +123,33 @@ weight of the vertices across hyperedges to reduce the imbalance of load in the 
 \section{Computational Fluid Dynamics}
 
 \begin{itemize}
-\item Briefly discuss CFD (FUN3D/Phasta).
-\item Discuss vertex-based partition vs. element-based partition.
-\item Discuss how EnGPar/Ngraph can support both.
+\item Briefly discuss CFD (FUN3D).
+%\item Discuss vertex-based partition vs. element-based partition.
+%\item Discuss how EnGPar/Ngraph can support vertex partitions.
 \item Discuss the current approach in FUN3D for partitioning and our ideas to improve it.
 \item Mention the boundary stack and our approach to better represent it.
 \end{itemize}
+
+The main difference in FUN3D is the way the mesh is partitioned. The most common
+method of partitioning a mesh is based on the elements where each element resides
+uniquely on a single process and any other entity on the part boundary would be
+copied to any process that shares it. However, in FUN3D the mesh is partitioned
+by the mesh vertices, so each mesh vertex is uniquely owned by a single process
+and then mesh elements are duplicated across part boundaries. This change primarily
+affects the communication dynamic as with an element-partitioned mesh, vertices
+can bound any number of elements so coping a vertex that bounds few elements is ideal
+to create less communication overhead. In a vertex-partitioned mesh, the number of vertices
+that bound a given element is fairly small: four in a tetrahedron, five in a
+pyramid, six in a prism, etc. Therefore, there is not a clear ideal element to
+cut for the vertex-partitioned mesh based solely on the element.
+
+To represent the vertex-partitioned mesh in EnGPar, the construction
+is essentially the opposite of the element-partitioned mesh. Graph
+vertices are defined by mesh vertices and graph hyperedges are defined
+by mesh elements. The pins between graph vertices and hyperedges are
+created for any mesh vertex that bounds a mesh element.
+
+
 
 \section{Results}
 
