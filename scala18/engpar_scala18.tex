@@ -64,9 +64,41 @@ component, formatting, style, styling, insert
 \begin{itemize}
 \item Briefly discuss PIC/XGCM
 \item Mention that the mesh partition is static.
-\item Describe the approach for load balancing particles
+\item Describe the buffer/safe zone
 \item Describe the weight diffusion algorithm.
 \end{itemize}
+
+Since the mesh partitions in XGCM are fixed based on the geometry, we only consider load balancing the particles. The main consideration when migrating particles in XGCM is that a particle must always be in an element that is in the safe zone of a part. This means that if a particle moves outside the safe zone, it must be migrated to a new process where it is safe and when load balancing particles we must ensure that every particle is migrated to a process where it is in the safe zone of the part.
+
+To handle both cases, we construct the N-graph carefully such that any partition decision in EnGPar will always maintain this requirement in XGCM. First we define the components of XGCM by the following: {\color{red} Probably should turn these lists into full text instead.}
+\begin{itemize}
+\item Let $F = \{F_1,F_2, ..., F_n\}$ be the flux faces.
+\item Let $G = \{G_1, G_2, ..., G_n\}$ be the groups such that $G_i$
+  contains $F_i$ and the suitable buffer region around $F_i$
+\item Let $S = \{S_1,S_2,...,S_n\}$ be the safe zones for each $G_i$.
+  It is required that $S_i \subset G_i$.
+\item Define $\bar{S_j}$ for each set of overlapping safe zones.
+\item Let $P$ be the set of particles.
+\item For each particle $p\in P$, Let $T_p$ be the set of safe zones in $S$ that $p$ resides in.  $\forall p \in P, \exists ! i$ such that $T_p = \bar{S_i}$.
+\item  Let $P_{\bar{S_i}}$ be the set of particles such that $\forall p \in P_{\bar{S_i}}, T_p = \bar{S_i}$.
+\end{itemize}
+
+With these definitions, we define the Ngraph as $G = \{V, H, P\}$ where:
+\begin{enumerate}
+\item $V = \{ v_{i,j}$ for each $\bar{S_i} | S_j \in \bar{S_i} \}$.
+\item The weight of vertex $v_{t,i}$ is equal to $|P_{\bar{S_i}}|$ on process $t$.
+\item $H = \{ h_i$ for each $\bar{S_i} \}$.
+\item $P = \{ p_{i,j}$ connecting $v_{i,j}$ to $h_i \}$.
+\end{enumerate}
+Figure \ref{fig:sbars} shows an example of the $\bar{S_i}$ and the construction of N-graph from them. {\color{red} Make example figure smaller so it is visible in paper.}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=.4\textwidth]{../figures/xgcm_ngraph_construction.png}
+  \caption{An example of overlapping safe zones and the N-graph constructed from them.}
+  \label{fig:sbars}
+\end{figure}
+
 
 \section{Computational Fluid Dynamics}
 
