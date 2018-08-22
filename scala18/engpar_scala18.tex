@@ -142,14 +142,24 @@ to create less communication overhead. In a vertex-partitioned mesh, the number 
 that bound a given element is fairly small: four in a tetrahedron, five in a
 pyramid, six in a prism, etc. Therefore, there is not a clear ideal element to
 cut for the vertex-partitioned mesh based solely on the element.
+%If I can add logic in to improve the edge cut increase by using ghost degrees we can use the point being made above.
 
 To represent the vertex-partitioned mesh in EnGPar, the construction
 is essentially the opposite of the element-partitioned mesh. Graph
 vertices are defined by mesh vertices and graph hyperedges are defined
 by mesh elements. The pins between graph vertices and hyperedges are
 created for any mesh vertex that bounds a mesh element.
+{\color{red} The following line can be removed if we don't do this.}
+Additionally, a second edge type is used for mesh edges where each
+hyperedge would have pins to the two mesh vertices that bound the mesh edge.
 
+{\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
 
+Currently, partitioning in FUN3D is done by running (Par)METIS on the graph created
+from mesh vertices and mesh edges ({\color{red} Double check this. It might be with
+mesh elements}). As normally seen from multilevel graph partitioning [REFERENCES],
+the vertices are partitioned well, but the mesh edges and mesh elements have a large
+imbalance which are key components of the computational load in FUN3D.
 
 \section{Results}
 
