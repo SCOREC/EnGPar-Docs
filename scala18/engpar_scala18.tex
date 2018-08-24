@@ -155,19 +155,6 @@ weight of the vertices across hyperedges to reduce the imbalance of load in the 
 \item Mention the boundary stack and our approach to better represent it.
 \end{itemize}
 
-The main difference in FUN3D is the way the mesh is partitioned. The most common
-method of partitioning a mesh is based on the elements where each element resides
-uniquely on a single process and any other entity on the part boundary would be
-copied to any process that shares it. However, in FUN3D the mesh is partitioned
-by the mesh vertices, so each mesh vertex is uniquely owned by a single process
-and then mesh elements are duplicated across part boundaries. This change primarily
-affects the communication dynamic as with an element-partitioned mesh, vertices
-can bound any number of elements so coping a vertex that bounds few elements is ideal
-to create less communication overhead. In a vertex-partitioned mesh, the number of vertices
-that bound a given element is fairly small: four in a tetrahedron, five in a
-pyramid, six in a prism, etc. Therefore, there is not a clear ideal element to
-cut for the vertex-partitioned mesh based solely on the element.
-%If I can add logic in to improve the edge cut increase by using ghost degrees we can use the point being made above.
 
 To represent the vertex-partitioned mesh in EnGPar, the construction
 is essentially the opposite of the element-partitioned mesh. Graph
@@ -180,11 +167,33 @@ hyperedge would have pins to the two mesh vertices that bound the mesh edge.
 
 {\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
 
-Currently, partitioning in FUN3D is done by running (Par)METIS on the graph created
-from mesh vertices and mesh edges ({\color{red} Double check this. It might be with
-mesh elements}). As normally seen from multilevel graph partitioning [REFERENCES],
+Currently for the application, partitioning is done by running (Par)METIS on the graph created
+from mesh vertices and mesh edges. As normally seen from multilevel graph
+partitioning [REFERENCES],
 the vertices are partitioned well, but the mesh edges and mesh elements have a large
-imbalance which are key components of the computational load in FUN3D.
+imbalance which are key components of the computational load.
+
+During initial attempts at improving the partitions, we found that the edge cut was growing
+at a large rate as we improved edge imbalance. This has been attributed to the differences
+caused by the vertex-partitioning of the mesh. For element-partitioned meshes, the hyperedges
+represent the mesh vertices. To maintain a low edge cut, mesh vertices that bound many mesh
+elements should not be cut across partitions. Towards this, EnGPar avoids migrating cavities
+around these high-degree hyperedges. For vertex-partitioned meshes, this problem is reveresed
+since mesh vertices are represented as graph vertices and hyperedges all have roughtly uniform
+low degrees based on the element: four in a tetrahedron, five in a pyramid, six in a prism, etc.
+Thus the problem of edge cut arises for having high degree graph vertices along the partition
+boundary which leads to a larger edge cut.
+
+To control the edge cut while balancing the graph, we introduce a metric to represent the
+potential edge cut change for a cavity. The metric is the ratio of hyperedges that will be cut
+after the cavity is migrated to the hyperedges currently cut around the cavity. We introduce a
+parameter to EnGPar that will only migrate a cavity if the metric is below the given tolerance.
+Setting this parameter to 1.0 forces EnGPar to migrate cavities that will not increase the edge
+cut. However, smaller values of this paramter will limit EnGPar's ability to improve the
+imbalance and either take more iterations to reach the imbalance tolerance or stagnate at a
+higher imbalance.
+
+
 
 \section{Results}
 
