@@ -12,8 +12,16 @@
 \begin{document}
 
 \title{Dynamic Load Balancing for Particle-in-Cell, CFD, and Discrete Event Simulations\\
-\thanks{Identify applicable funding agency here. If none, delete this.}
-}
+\thanks{
+This research was supported by the U.S. Department of Energy, Office of
+Science, Office of Advanced Scientific Computing Research, under award
+DE-AC52-07NA27344 (FASTMath SciDAC Institute) and by the National Science
+Foundation under Grant No.  ACI 1533581, (SI2-SSE: Fast Dynamic Load
+Balancing Tools for Extreme Scale Systems).
+Any opinions, findings, and conclusions or recommendations expressed in this
+material are those of the author(s) and do not necessarily reflect the views
+of the National Science Foundation.
+}}
 
 \author{\IEEEauthorblockN{1\textsuperscript{st} Gerrett Diamond}
 \IEEEauthorblockA{\textit{SCOREC} \\
@@ -37,11 +45,22 @@ shephard@rpi.edu}
 \maketitle
 
 \begin{abstract}
-
+  Extracting performance from simulations with complex information dependencies
+  on massively parallel computers requires the computational work to be evenly
+  distributed across the processing resources while maintaining low
+  communication costs.
+  Particle-in-cell and unstructured mesh-based finite element and volume
+  simulations present two distinct sets of distribution requirements.
+  To meet these needs, we present EnGPar's diffusive partition improvement
+  method.
+  EnGPar's performance is compared against XYZ (PIC?) and ParMETIS.
+  Specifically, partition improvement results are provided on
+  up to QRS and XYZ processes of the ABC and DEF systems, respectively.
 \end{abstract}
 
 \begin{IEEEkeywords}
-component, formatting, style, styling, insert
+partition improvement,multigraph,hypergraph,dynamic load balancing,
+particle in cell, computational fluid dynamics
 \end{IEEEkeywords}
 
 \section{Introduction}
