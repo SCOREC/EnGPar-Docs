@@ -210,6 +210,18 @@ higher imbalance.
 
 \subsection{Boundary Layer Stacks}
 
+{\color{red} I think the following sentence is true?}
+For the CFD application, it is ideal to partition boundary layer stacks such that each stack
+is on a single process. However, without explicit information, graph partitioners will cut
+the boundary stacks up including EnGPar's diffusive load balancer. In order to keep boundary
+stacks together on a process, we combine the mesh vertices of each stack into one graph vertex
+during construction of the N-graph. Algorithm \ref{alg:collapse} details steps taken to
+combine the stacks. To maintain the correct computational and communication load of the stacks,
+we attach weights to the vertices and hyperedges that result from the stack. Each boundary layer
+stack vertex is given a weight equal to the number of vertices in the stack, and the hyperedges
+are given a weight of the number of elements that share the same graph vertices. All other
+graph vertices and hyperedges are given a weight of one.
+
 
 \section{Results}
 
