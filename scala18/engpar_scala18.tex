@@ -7,8 +7,6 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
 \title{Dynamic Load Balancing for Particle-in-Cell, CFD, and Discrete Event Simulations\\
@@ -79,10 +77,12 @@ particle in cell, computational fluid dynamics
 %\item Discuss dynamic load balancing and the general diffusive steps
 \end{itemize}
 
-EnGPar is a tool for partition improvement and dynamic load balancing. EnGPar
-utilizes a multi-hypergraph, called the N-graph, to represent the data of an
-application in a relational format that allows load balancing of the vertices
-and edges simultaneously. The N-graph is defined as $G^n = \{V, H^n, P^n\}$ where
+EnGPar~\cite{engparSC17,engpar_github} is a tool for partition improvement and
+dynamic load balancing.
+EnGPar utilizes a multi-hypergraph, called the N-graph, to represent the data of
+an application in a relational format that allows load balancing of the vertices
+and edges simultaneously.
+The N-graph is defined as $G^n = \{V, H^n, P^n\}$ where
 $V$ is the set of vertices in the graph. The vertices are uniquely owned by a single
 process and are used to represent the main source of data in an application.
 $H^n = \{H_1, ..., H_n\}$ are sets of hyperedges where each hyperedge connects a
@@ -215,21 +215,32 @@ higher imbalance.
 
 
 \section{Results}
-
 \begin{itemize}
-\item Compare parmetis graph partitions vs. Zoltan hypergraph partitions
-\item Then compare how EnGPar can balance each.
-\item Use FUN3D runs to compare how different metrics affect the runtime.
+\item PIC
+\begin{itemize}
+  \item engpar vs no balancing timing and particle imbalance
+\end{itemize}
+\item FUN3D
+\begin{itemize}
+  \item with and without BL collapse
+  \item engpar parmetis (no BL collapse) vs fun3d parmetis(?) - may not be
+    possible without help from eric - need fun3d solver counts of vertices to
+    compute its imbalance
+  \item engpar parmetis (no BL collapse) + vtx improvement vs engpar parmetis
+  \item engpar parmetis (no BL collapse) + vtx > elm improvement vs engpar parmetis
+\end{itemize}
 \end{itemize}
 
 
-\section{Future Works}
+\section{Closing Remarks}
+foo
 
 \begin{itemize}
 \item accelerators
-\item Other ideas for load balancing vertex-based partitions?
+\item BL collapse
 \end{itemize}
 
-{\color{red} Add bibliography stuff here}
+\bibliographystyle{IEEEtran}
+\bibliography{scorec-refs/scorec-refs}
 
 \end{document}
