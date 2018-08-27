@@ -1,3 +1,9 @@
+## Workshop Information
+
+Workshop Details: https://www.csm.ornl.gov/srt/conferences/Scala/2018/
+
+SC Session: https://sc18.supercomputing.org/presentation/?id=wksp123&sess=sess158
+
 ## Setup
 
 ```
