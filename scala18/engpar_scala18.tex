@@ -151,10 +151,31 @@ weight of the vertices across hyperedges to reduce the imbalance of load in the 
 \item Briefly discuss CFD (FUN3D).
 %\item Discuss vertex-based partition vs. element-based partition.
 %\item Discuss how EnGPar/Ngraph can support vertex partitions.
-\item Discuss the current approach in FUN3D for partitioning and our ideas to improve it.
+%\item Discuss the current approach in FUN3D for partitioning and our ideas to improve it.
 \item Mention the boundary stack and our approach to better represent it.
 \end{itemize}
 
+{\color{red} Double check this paragraph is OK}
+Computational Fluid Dynamic (CFD) applications use meshes in various different ways to solve
+problems. One such application, uses finite volume methods on a vertex-partitioned mesh to
+{\color{red} list the kind of problems FUN3D solves}. A vertex-partitioned mesh means that
+instead of elements being uniquely assigned to parts, the vertices are and the elements are
+cut or copied along the boundary to any process that shares them. This application also exhibits
+boundary layer stacks where along geometric model faces there are prism elements that are stacked
+for a certain distance as well as pyramids at the ends of the boundary layer stacks. Both the
+vertex-partition of the mesh and the boundary stacks are challenges for creating a good partition
+of the mesh.
+
+{\color{red} Show a good boundary layer stack mesh}
+
+Currently for the application, partitioning is done by running (Par)METIS on the graph created
+from mesh vertices and mesh edges. As normally seen from multilevel graph
+partitioning [REFERENCES],
+the vertices are partitioned well, but the mesh edges and mesh elements have a large
+imbalance which are key components of the computational load. We improve the imbalance of
+mesh edges and mesh elements using EnGPar's diffusive load balancing method.
+
+\subsection{Vertex-partitioned meshes}
 
 To represent the vertex-partitioned mesh in EnGPar, the construction
 is essentially the opposite of the element-partitioned mesh. Graph
@@ -166,12 +187,6 @@ Additionally, a second edge type is used for mesh edges where each
 hyperedge would have pins to the two mesh vertices that bound the mesh edge.
 
 {\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
-
-Currently for the application, partitioning is done by running (Par)METIS on the graph created
-from mesh vertices and mesh edges. As normally seen from multilevel graph
-partitioning [REFERENCES],
-the vertices are partitioned well, but the mesh edges and mesh elements have a large
-imbalance which are key components of the computational load.
 
 During initial attempts at improving the partitions, we found that the edge cut was growing
 at a large rate as we improved edge imbalance. This has been attributed to the differences
@@ -193,6 +208,7 @@ cut. However, smaller values of this paramter will limit EnGPar's ability to imp
 imbalance and either take more iterations to reach the imbalance tolerance or stagnate at a
 higher imbalance.
 
+\subsection{Boundary Layer Stacks}
 
 
 \section{Results}
