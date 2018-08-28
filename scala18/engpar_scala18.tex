@@ -223,7 +223,9 @@ potential edge cut change for a cavity. The metric is the ratio of hyperedges th
 after the cavity is migrated to the hyperedges currently cut around the cavity. We introduce a
 parameter to EnGPar that will only migrate a cavity if the metric is below the given tolerance.
 Setting this parameter to 1.0 forces EnGPar to migrate cavities that will not increase the edge
-cut. However, smaller values of this paramter will limit EnGPar's ability to improve the
+cut locally. This does not guarentee that the edge cut will decrease as the metric does not take
+into account other cavities that are migrated in the iteration. Smaller values of this
+paramter will limit the increase in edge cut, but also limit EnGPar's ability to improve the
 imbalance and either take more iterations to reach the imbalance tolerance or stagnate at a
 higher imbalance.
 
