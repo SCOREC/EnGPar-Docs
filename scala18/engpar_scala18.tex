@@ -71,11 +71,11 @@ particle in cell, computational fluid dynamics
 
 \section{EnGPar}
 
-\begin{itemize}
+%\begin{itemize}
 %\item Discuss the Ngraph in general graph terms with some figures
-\item Discuss the construction for a element-partitioned mesh as an example with figure
+%\item Discuss the construction for a element-partitioned mesh as an example with figure
 %\item Discuss dynamic load balancing and the general diffusive steps
-\end{itemize}
+%\end{itemize}
 
 EnGPar~\cite{engparSC17,engpar_github} is a tool for partition improvement and
 dynamic load balancing.
@@ -92,8 +92,6 @@ that needs partitioning as an N-graph before running any of the partitioning too
 The general design of the N-graph allows easy representation for different applications
 that use structures such as meshes, graphs, and other relational structures.
 
-%Add an example of constructing the n-graph
-
 EnGPar's partition improvement is driven by local diffusive techniques that migrate weight
 from heavily weighted parts to lightly weighted parts. This is done by iteratively running
 a set of steps until the target imbalance is met or no further improvements can be met.
@@ -106,12 +104,12 @@ destinations and the partition is changed.
 
 \section{Particle In Cell}
 
-\begin{itemize}
-\item Briefly discuss PIC/XGCM
-\item Mention that the mesh partition is static.
-\item Describe the buffer/safe zone
-\item Describe the weight diffusion algorithm.
-\end{itemize}
+%\begin{itemize}
+%\item Briefly discuss PIC/XGCM
+%\item Mention that the mesh partition is static.
+%\item Describe the buffer/safe zone
+%\item Describe the weight diffusion algorithm.
+%\end{itemize}
 
 {\color{red} How much can I talk about XCG? Assuming I should only mention XGCm.}
 Particle in cell (PIC) methods are mesh applications that utilize particles in the spacial domain
@@ -171,11 +169,18 @@ In order to load balance this graph, we run diffusive techniques on the weights 
 rather than the vertices. This means that instead of migrating graph vertices, we migrate the
 weight of the vertices across hyperedges to reduce the imbalance of load in the graph.
 
-\begin{itemize}
-\item Add particle selection after engpar.
-\item Add results of using engpar vs not using engpar
-\item Add timing results compared to an iteration of XGCM.
-\end{itemize}
+After EnGPar's weight diffusion is run, a migration plan is returned that details how
+much weight to send from each graph vertex on a part to each of its neighboring vertices.
+In XGCm, particles are migrated in order to match the plan.
+
+{\color{red} Initial ideas for 'results'}
+Since XGCm is still in development, large test cases are not ready. So far two (hopefully)
+development
+cases have been run showing promising results. The first case has around four thousand
+mesh faces, four flux faces and sixteen thousand particles. For this case, EnGPar brings the
+initial particle imbalance of 42\% down to 18\%.
+The second mesh has 350k elements, X flux faces and YYY particles. EnGPar brings the
+particle imbalance from AA\% to BB\%.
 
 \section{Computational Fluid Dynamics}
 
@@ -256,6 +261,7 @@ stack vertex is given a weight equal to the number of vertices in the stack, and
 are given a weight of the number of elements that share the same graph vertices. All other
 graph vertices and hyperedges are given a weight of one.
 
+{\color{red} Boundary stack collapse algorithm}
 
 \section{Results}
 \begin{itemize}
