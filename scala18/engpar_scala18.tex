@@ -126,7 +126,7 @@ and, depending on the application, may require migrating to new processes. As th
 continue the particles become imbalanced and will degrade performance.
 
 XGCm, a PIC application that is a mesh oriented version of XGC, uses a 2D mesh that
-{\color{red} Describe a little of XGCm?}. The partitioning of the mesh is controlled
+{\color{red} CWS Describe a little of XGCm?}. The partitioning of the mesh is controlled
 by flux faces which are geometric model faces. Each part consists of
 the mesh entities within a geometric model face and several buffer layers of elements around the
 model edges. The first few layers of the buffered elements are marked as a safe region as well as
@@ -180,7 +180,7 @@ After EnGPar's weight diffusion is run, a migration plan is returned that detail
 much weight to send from each graph vertex on a part to each of its neighboring vertices.
 In XGCm, particles are migrated in order to match the plan.
 
-{\color{red} Initial ideas for 'results'}
+{\color{red} CWS Initial ideas for 'results'}
 Since XGCm is still in development, large test cases are not ready. So far two (hopefully)
 development
 cases have been run showing promising results. The first case has around four thousand
@@ -199,10 +199,10 @@ particle imbalance from AA\% to BB\%.
 \item Mention the boundary stack and our approach to better represent it.
 \end{itemize}
 
-{\color{red} Double check this paragraph is OK}
+{\color{red} CWS Double check this paragraph is OK}
 Computational Fluid Dynamic (CFD) applications use meshes in various different ways to solve
 problems. One such application, uses finite volume methods on a vertex-partitioned mesh to
-{\color{red} list the kind of problems FUN3D solves}. A vertex-partitioned mesh means that
+{\color{red} CWS list the kind of problems FUN3D solves}. A vertex-partitioned mesh means that
 instead of elements being uniquely assigned to parts, the vertices are and the elements are
 cut or copied along the boundary to any process that shares them. This application also exhibits
 boundary layer stacks where along geometric model faces there are prism elements that are stacked
@@ -210,7 +210,7 @@ for a certain distance as well as pyramids at the ends of the boundary layer sta
 vertex-partition of the mesh and the boundary stacks are challenges for creating a good partition
 of the mesh.
 
-{\color{red} Show a good boundary layer stack mesh}
+{\color{red} CWS (if you have a good one in mind) Show a good boundary layer stack mesh}
 
 Currently for the application, partitioning is done by running (Par)METIS on the graph created
 from mesh vertices and mesh edges. As normally seen from multilevel graph
@@ -256,7 +256,7 @@ higher imbalance.
 
 \subsection{Boundary Layer Stacks}
 
-{\color{red} I think the following sentence is true?}
+{\color{red} CWS I think the following sentence is true?}
 For the CFD application, it is ideal to partition boundary layer stacks such that each stack
 is on a single process. However, without explicit information, graph partitioners will cut
 the boundary stacks up including EnGPar's diffusive load balancer. In order to keep boundary
