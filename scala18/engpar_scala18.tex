@@ -265,14 +265,6 @@ created for any mesh vertex that bounds a mesh element.
 
 {\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
 
-{\color{red} Work on improving the flow to this paragraph or just rework it to be more general or remove it.}
-Currently for the application, partitioning is done by running (Par)METIS on the graph created
-from mesh vertices and mesh edges. As normally seen from multilevel graph
-partitioning [REFERENCES],
-the vertices are partitioned well, but the mesh edges and mesh elements have a large
-imbalance which are key components of the computational load. We improve the imbalance of
-mesh edges and mesh elements using EnGPar's diffusive load balancing method.
-
 During initial attempts at improving the partitions, we found that the edge cut was growing
 at a large rate as we improved edge imbalance. This has been attributed to the differences
 caused by the vertex-partitioning of the mesh. For element-partitioned meshes, the hyperedges
