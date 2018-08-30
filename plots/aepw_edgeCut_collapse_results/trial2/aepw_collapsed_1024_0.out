@@ -13,73 +13,73 @@ ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 26182.000 7559.000 
 ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 126625.000 16458.000 63376.907 1.998
 ENGPAR Starting criteria type -1 with imbalances: 1.0500 1.9980 
 ENGPAR Side Tolerance is: 13565
-ENGPAR Completed criteria type -1 in 0 steps and took 0.007267 seconds
+ENGPAR Completed criteria type -1 in 0 steps and took 0.007274 seconds
 ENGPAR Starting criteria type 0 with imbalances: 1.0500 1.9980 
 ENGPAR Side Tolerance is: 13565
-ENGPAR   Step took 14.210612 seconds
+ENGPAR   Step took 24.277028 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.9793 
-ENGPAR   Step took 15.979220 seconds
+ENGPAR   Step took 27.369253 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.9623 
-ENGPAR   Step took 17.706926 seconds
+ENGPAR   Step took 30.462542 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.9456 
-ENGPAR   Step took 19.752014 seconds
+ENGPAR   Step took 33.982788 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.9296 
-ENGPAR   Step took 21.640523 seconds
+ENGPAR   Step took 37.250169 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.9172 
-ENGPAR   Step took 23.384586 seconds
+ENGPAR   Step took 40.471679 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.9081 
-ENGPAR   Step took 11.598190 seconds
+ENGPAR   Step took 19.772874 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.9024 
-ENGPAR   Step took 12.227353 seconds
+ENGPAR   Step took 20.896446 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8962 
-ENGPAR   Step took 12.772371 seconds
+ENGPAR   Step took 21.847072 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8902 
-ENGPAR   Step took 11.481165 seconds
+ENGPAR   Step took 19.706654 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8844 
-ENGPAR   Step took 12.170034 seconds
+ENGPAR   Step took 20.846849 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8779 
-ENGPAR   Step took 12.861475 seconds
+ENGPAR   Step took 22.121057 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8709 
-ENGPAR   Step took 13.665727 seconds
+ENGPAR   Step took 23.489090 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8648 
-ENGPAR   Step took 14.655724 seconds
+ENGPAR   Step took 25.198059 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8591 
-ENGPAR   Step took 15.469146 seconds
+ENGPAR   Step took 26.742483 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8534 
-ENGPAR   Step took 16.314424 seconds
+ENGPAR   Step took 28.234771 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8473 
-ENGPAR   Step took 14.388792 seconds
+ENGPAR   Step took 24.820799 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8421 
-ENGPAR   Step took 15.190897 seconds
+ENGPAR   Step took 26.202371 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8368 
-ENGPAR   Step took 16.308637 seconds
+ENGPAR   Step took 28.159327 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8303 
-ENGPAR   Step took 17.442053 seconds
+ENGPAR   Step took 30.155305 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8245 
-ENGPAR   Step took 11.605497 seconds
+ENGPAR   Step took 20.055549 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8183 
-ENGPAR   Step took 12.234652 seconds
+ENGPAR   Step took 21.131213 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8106 
-ENGPAR   Step took 12.768820 seconds
+ENGPAR   Step took 22.067059 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8045 
-ENGPAR   Step took 13.274490 seconds
+ENGPAR   Step took 22.900784 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.8015 
-ENGPAR   Step took 13.826851 seconds
+ENGPAR   Step took 23.910679 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.7993 
-ENGPAR   Step took 14.533613 seconds
+ENGPAR   Step took 25.184852 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.7965 
-ENGPAR   Step took 15.231166 seconds
+ENGPAR   Step took 26.429301 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.7935 
-ENGPAR   Step took 15.616322 seconds
+ENGPAR   Step took 27.031700 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.7907 
-ENGPAR   Step took 16.245442 seconds
+ENGPAR   Step took 28.026219 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.7877 
-ENGPAR   Step took 16.970252 seconds
+ENGPAR   Step took 29.460790 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.7853 
-ENGPAR   Step took 17.625637 seconds
+ENGPAR   Step took 30.594375 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.7825 
-ENGPAR Completed criteria type 0 in 31 steps and took 530.383540 seconds
-ENGPAR EnGPar converged in 30 iterations in 530.391583 seconds
+ENGPAR Completed criteria type 0 in 31 steps and took 871.121147 seconds
+ENGPAR EnGPar converged in 30 iterations in 871.129213 seconds
 ENGPAR PARTITION : Empty Parts: 0
 ENGPAR PARTITION : Disconnected Components: <max,tot> 24.000 3443.000
 ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 70.000 2.000 20.367 3.437
