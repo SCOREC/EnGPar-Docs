@@ -10,7 +10,7 @@
 \usepackage{xcolor}
 \begin{document}
 
-\title{Dynamic Load Balancing for Particle-in-Cell, CFD, and Discrete Event Simulations\\
+\title{Dynamic Load Balancing for Particle-in-Cell and CFD Analysis\\
 \thanks{
 This research was supported by the U.S. Department of Energy, Office of
 Science, Office of Advanced Scientific Computing Research, under award
@@ -127,7 +127,7 @@ both mesh vertices and mesh edges (c).
   \label{fig:mesh2graph}
 \end{figure}
 
-{\color{red} CWS Should we directly reference the previous report results?}
+{\color{red} GD Should we directly reference the previous report results? A reference is sufficient.}
 In previous work on this case, EnGPar fell short balancing mesh vertices for larger part counts
 \cite{engparSC17}.
 We identified that EnGPar was reaching a local minimum due to poor choices of destination part
@@ -152,22 +152,43 @@ that rely on element replication (either partial like we do or full mesh copies)
 that are computationally dominated by work associated with particles.  We need
 to cite the other balancing methods used for PIC as described in Wu IJNME (see
 my email).}
-Particle in cell (PIC) methods are mesh applications that utilize particles in the spacial domain
-of the mesh. PIC applications have additional partitioning challenges since the mesh topology
-must be well balanced as well as the particles. In addition, the particles move around the mesh
-and, depending on the application, may require migrating to new processes. As these simulations
-continue the particles become imbalanced and will degrade performance.
+Particle in cell (PIC) methods utilize particles in the spacial domain of a
+mesh.
+The particles move around the mesh under the influence of a field defined on the
+mesh.
+Unless the entire mesh is replicated on all processes, particles that do not
+have their field dependencies satisfied will need to be
+sent to a different process that has sufficient field information.
+As these simulations continue the particles become imbalanced and will degrade
+performance{\color{red} REFERENCE PIC BALANCING}.
 
-XGCm, a PIC application that is a mesh oriented version of XGC, uses a 2D mesh that
-{\color{red} CWS Describe a little of XGCm?}. The partitioning of the mesh is controlled
-by flux faces which are geometric model faces. Each part consists of
-the mesh entities within a geometric model face and several buffer layers of elements around the
-model edges. The first few layers of the buffered elements are marked as a safe region as well as
-the elements within the flux face. This partitioning is static and does not change during the
-simulation. Particles exist within the safe elements of a process during an iteration of the
-solver, but may move outside the safe region when the particles are moved afterwards. If the
-particle moves outside of the safe region it is migrated to a new part where it resides in
-the safe region.
+XGCm, a PIC application supporting the computation of XYZ {\color{red} REFERENCE
+XGC}.
+XGCm decomposes the domain with a 2D mesh of the
+of the polodial plane that is repeated along the toroidal direction.
+Figure~\ref{XYZ} depicts the distribution of the mesh to processes.
+The left image depicts the set of elements classified on a flux surface; the
+area bounded by two flux curves.
+These elements form a \texttt{core}.
+A \texttt{core} is assigned to one group of processes.
+To satisfy information dependencies of particles belonging to the \texttt{core},
+the sets of elements of neighboring \texttt{core}s are replicated to satisfy
+particle data dependencies and thus avoid communication during the
+computationally intensive particle push operation.
+The decomposition of each polodial plane is identical and does does not change
+during the simulation.
+
+The elements in the \texttt{core} assigned to each group, and some layers of the
+replicated elements that surround it, are marked as a safe region since there is
+sufficient mesh field information available to satisfy the dependency of the
+push operation.
+Particles exist within the safe elements of a process during an iteration of the
+solver, but may move outside the safe region when the particles are moved during
+the push operation.
+If the particle moves outside of the safe region it is migrated to a process
+where it resides in the safe region.
+
+{\color{red} Discuss particle distribution?}
 
 Since the mesh partitions in XGCm are fixed, we only consider
 load balancing the particles. To ensure that particles are always migrated to the safe elements
@@ -213,12 +234,13 @@ After EnGPar's weight diffusion is run, a migration plan is returned that detail
 much weight to send from each graph vertex on a part to each of its neighboring vertices.
 In XGCm, particles are migrated in order to match the plan.
 
-{\color{red} CWS Initial ideas for 'results'}
-Since XGCm is still in development, large test cases are not ready. So far two (hopefully)
-development
-cases have been run showing promising results. The first case has around four thousand
+Initial demonstrations of the weighted partitioning approach are run on 32
+process test cases.
+The first case has around four thousand
 mesh faces, four flux faces and sixteen thousand particles. For this case, EnGPar brings the
-initial particle imbalance of 42\% down to 18\%.
+initial particle imbalance of 42\% down to 18\%. {\color{red} Do we having
+timing of how long it takes to compute the balance?  Can we say it is an
+insignificant amount of time versus the simulation?}
 The second mesh has 350k elements, X flux faces and YYY particles. EnGPar brings the
 particle imbalance from AA\% to BB\%.
 
@@ -232,18 +254,31 @@ particle imbalance from AA\% to BB\%.
 \item Mention the boundary stack and our approach to better represent it.
 \end{itemize}
 
-{\color{red} CWS Double check this paragraph is OK}
-Computational Fluid Dynamic (CFD) applications use meshes in various different ways to solve
-problems. One such application, uses finite volume methods on a vertex-partitioned mesh to
-{\color{red} CWS list the kind of problems FUN3D solves}. A vertex-partitioned mesh means that
-instead of elements being uniquely assigned to parts, the vertices are and the elements are
-cut or copied along the boundary to any process that shares them. This application also exhibits
-boundary layer stacks where along geometric model faces there are prism elements that are stacked
-for a certain distance as well as pyramids at the ends of the boundary layer stacks. Both the
-vertex-partition of the mesh and the boundary stacks are challenges for creating a good partition
-of the mesh.
+Parllallel computational fluid dynamic (CFD) applications using
+finite volume and finite element partition meshes in different
+ways to efficiently resolve data dependencies.
+A partition of mesh elements uniquely assigns each mesh element to a process.
+Lower dimension entities are duplicated as needed to form the closure of the
+elements.
+For example, if two triangles share an edge, but are assigned to different
+processes, the shared edge and its bounding vertices will exist on both
+processes.
+A vertex-partitioned mesh means that
+instead of elements being uniquely assigned to parts, the vertices are, and the elements are
+copied along the boundary to any process that shares them.
 
-{\color{red} CWS (if you have a good one in mind) Show a good boundary layer stack mesh}
+Structured boundary layer element stacks growing from geometric model faces can
+be used to reduce discretization errors and reduce mesh element count (i.e., versus
+a full unstructured tetrahedral mesh) when their are strong gradients in
+principle fields normal to a geometric model surface {\color{red} REFERENCE}.
+Figure XYZ depicts the prismatic boundary layer elements along the surface of an
+air foil.
+Accounting for this structured portion of the mesh during load balancing can
+improve the quality of the partition.
+
+{\color{red} GD (if you have a good one in mind) Show a good boundary layer
+stack mesh - yes I'll add that in the next commit along with associated
+references}
 
 Currently for the application, partitioning is done by running (Par)METIS on the graph created
 from mesh vertices and mesh edges. As normally seen from multilevel graph
@@ -286,12 +321,15 @@ higher imbalance.
 
 \subsection{Boundary Layer Stacks}
 
-{\color{red} CWS I think the following sentence is true?}
-For the CFD application, it is ideal to partition boundary layer stacks such that each stack
-is on a single process. However, without explicit information, graph partitioners will cut
-the boundary stacks up including EnGPar's diffusive load balancer. In order to keep boundary
-stacks together on a process, we combine the mesh vertices of each stack into one graph vertex
-during construction of the N-graph.
+Assigning a stack of boundary layer vertices or
+elements to a single process reduces the cut; i.e., cuts that are both normal to
+and in-plane with the boundary layer will have more surface area than a cut that
+is only along the planar or normal direction.
+However, partitioners
+operating on the graph formed by the dual of the mesh, will separate
+the boundary stacks. For a vertex partition, we combine the mesh vertices of each stack into one graph vertex
+during construction of the N-graph to prevent separation of stacks and the
+resulting high surface area cuts. 
 
 Algorithm \ref{alg:collapse} details steps taken to
 combine the stacks. The algorithm loops over each vertex classified on a geometric
