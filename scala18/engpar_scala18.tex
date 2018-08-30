@@ -10,6 +10,7 @@
 \usepackage{xcolor}
 \begin{document}
 
+
 \title{Dynamic Load Balancing for Particle-in-Cell and CFD Analysis\\
 \thanks{
 This research was supported by the U.S. Department of Energy, Office of
@@ -102,40 +103,6 @@ which neighbors should be sent weight and how much weight to send. The selection
 a plan of what vertices should be sent to each neighbor in order to satisfy the weights in
 the targeting step. The final step, migration, is where the vertices are sent to their
 destinations and the partition is changed.
-
-\section{Finite Element Analysis}
-Finite element simulations utilizing unstructured meshes have complex computational
-and communication costs associated with the partition of the mesh entities. Computational
-cost is heavily related to the distribution of degrees of freedom as well as the mesh
-elements. For standard first order finite elements, degrees of freedom are associated
-with mesh vertices. In order to achieve maximum performance, mesh elements and mesh
-vertices must be balanced simultaneously.
-
-For these simulations, the N-graph is constructed by first representing the mesh elements
-as graph vertices. Then graph hyperedges are constructed for each mesh vertex. Pins
-are then created between each hyperedge and graph vertex where the mesh vertex bounds the
-mesh element. For higher order finite element simulations, where degrees of freedom are
-associated with mesh edges and mesh faces, additional graph hyperedge types can be constructed
-similarly for those mesh dimensions. Figure \ref{fig:mesh2graph} shows how a 2-D mesh (a)
-is converted into the N-graph with hyperedges as mesh vertices (b) and with hyperedges for
-both mesh vertices and mesh edges (c).
-
-\begin{figure}[!ht]
-  \centering
-  \includegraphics[width=3.5in]{../figures/exampleMesh2Graph.png}
-  \caption{(a) a 2D unstructured mesh. (b) N-graph construction with elements$\rightarrow$vertices, vertices$\rightarrow$hyperedges. (c) Same construction, but with an additional edge type for mesh edges.}
-  \label{fig:mesh2graph}
-\end{figure}
-
-{\color{red} GD Should we directly reference the previous report results? A reference is sufficient.}
-In previous work on this case, EnGPar fell short balancing mesh vertices for larger part counts
-\cite{engparSC17}.
-We identified that EnGPar was reaching a local minimum due to poor choices of destination part
-when selecting graph vertices that were on the part boundary of several processes. In order
-to make better decisions, we choose the destination part based on the largest surface area
-between the source part and the potential destination part. This results in migrating these
-vertices to parts that are more connected to the source part instead of parts that may only
-share a few edges.
 
 \section{Particle In Cell}
 
@@ -246,16 +213,8 @@ particle imbalance from AA\% to BB\%.
 
 \section{Computational Fluid Dynamics}
 
-\begin{itemize}
-\item Briefly discuss CFD (FUN3D).
-%\item Discuss vertex-based partition vs. element-based partition.
-%\item Discuss how EnGPar/Ngraph can support vertex partitions.
-%\item Discuss the current approach in FUN3D for partitioning and our ideas to improve it.
-\item Mention the boundary stack and our approach to better represent it.
-\end{itemize}
-
 Parllallel computational fluid dynamic (CFD) applications using
-finite volume and finite element partition meshes in different
+finite volume and finite elements partition meshes in different
 ways to efficiently resolve data dependencies.
 A partition of mesh elements uniquely assigns each mesh element to a process.
 Lower dimension entities are duplicated as needed to form the closure of the
@@ -265,27 +224,36 @@ processes, the shared edge and its bounding vertices will exist on both
 processes.
 A vertex-partitioned mesh means that
 instead of elements being uniquely assigned to parts, the vertices are, and the elements are
-copied along the boundary to any process that shares them.
+copied along the boundary to any process that shares them. We examine both methods of
+partitioning meshes with EnGPar.
 
-Structured boundary layer element stacks growing from geometric model faces can
-be used to reduce discretization errors and reduce mesh element count (i.e., versus
-a full unstructured tetrahedral mesh) when their are strong gradients in
-principle fields normal to a geometric model surface {\color{red} REFERENCE}.
-Figure XYZ depicts the prismatic boundary layer elements along the surface of an
-air foil.
-Accounting for this structured portion of the mesh during load balancing can
-improve the quality of the partition.
+\subsection{Element-partitioned mesh}
 
-{\color{red} GD (if you have a good one in mind) Show a good boundary layer
-stack mesh - yes I'll add that in the next commit along with associated
-references}
+For element-partitioned meshes, the N-graph is constructed by first representing the mesh elements
+as graph vertices. Then, graph hyperedges are constructed for each mesh vertex. Pins
+are then created between each hyperedge and graph vertex where the mesh vertex bounds the
+mesh element. For higher order finite element simulations, where degrees of freedom are
+associated with mesh edges and mesh faces, additional graph hyperedge types can be constructed
+similarly for those mesh dimensions. Figure \ref{fig:mesh2graph} shows how a 2-D mesh (a)
+is converted into the N-graph with hyperedges as mesh vertices (b) and with hyperedges for
+both mesh vertices and mesh edges (c).
 
-Currently for the application, partitioning is done by running (Par)METIS on the graph created
-from mesh vertices and mesh edges. As normally seen from multilevel graph
-partitioning [REFERENCES],
-the vertices are partitioned well, but the mesh edges and mesh elements have a large
-imbalance which are key components of the computational load. We improve the imbalance of
-mesh edges and mesh elements using EnGPar's diffusive load balancing method.
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=3.5in]{../figures/exampleMesh2Graph.png}
+  \caption{(a) a 2D unstructured mesh. (b) N-graph construction with elements$\rightarrow$vertices, vertices$\rightarrow$hyperedges. (c) Same construction, but with an additional edge type for mesh edges.}
+  \label{fig:mesh2graph}
+\end{figure}
+
+In previous work on this case, we used EnGPar to improve partitions of an
+element-partitioned mesh targeting balancing mesh vertices and mesh elements \cite{engparSC17}.
+For larger process counts, EnGPar fell short balancing mesh vertices.
+We identified that EnGPar was reaching a local minimum due to poor choices of destination part
+when selecting graph vertices that were on the part boundary of several processes. In order
+to make better decisions, we choose the destination part based on the largest surface area
+between the source part and the potential destination part. This results in migrating these
+vertices to parts that are more connected to the source part instead of parts that may only
+share a few edges.
 
 \subsection{Vertex-partitioned meshes}
 
@@ -296,6 +264,14 @@ by mesh elements. The pins between graph vertices and hyperedges are
 created for any mesh vertex that bounds a mesh element.
 
 {\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
+
+{\color{red} Work on improving the flow to this paragraph or just rework it to be more general or remove it.}
+Currently for the application, partitioning is done by running (Par)METIS on the graph created
+from mesh vertices and mesh edges. As normally seen from multilevel graph
+partitioning [REFERENCES],
+the vertices are partitioned well, but the mesh edges and mesh elements have a large
+imbalance which are key components of the computational load. We improve the imbalance of
+mesh edges and mesh elements using EnGPar's diffusive load balancing method.
 
 During initial attempts at improving the partitions, we found that the edge cut was growing
 at a large rate as we improved edge imbalance. This has been attributed to the differences
@@ -320,6 +296,20 @@ imbalance and either take more iterations to reach the imbalance tolerance or st
 higher imbalance.
 
 \subsection{Boundary Layer Stacks}
+
+{\color{red} CWS These paragraphs were alienated by merging the two sections so I moved them here. Feel free to move them elsewhere if you think they fit better elsewhere.}
+Structured boundary layer element stacks growing from geometric model faces can
+be used to reduce discretization errors and reduce mesh element count (i.e., versus
+a full unstructured tetrahedral mesh) when there are strong gradients in
+principle fields normal to a geometric model surface {\color{red} REFERENCE}.
+Figure XYZ depicts the prismatic boundary layer elements along the surface of an
+air foil.
+Accounting for this structured portion of the mesh during load balancing can
+improve the quality of the partition.
+
+{\color{red} GD (if you have a good one in mind) Show a good boundary layer
+stack mesh - yes I'll add that in the next commit along with associated
+references}
 
 Assigning a stack of boundary layer vertices or
 elements to a single process reduces the cut; i.e., cuts that are both normal to
