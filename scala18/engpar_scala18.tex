@@ -420,12 +420,21 @@ conversions of the mesh. In all cases EnGPar runs faster. The speedup ranges fro
 Experiments for the vertex-partitioned mesh application were done with a 60 million
 element mesh on 1024 to 8192 processes. To show the affect of the edge cut
 metric, we ran the same test for each process count giving values for the metric
-from 0.5 to 2.0 as well as the metric being turned off. Each test runs 30 iterations
-of EnGPar's edge balancer while strictly maintaining the vertex imbalance. Figure
-\ref{fig:metric} shows the edge cut and edge imbalances for each
-test. The initial stats after ParMETIS has partitioned the mesh is also provided. Without
-the metric used, EnGPar reduces the edge imbalance by XX\% while increasing the cut by
-XX\%. {\color{red} Add more discussion about the results.}
+from 0.5 to 1.2 as well as the metric being turned off. Each test runs 30 iterations
+of EnGPar's edge balancer while strictly maintaining the vertex imbalance at 5\%.
+{\color{red} As per our previous discussion about imbalance, the plots are not adjusted yet to
+  match this definition of imbalance. Neither are the stat described below.}
+In order to better isolate the edge cut from edge imbalance, we measure edge imbalance as the
+maximum edges on a process divided by the average edge of the initial partition.
+Figure \ref{fig:metric} shows the edge cut and edge imbalances for each
+test. The initial stats after ParMETIS has partitioned the mesh are also provided. For the
+8192 part case, without
+the metric used, EnGPar reduces the edge imbalance by 24\% while increasing the cut by
+34\%. Turning on the metric with a value of 1.2 results in limiting the increase of the cut to
+17\% while reducing the imbalance by 18\%. Results for the metric limit set to 1.0
+and 0.8 have similar results following the trend that lower values of the limit result
+in lower edge cuts and higher edge imbalance. When the limit is set to 0.5, the edge cut
+increases by only 1\% while reducing the imbalance by 11\%.
 
 \begin{figure}[!ht]
   \centering
@@ -434,6 +443,14 @@ XX\%. {\color{red} Add more discussion about the results.}
   \caption{Edge cut and imbalance for various values of the metric used to reduce the growth of edge cut. Initial values from ParMETIS and not using the metric are also provided. Vertex imbalance is 5\% for all cases.}
   \label{fig:metric}
 \end{figure}
+
+The best configuration from these results is very application specific. The increase in
+edge cut means that there will be overall more elements on each part as well as the communication
+between parts increases. If communication dominates a simulations scaling then the increase in
+edge cut may not be tolerable for the gains on imbalance. So the partition from ParMETIS may
+be the best choice or running EnGPar with a low limit for the cut growth metric like in the
+0.5 case. However, if the application is very sceceptible to imbalance, then a increase in the
+edge cut would be worth the decreases in imbalance as seen in the 0.8 - 1.2 cases.
 
 For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
 built in serial from the mesh with the collapsed boundary layers and partitioned
