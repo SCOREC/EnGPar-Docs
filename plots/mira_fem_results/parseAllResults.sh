@@ -10,10 +10,9 @@ echo "#Cores Original ParMA EnGPar">$dir/numvtx_v_cores.dat
 
 for i in {128,256,512}
 do
-    p_outputs=(trial$1/$i/parma/*.output)
+    p_outputs=(parma/$i/*.output)
     e_outputs=(trial$1/$i/engpar/timing/*.output) 
     ./parseResults.sh ${p_outputs[-1]} ${e_outputs[-1]} $i $dir
     e2_outputs=(trial$1/$i/engpar/timing/*.output)
-    p_outputs=(trial$1/$i/parma/timing/*.output) 
     ./parseTime.sh ${p_outputs[-1]} ${e_outputs[-1]} ${e2_outputs[-1]} $i $dir
 done
