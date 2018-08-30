@@ -287,6 +287,22 @@ graph vertices and hyperedges are given a weight of one.
 \end{itemize}
 \end{itemize}
 
+Experiments for the vertex-partitioned mesh application were done with a 60 million
+element mesh on 1024 to 8192 processes. To show the affect of the edge cut
+metric, we ran the same test for each process count giving values for the metric
+from 0.5 to 2.0 as well as the metric being turned off. Each test runs 30 iterations
+of EnGPar's edge balancer while strictly maintaining the vertex imbalance. Figures
+\ref{fig:metric_cut} and \ref{fig:metric_imb} show the edge cut and edge imbalances for each
+test. The initial stats after parmetis has partitioned the mesh is also provided. Without
+the metric used, EnGPar reduces the edge imbalance by XX\% while increasing the cut by
+XX\%. {\color{red} Add more discussion about the results.}
+
+For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
+built in serial from the mesh with and without
+collapsed boundary layers and partitioned out using global parmetis for the 1024 to 8192 partitions.
+Then, EnGPar is run for 30 iterations to reduce the edge imbalance. Figures \ref{fig:collapse_cut} and
+\ref{fig:collapse_imb} show the edge cut and edge imbalance after partitioning with
+parmetis and after EnGPar. {\color{red} Insert discussion about the results.} 
 
 \section{Closing Remarks}
 foo
