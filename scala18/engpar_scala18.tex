@@ -96,7 +96,7 @@ EnGPar's partition improvement is driven by local diffusive techniques that migr
 from heavily weighted parts to lightly weighted parts. This is done by iteratively running
 a set of steps until the target imbalance is met or no further improvements can be met.
 A diffusive iteration consists of three steps: targeting, selection, and migration.
-The targeting step consists of gathering information about the current partiton and deciding
+The targeting step consists of gathering information about the current partition and deciding
 which neighbors should be sent weight and how much weight to send. The selection step constructs
 a plan of what vertices should be sent to each neighbor in order to satisfy the weights in
 the targeting step. The final step, migration, is where the vertices are sent to their
@@ -108,9 +108,9 @@ and communication costs associated with the partition of the mesh entities. Comp
 cost is heavily related to the distribution of degrees of freedom as well as the mesh
 elements. For standard first order finite elements, degrees of freedom are associated
 with mesh vertices. In order to achieve maximum performance, mesh elements and mesh
-vertices must be balanced simulatenously.
+vertices must be balanced simultaneously.
 
-For these simulations, the N-graph is constructed by first reprsenting the mesh elements
+For these simulations, the N-graph is constructed by first representing the mesh elements
 as graph vertices. Then graph hyperedges are constructed for each mesh vertex. Pins
 are then created between each hyperedge and graph vertex where the mesh vertex bounds the
 mesh element. For higher order finite element simulations, where degrees of freedom are
@@ -187,7 +187,7 @@ the components of XGCM by the following:
 \item  Let $P_{\bar{S_i}}$ be the set of particles such that $\forall p \in P_{\bar{S_i}}, T_p = \bar{S_i}$.
 \end{itemize}
 
-With these definitions, we define the Ngraph as $G = \{V, H, P\}$ where:
+With these definitions, we define the N-graph as $G = \{V, H, P\}$ where:
 \begin{enumerate}
 \item $V = \{ v_{i,j}$ for each $\bar{S_i} | S_j \in \bar{S_i} \}$.
 \item The weight of vertex $v_{t,i}$ is equal to $|P_{\bar{S_i}}|$ on process $t$.
@@ -266,8 +266,8 @@ at a large rate as we improved edge imbalance. This has been attributed to the d
 caused by the vertex-partitioning of the mesh. For element-partitioned meshes, the hyperedges
 represent the mesh vertices. To maintain a low edge cut, mesh vertices that bound many mesh
 elements should not be cut across partitions. Towards this, EnGPar avoids migrating cavities
-around these high-degree hyperedges. For vertex-partitioned meshes, this problem is reveresed
-since mesh vertices are represented as graph vertices and hyperedges all have roughtly uniform
+around these high-degree hyperedges. For vertex-partitioned meshes, this problem is reversed
+since mesh vertices are represented as graph vertices and hyperedges all have roughly uniform
 low degrees based on the element: four in a tetrahedron, five in a pyramid, six in a prism, etc.
 Thus the problem of edge cut arises for having high degree graph vertices along the partition
 boundary which leads to a larger edge cut.
@@ -277,9 +277,9 @@ potential edge cut change for a cavity. The metric is the ratio of hyperedges th
 after the cavity is migrated to the hyperedges currently cut around the cavity. We introduce a
 parameter to EnGPar that will only migrate a cavity if the metric is below the given tolerance.
 Setting this parameter to 1.0 forces EnGPar to migrate cavities that will not increase the edge
-cut locally. This does not guarentee that the edge cut will decrease as the metric does not take
+cut locally. This does not guarantee that the edge cut will decrease as the metric does not take
 into account other cavities that are migrated in the iteration. Smaller values of this
-paramter will limit the increase in edge cut, but also limit EnGPar's ability to improve the
+parameter will limit the increase in edge cut, but also limit EnGPar's ability to improve the
 imbalance and either take more iterations to reach the imbalance tolerance or stagnate at a
 higher imbalance.
 
@@ -339,7 +339,7 @@ target.
   \centering
   \includegraphics[width=3in]{plots/mira_fem_results/vimb_v_cores}
   \caption{Vertex imbalance for the initial partitioning and the partitions created by
-    EnGpar and ParMA.}
+    EnGPar and ParMA.}
   \label{fig:fem_vtximb}
 \end{figure}
 
@@ -363,7 +363,7 @@ metric, we ran the same test for each process count giving values for the metric
 from 0.5 to 2.0 as well as the metric being turned off. Each test runs 30 iterations
 of EnGPar's edge balancer while strictly maintaining the vertex imbalance. Figures
 \ref{fig:metric} show the edge cut and edge imbalances for each
-test. The initial stats after parmetis has partitioned the mesh is also provided. Without
+test. The initial stats after ParMETIS has partitioned the mesh is also provided. Without
 the metric used, EnGPar reduces the edge imbalance by XX\% while increasing the cut by
 XX\%. {\color{red} Add more discussion about the results.}
 
@@ -377,10 +377,10 @@ XX\%. {\color{red} Add more discussion about the results.}
 
 For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
 built in serial from the mesh with and without
-collapsed boundary layers and partitioned out using global parmetis for the 1024 to 8192 partitions.
+collapsed boundary layers and partitioned out using global ParMETIS for the 1024 to 8192 partitions.
 Then, EnGPar is run for 30 iterations to reduce the edge imbalance. Figures \ref{fig:collapse_cut} and
 \ref{fig:collapse_imb} show the edge cut and edge imbalance after partitioning with
-parmetis and after EnGPar. {\color{red} Insert discussion about the results.} 
+ParMETIS and after EnGPar. {\color{red} Insert discussion about the results.} 
 
 \section{Closing Remarks}
 foo
