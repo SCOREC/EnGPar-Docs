@@ -307,6 +307,45 @@ graph vertices and hyperedges are given a weight of one.
 
 \subsection{Element-partitioned mesh}
 
+{\color{red} CWS Should we directly reference the previous report results? Maybe discuss in the above section about this and then discuss what was done to improve the results? Also, what did we do to improve the results?}
+Tests for the finite element case were run with a one billion element mesh of an airplane's
+vertical tail structure. EnGPar was run on the Mira BlueGene/Q system at the Argonne Leadership
+Computing Facility \cite{haring2012ibm} on partitions from 128Ki ($128*2^{10}$) up to 512Ki parts.
+These partitions were created by using ParMETIS part k-way \cite{karypis1999parallel} globally
+up to 8Ki parts. Then METIS is run on each part locally to create the final partitions.
+The initial mesh element imbalance is 2\% and the mesh vertex imbalance ranges from 12\% for
+the 128Ki partition up to 53\% at 512Ki parts.
+
+We compare EnGPar to ParMA \cite{SmithParma2015}, a diffusive load balancer that
+works directly on an unstructured mesh.
+Each tool is run on the partitions to balance the mesh vertices down to 5\% while keeping the mesh
+element imbalance below 5\%. Figures \ref{fig:fem_vtximb} shows the mesh vertex imbalance after
+ParMETIS and after EnGPar and ParMA are used. Both tools significantly reduce the mesh vertex
+imbalance. For the 128Ki and 256Ki cases, both reduce the imbalance to the target 5\%. In
+the 512Ki case, EnGPar reduces the mesh vertex imbalance to 6\% while ParMA reduces to the
+target.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=3in]{plots/mira_fem_results/vimb_v_cores}
+  \caption{Vertex imbalance for the initial partitioning and the partitions created by
+    EnGpar and ParMA.}
+  \label{fig:fem_vtximb}
+\end{figure}
+
+Figure \ref{fig:fem_time} shows the runtime for each partition of ParMA and EnGPar. The
+timing for EnGPar includes the construction of the N-graph and subsequent repartition of
+the mesh after running EnGPar to fairly compare with ParMA which doesn't require any
+conversions of the mesh. In all cases EnGPar runs faster. The speedup ranges from
+25\% faster at the 256Ki case up to 54\% faster for the 512Ki partition.
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=3in]{plots/mira_fem_results/time_v_cores}
+  \caption{Time to balance for EnGPar and parma}
+  \label{fig:fem_time}
+\end{figure}
+
 \subsection {Vertex-partitioned mesh}
 Experiments for the vertex-partitioned mesh application were done with a 60 million
 element mesh on 1024 to 8192 processes. To show the affect of the edge cut
