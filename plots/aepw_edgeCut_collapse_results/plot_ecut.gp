@@ -20,5 +20,5 @@ plot prefix."/edgecut_v_cores.dat" using 2:xticlabels(1) with lp title 'Initial'
      ""                  using 6:xticlabels(1) with lp title '1.2'  ls 3 , \
      ""                  using 7:xticlabels(1) with lp title '1.0'  ls 4 , \
      ""                  using 8:xticlabels(1) with lp title '0.8'  ls 5 , \
-     ""                  using 9:xticlabels(1) with lp title '0.8'  ls 8 , \
+     ""                  using 9:xticlabels(1) with lp title '0.5'  ls 8 , \
                
