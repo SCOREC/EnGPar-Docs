@@ -399,7 +399,7 @@ target.
   \centering
   \includegraphics[width=3in]{plots/mira_fem_results/vimb_v_cores}
   \caption{Vertex imbalance for the initial partitioning and the partitions created by
-    EnGPar and ParMA.}
+    EnGPar and ParMA. Element imbalance is maintained below the 5\% tolerance for all cases.}
   \label{fig:fem_vtximb}
 \end{figure}
 
@@ -421,8 +421,8 @@ Experiments for the vertex-partitioned mesh application were done with a 60 mill
 element mesh on 1024 to 8192 processes. To show the affect of the edge cut
 metric, we ran the same test for each process count giving values for the metric
 from 0.5 to 2.0 as well as the metric being turned off. Each test runs 30 iterations
-of EnGPar's edge balancer while strictly maintaining the vertex imbalance. Figures
-\ref{fig:metric} show the edge cut and edge imbalances for each
+of EnGPar's edge balancer while strictly maintaining the vertex imbalance. Figure
+\ref{fig:metric} shows the edge cut and edge imbalances for each
 test. The initial stats after ParMETIS has partitioned the mesh is also provided. Without
 the metric used, EnGPar reduces the edge imbalance by XX\% while increasing the cut by
 XX\%. {\color{red} Add more discussion about the results.}
@@ -431,16 +431,25 @@ XX\%. {\color{red} Add more discussion about the results.}
   \centering
   \includegraphics[width=3in]{plots/aepw_edgeCut_collapse_results/ecut_v_cores}
   \includegraphics[width=3in]{plots/aepw_edgeCut_collapse_results/eimb_v_cores}
-  \caption{Edge cut and imbalance for various values of the metric used to reduce the growth of edge cut. Initial values from ParMETIS and not using the metric are also provided.}
-  \label{fig:metric_cut}
+  \caption{Edge cut and imbalance for various values of the metric used to reduce the growth of edge cut. Initial values from ParMETIS and not using the metric are also provided. Vertex imbalance is 5\% for all cases.}
+  \label{fig:metric}
 \end{figure}
 
 For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
-built in serial from the mesh with and without
-collapsed boundary layers and partitioned out using global ParMETIS for the 1024 to 8192 partitions.
-Then, EnGPar is run for 30 iterations to reduce the edge imbalance. Figures \ref{fig:collapse_cut} and
-\ref{fig:collapse_imb} show the edge cut and edge imbalance after partitioning with
+built in serial from the mesh with the collapsed boundary layers and partitioned
+out using global ParMETIS for the 1024 to 8192 partitions.
+Then, EnGPar is run for 30 iterations to reduce the edge imbalance. Figure \ref{fig:collapse}
+shows the edge cut and edge imbalance after partitioning with
 ParMETIS and after EnGPar. {\color{red} Insert discussion about the results.} 
+
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=3in]{plots/aepw_edgeCut_collapse_results/ecut_v_cores_collapse}
+  \includegraphics[width=3in]{plots/aepw_edgeCut_collapse_results/eimb_v_cores_collapse}
+  \caption{Edge cut and imbalance for the graph with collapsed boundary layer stacks. Initial values from ParMETIS are provided. Vertex imbalance is 5\% for all cases.}
+  \label{fig:collapse}
+\end{figure}
 
 \section{Closing Remarks}
 foo
