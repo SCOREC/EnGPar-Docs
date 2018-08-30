@@ -2,7 +2,7 @@
 
 trial=trial$1
 results=results$1
-if ! [ -d $results ]; then
+if [ ! -d $results ]; then
     mkdir $results
 fi
 echo "#Cores Initial Off 2.0 1.5 1.2 1.0 0.8 0.5" > $results/edgeimb_v_cores.dat
