@@ -352,10 +352,18 @@ element mesh on 1024 to 8192 processes. To show the affect of the edge cut
 metric, we ran the same test for each process count giving values for the metric
 from 0.5 to 2.0 as well as the metric being turned off. Each test runs 30 iterations
 of EnGPar's edge balancer while strictly maintaining the vertex imbalance. Figures
-\ref{fig:metric_cut} and \ref{fig:metric_imb} show the edge cut and edge imbalances for each
+\ref{fig:metric} show the edge cut and edge imbalances for each
 test. The initial stats after parmetis has partitioned the mesh is also provided. Without
 the metric used, EnGPar reduces the edge imbalance by XX\% while increasing the cut by
 XX\%. {\color{red} Add more discussion about the results.}
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=3in]{plots/aepw_edgeCut_collapse_results/ecut_v_cores}
+  \includegraphics[width=3in]{plots/aepw_edgeCut_collapse_results/eimb_v_cores}
+  \caption{Edge cut and imbalance for various values of the metric used to reduce the growth of edge cut. Initial values from ParMETIS and not using the metric are also provided.}
+  \label{fig:metric_cut}
+\end{figure}
 
 For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
 built in serial from the mesh with and without
