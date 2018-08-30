@@ -118,7 +118,12 @@ destinations and the partition is changed.
 %\item Describe the weight diffusion algorithm.
 %\end{itemize}
 
-{\color{red} How much can I talk about XCG? Assuming I should only mention XGCm.}
+{\color{red} How much can I talk about XCG? Assuming I should only mention XGCm.
+I think we can say this method is applicable to applications with static meshes
+that rely on element replication (either partial like we do or full mesh copies)
+that are computationally dominated by work associated with particles.  We need
+to cite the other balancing methods used for PIC as described in Wu IJNME (see
+my email).}
 Particle in cell (PIC) methods are mesh applications that utilize particles in the spacial domain
 of the mesh. PIC applications have additional partitioning challenges since the mesh topology
 must be well balanced as well as the particles. In addition, the particles move around the mesh
@@ -278,10 +283,9 @@ graph vertices and hyperedges are given a weight of one.
 \end{itemize}
 \item FUN3D
 \begin{itemize}
-  \item with and without BL collapse
-  \item engpar parmetis (no BL collapse) vs fun3d parmetis(?) - may not be
-    possible without help from eric - need fun3d solver counts of vertices to
-    compute its imbalance
+  \item aepw with and without BL collapse
+  \item engpar parmetis (no BL collapse) vs fun3d parmetis(?) - need fun3d 
+    solver counts of vertices and edges to compute its imbalance - done
   \item engpar parmetis (no BL collapse) + vtx improvement vs engpar parmetis
   \item engpar parmetis (no BL collapse) + vtx > elm improvement vs engpar parmetis
 \end{itemize}
