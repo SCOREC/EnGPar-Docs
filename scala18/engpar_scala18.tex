@@ -3,7 +3,8 @@
 % The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
-\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
@@ -297,7 +298,29 @@ stack vertex is given a weight equal to the number of vertices in the stack, and
 are given a weight of the number of elements that share the same graph vertices. All other
 graph vertices and hyperedges are given a weight of one.
 
-{\color{red} Boundary stack collapse algorithm}
+\begin{algorithm}
+  \caption{Boundary Layer Stack Collapse}
+  \label{alg:collapse}
+  \small
+  \begin{algorithmic}[1]
+    \ForAll{Vertices, $v$, on the model boundary}
+    \If{$v$ bounds a prism}
+    \State $prev\_edge = NULL$
+    \State $next\_edge = NULL$
+    \ForAll{Edges, $e$, bounded by $v$}
+    \If{$e$ bounds no triangles and is not $prev\_edge$}
+    \State $next\_edge = e$
+    \EndIf
+    \EndFor
+    \If{$next\_edge$ is not $NULL$}
+    \State $edge\_prev = e$
+    \State $v = other\_vertex(v,e$)
+    \State goto 4:
+    \EndIf
+    \EndIf
+    \EndFor
+  \end{algorithmic}
+\end{algorithm}
 
 \section{Results}
 \begin{itemize}
