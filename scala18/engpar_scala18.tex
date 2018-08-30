@@ -119,12 +119,22 @@ similarly for those mesh dimensions. Figure \ref{fig:mesh2graph} shows how a 2-D
 is converted into the N-graph with hyperedges as mesh vertices (b) and with hyperedges for
 both mesh vertices and mesh edges (c).
 
-{\color{red} Add mesh 2 ngraph figure here}
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=3.5in]{../figures/exampleMesh2Graph.png}
+  \caption{(a) a 2D unstructured mesh. (b) N-graph construction with elements$\rightarrow$vertices, vertices$\rightarrow$hyperedges. (c) Same construction, but with an additional edge type for mesh edges.}
+  \label{fig:mesh2graph}
+\end{figure}
 
-\begin{itemize}
-\item Describe the vertex>elm problem
-\item Describe the ngraph for element-partitioned meshes
-\end{itemize}
+{\color{red} CWS Should we directly reference the previous report results?}
+In previous work on this case, EnGPar fell short balancing mesh vertices for larger part counts
+\cite{engparSC17}.
+We identified that EnGPar was reaching a local minimum due to poor choices of destination part
+when selecting graph vertices that were on the part boundary of several processes. In order
+to make better decisions, we choose the destination part based on the largest surface area
+between the source part and the potential destination part. This results in migrating these
+vertices to parts that are more connected to the source part instead of parts that may only
+share a few edges.
 
 \section{Particle In Cell}
 
@@ -307,7 +317,6 @@ graph vertices and hyperedges are given a weight of one.
 
 \subsection{Element-partitioned mesh}
 
-{\color{red} CWS Should we directly reference the previous report results? Maybe discuss in the above section about this and then discuss what was done to improve the results? Also, what did we do to improve the results?}
 Tests for the finite element case were run with a one billion element mesh of an airplane's
 vertical tail structure. EnGPar was run on the Mira BlueGene/Q system at the Argonne Leadership
 Computing Facility \cite{haring2012ibm} on partitions from 128Ki ($128*2^{10}$) up to 512Ki parts.
