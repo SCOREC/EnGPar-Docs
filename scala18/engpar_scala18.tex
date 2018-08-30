@@ -160,56 +160,47 @@ where it resides in the safe region.
 Since the mesh partitions in XGCm are fixed, we only consider
 load balancing the particles. To ensure that particles are always migrated to the safe elements
 of a process, we construct the N-graph carefully such that any partition
-decision in EnGPar will always maintain this requirement in XGCM. First we define
-the components of XGCM by the following:
-{\color{red} Probably should turn these lists into full text instead.}
-\begin{itemize}
-\item Let $F = \{F_1,F_2, ..., F_n\}$ be the flux faces.
-\item Let $G = \{G_1, G_2, ..., G_n\}$ be the groups such that $G_i$
-  contains $F_i$ and the suitable buffer region around $F_i$
-\item Let $S = \{S_1,S_2,...,S_n\}$ be the safe zones for each $G_i$.
-  It is required that $S_i \subset G_i$.
-\item Define $\bar{S_j}$ for each set of overlapping safe zones.
-\item Let $P$ be the set of particles.
-\item For each particle $p\in P$, Let $T_p$ be the set of safe zones in $S$ that $p$ resides
-  in.  $\forall p \in P, \exists ! i$ such that $T_p = \bar{S_i}$.
-\item  Let $P_{\bar{S_i}}$ be the set of particles such that $\forall p \in P_{\bar{S_i}}, T_p = \bar{S_i}$.
-\end{itemize}
+decision in EnGPar will always maintain this requirement in XGCM. Towards this, we each region
+of overlapping safe zones. Figure \ref{fig:sbars} depicts a model a) with four flux faces labeled
+in b) as f0-f3. Safe zones for each \texttt{core} is shown in the second row.
+Each overlapping safe zone set, $\bar{S_i}$, is in the third row. For a mesh face in
+one of the $\bar{S_i}$, the safe zones in the set represent each group a particle in that element
+can migrate to.
 
-With these definitions, we define the N-graph as $G = \{V, H, P\}$ where:
-\begin{enumerate}
-\item $V = \{ v_{i,j}$ for each $\bar{S_i} | S_j \in \bar{S_i} \}$.
-\item The weight of vertex $v_{t,i}$ is equal to $|P_{\bar{S_i}}|$ on process $t$.
-\item $H = \{ h_i$ for each $\bar{S_i} \}$.
-\item $P = \{ p_{i,j}$ connecting $v_{i,j}$ to $h_i \}$.
-\end{enumerate}
-Figure \ref{fig:sbars} shows an example of the $\bar{S_i}$ and the construction of N-graph from
-them. {\color{red} Make example figure smaller so it is visible in paper.}
+The N-graph is then constructed using the set of $\bar{S_i}$. For each $\bar{S_i}$ a
+component is constructed consisting of a hyperedge and vertices for each safe zone
+$S_j \in \bar{S_i}$. The hyperedge connects each of the vertices in the component.
+The fourth row of Figure \ref{fig:sbars} shows the N-graph components for the example model.
+Weights are then applied to each vertex based on the number of particles in the elements
+for each part. Arbitrary particle counts are labeled within each graph vertex in the figure.
+EnGPar is then used in order to determine how to redistribute the particles on this graph.
 
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=.4\textwidth]{../figures/xgcm_ngraph_construction.png}
+  \includegraphics[width=.48\textwidth]{../figures/xgcm_ngraph_construction.png}
   \caption{An example of overlapping safe zones and the N-graph constructed from them.}
   \label{fig:sbars}
 \end{figure}
 
-In order to load balance this graph, we run diffusive techniques on the weights of the vertices
+In order to balance the particles in the mesh, we target redistributing the weights within
+each component. We run diffusive techniques on the weights of the vertices
 rather than the vertices. This means that instead of migrating graph vertices, we migrate the
-weight of the vertices across hyperedges to reduce the imbalance of load in the graph.
+weight of the vertices across hyperedges to neighbouring vertices to reduce the imbalance
+of load in the graph.
 
 After EnGPar's weight diffusion is run, a migration plan is returned that details how
 much weight to send from each graph vertex on a part to each of its neighboring vertices.
-In XGCm, particles are migrated in order to match the plan.
+In XGCm, particles are migrated in order to match the plan. Since each graph vertex was only
+connected to processes that could receive the particles from the part, any decision XGCm makes
+within the $\bar{S_i}$ will satisfy the requirement of particles being in safe zones. Future work
+will go into different particle selection methods that can be applied to reduce how often
+dynamic load balancing will be required as particles continue to propagate.
 
-Initial demonstrations of the weighted partitioning approach are run on 32
-process test cases.
-The first case has around four thousand
-mesh faces, four flux faces and sixteen thousand particles. For this case, EnGPar brings the
-initial particle imbalance of 42\% down to 18\%. {\color{red} Do we having
-timing of how long it takes to compute the balance?  Can we say it is an
-insignificant amount of time versus the simulation?}
-The second mesh has 350k elements, X flux faces and YYY particles. EnGPar brings the
-particle imbalance from AA\% to BB\%.
+Initial demonstrations of the weighted partitioning approach are run on a 16
+process test case. The mesh has around four thousand
+mesh faces, four flux faces with four processes per flux face and sixteen thousand particles.
+The initial partitioning of particles has an imbalance of 42\%. After running EnGPar, the
+imbalance of particles is reduced to 18\%.
 
 \section{Computational Fluid Dynamics}
 
@@ -345,7 +336,7 @@ and the iteration will end.
 \end{algorithm}
 
 To maintain the correct computational and communication load of the stacks,
-we attach weights to the vertices and hyperedges that result from the stack. Each boundary layer
+we assign weights to the vertices and hyperedges that result from the stack. Each boundary layer
 stack vertex is given a weight equal to the number of vertices in the stack, and the hyperedges
 are given a weight of the number of elements that share the same graph vertices. All other
 graph vertices and hyperedges are given a weight of one.
@@ -386,7 +377,7 @@ imbalance. For the 128Ki and 256Ki cases, both reduce the imbalance to the targe
 the 512Ki case, EnGPar reduces the mesh vertex imbalance to 6\% while ParMA reduces to the
 target.
 
-{\color{red} If we keep the discussion of previous results we should add the old EnGPar results in the plot}
+{\color{red} If we keep the discussion of previous results we should add the old EnGPar results in the plot? CWS do you think it is worth including the old results for further comparison?}
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=3in]{plots/mira_fem_results/vimb_v_cores}
@@ -449,7 +440,7 @@ built in serial from the mesh with the collapsed boundary layers and partitioned
 out using global ParMETIS for the 1024 to 8192 partitions.
 Then, EnGPar is run for 30 iterations to reduce the edge imbalance. Figure \ref{fig:collapse}
 shows the edge cut and edge imbalance after partitioning with
-ParMETIS and after EnGPar. {\color{red} Insert discussion about the results.} 
+ParMETIS and after EnGPar. {\color{red} Insert discussion about the results.}
 
 
 \begin{figure}[!ht]
