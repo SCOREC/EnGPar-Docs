@@ -173,7 +173,8 @@ $S_j \in \bar{S_i}$. The hyperedge connects each of the vertices in the componen
 The fourth row of Figure \ref{fig:sbars} shows the N-graph components for the example model.
 Weights are then applied to each vertex based on the number of particles in the elements
 for each part. Arbitrary particle counts are labeled within each graph vertex in the figure.
-EnGPar is then used in order to determine how to redistribute the particles on this graph.
+EnGPar is then used in order to determine how to redistribute the particles or weight
+on this graph.
 
 \begin{figure}[!ht]
   \centering
@@ -185,7 +186,7 @@ EnGPar is then used in order to determine how to redistribute the particles on t
 In order to balance the particles in the mesh, we target redistributing the weights within
 each component. We run diffusive techniques on the weights of the vertices
 rather than the vertices. This means that instead of migrating graph vertices, we migrate the
-weight of the vertices across hyperedges to neighbouring vertices to reduce the imbalance
+weight of the vertices across hyperedges to neighboring vertices to reduce the imbalance
 of load in the graph.
 
 After EnGPar's weight diffusion is run, a migration plan is returned that details how
@@ -204,7 +205,7 @@ imbalance of particles is reduced to 18\%.
 
 \section{Computational Fluid Dynamics}
 
-Parllallel computational fluid dynamic (CFD) applications using
+Parallel computational fluid dynamic (CFD) applications using
 finite volume and finite elements partition meshes in different
 ways to efficiently resolve data dependencies.
 A partition of mesh elements uniquely assigns each mesh element to a process.
@@ -308,7 +309,7 @@ Algorithm \ref{alg:collapse} details steps taken to
 combine the stacks. The algorithm loops over each vertex classified on a geometric
 model face to see if it bounds a prism on lines 1-2. From each of these vertices, the
 algorithm iteratively walks up mesh edges that do not bound any triangles on lines 3-14. An edge
-that only bounds quad faces is guarenteed to be the edge going up the prism elements. Once
+that only bounds quad faces is guaranteed to be the edge going up the prism elements. Once
 a tetrahedron or pyramid element is hit there will be no edges that are not adjacent to a triangle
 and the iteration will end.
 \begin{algorithm}
@@ -395,7 +396,7 @@ conversions of the mesh. In all cases EnGPar runs faster. The speedup ranges fro
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=3in]{plots/mira_fem_results/time_v_cores}
-  \caption{Time to balance for EnGPar and parma}
+  \caption{Time to balance for EnGPar and ParMA}
   \label{fig:fem_time}
 \end{figure}
 
@@ -432,7 +433,7 @@ edge cut means that there will be overall more elements on each part as well as 
 between parts increases. If communication dominates a simulations scaling then the increase in
 edge cut may not be tolerable for the gains on imbalance. So the partition from ParMETIS may
 be the best choice or running EnGPar with a low limit for the cut growth metric like in the
-0.5 case. However, if the application is very sceceptible to imbalance, then a increase in the
+0.5 case. However, if the application is very susceptible to imbalance, then a increase in the
 edge cut would be worth the decreases in imbalance as seen in the 0.8 - 1.2 cases.
 
 For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
