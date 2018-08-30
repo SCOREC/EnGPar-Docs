@@ -1,0 +1,162 @@
+ENGPAR Git hash 00dc900af78ba03820cc1b50c55d2e56a96f0ad2
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/barn/aepw_collapsed/4096/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 5816513
+ENGPAR Edges: Type 0: 33577683 
+ENGPAR Pins: Type 0: 133796502 
+ENGPAR PARTITION : Empty Parts: 24
+ENGPAR PARTITION : Disconnected Components: <max,tot> 51.000 744.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 45.000 0.000 12.491 3.603
+ENGPAR PARTITION : Edge Cut: <max,tot> 15935.000 24601934.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 4726.000 0.000 4496.107 1.051
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 40867.000 0.000 8259.836 4.948
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 36056.000 0.000 17220.864 2.094
+ENGPAR Starting criteria type -1 with imbalances: 1.0511 2.0937 
+ENGPAR Side Tolerance is: 6006
+ENGPAR   Step took 0.400041 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0754 2.0754 
+ENGPAR   Step took 0.359453 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 2.0648 
+ENGPAR Completed criteria type -1 in 2 steps and took 43.140987 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0756 2.0648 
+ENGPAR Side Tolerance is: 6287
+ENGPAR   Step took 19.403910 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.9661 
+ENGPAR   Step took 19.948320 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.9290 
+ENGPAR   Step took 20.924829 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.8963 
+ENGPAR   Step took 21.879663 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.8706 
+ENGPAR   Step took 24.419849 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.8510 
+ENGPAR   Step took 26.798960 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.8338 
+ENGPAR   Step took 29.375677 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.8210 
+ENGPAR   Step took 27.413181 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.8119 
+ENGPAR   Step took 29.165334 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.8034 
+ENGPAR   Step took 30.824139 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7942 
+ENGPAR   Step took 18.510751 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7846 
+ENGPAR   Step took 18.924254 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7778 
+ENGPAR   Step took 19.381186 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7693 
+ENGPAR   Step took 19.782405 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7606 
+ENGPAR   Step took 20.191323 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7512 
+ENGPAR   Step took 20.528262 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7419 
+ENGPAR   Step took 20.811998 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7335 
+ENGPAR   Step took 21.091145 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7271 
+ENGPAR   Step took 21.416237 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7210 
+ENGPAR   Step took 21.747935 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7154 
+ENGPAR   Step took 22.012693 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7094 
+ENGPAR   Step took 22.181841 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.7029 
+ENGPAR   Step took 22.457033 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6947 
+ENGPAR   Step took 22.746242 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6894 
+ENGPAR   Step took 21.582134 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6846 
+ENGPAR   Step took 22.130297 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6797 
+ENGPAR   Step took 27.073220 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6761 
+ENGPAR   Step took 22.453359 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6703 
+ENGPAR   Step took 22.746302 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6674 
+ENGPAR   Step took 23.108783 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6632 
+ENGPAR   Step took 25.544021 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6575 
+ENGPAR   Step took 25.849888 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6551 
+ENGPAR   Step took 23.676219 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6499 
+ENGPAR   Step took 26.523410 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6461 
+ENGPAR   Step took 26.815520 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6424 
+ENGPAR   Step took 24.435151 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6380 
+ENGPAR   Step took 24.707046 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6339 
+ENGPAR   Step took 27.709875 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6302 
+ENGPAR   Step took 25.193241 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6266 
+ENGPAR   Step took 25.303214 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6230 
+ENGPAR   Step took 25.587651 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6201 
+ENGPAR   Step took 25.799327 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6176 
+ENGPAR   Step took 26.032698 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6137 
+ENGPAR   Step took 26.066503 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6116 
+ENGPAR   Step took 26.283965 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6088 
+ENGPAR   Step took 26.551666 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6069 
+ENGPAR   Step took 26.736040 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6041 
+ENGPAR   Step took 26.823271 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.6014 
+ENGPAR   Step took 27.035365 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5996 
+ENGPAR   Step took 27.089241 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5977 
+ENGPAR   Step took 27.386342 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5950 
+ENGPAR   Step took 27.349305 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5924 
+ENGPAR   Step took 26.192659 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5901 
+ENGPAR   Step took 24.988310 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5886 
+ENGPAR   Step took 27.975131 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5870 
+ENGPAR   Step took 25.076954 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5857 
+ENGPAR   Step took 25.282264 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5831 
+ENGPAR   Step took 25.293012 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5821 
+ENGPAR   Step took 25.522872 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5810 
+ENGPAR   Step took 25.552521 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5794 
+ENGPAR   Step took 25.627454 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5778 
+ENGPAR   Step took 25.556746 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5765 
+ENGPAR   Step took 25.560751 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5745 
+ENGPAR   Step took 25.607038 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5733 
+ENGPAR   Step took 27.950545 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5715 
+ENGPAR   Step took 26.352241 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5704 
+ENGPAR   Step took 28.011185 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5692 
+ENGPAR   Step took 25.618209 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5675 
+ENGPAR   Step took 25.627617 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5661 
+ENGPAR   Step took 25.566544 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0756 1.5653 
