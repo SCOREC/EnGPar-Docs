@@ -1,8 +1,8 @@
 #!/bin/bash 
 file=$1
 dir=$2
-
-if [ $3 -eq 0 ]
+re='^[0-9]+$'
+if [[ $3 =~ $re ]]
 then
     # Initial Imbalance 
     edgeimb=$(grep  "Edges type 0" $file | tr " " "\n" | fgrep . | awk 'NR % 8 == 4') 
@@ -13,8 +13,7 @@ fi
 edgeimb=$(grep  "Edges type 0" $file | tr " " "\n" | fgrep . | awk 'NR % 8 == 0') 
 echo -n " $edgeimb" >> $dir/edgeimb_v_cores.dat
 
-
-if [ $3 -eq 0 ]
+if [[ $3 =~ $re ]]
 then
     # Edge Cut
     cut=$(grep "Edge Cut" $file | tr " " "\n" | fgrep . | awk 'NR % 4 == 2')
