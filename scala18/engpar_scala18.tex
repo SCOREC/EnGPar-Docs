@@ -291,19 +291,21 @@ For the CFD application, it is ideal to partition boundary layer stacks such tha
 is on a single process. However, without explicit information, graph partitioners will cut
 the boundary stacks up including EnGPar's diffusive load balancer. In order to keep boundary
 stacks together on a process, we combine the mesh vertices of each stack into one graph vertex
-during construction of the N-graph. Algorithm \ref{alg:collapse} details steps taken to
-combine the stacks. To maintain the correct computational and communication load of the stacks,
-we attach weights to the vertices and hyperedges that result from the stack. Each boundary layer
-stack vertex is given a weight equal to the number of vertices in the stack, and the hyperedges
-are given a weight of the number of elements that share the same graph vertices. All other
-graph vertices and hyperedges are given a weight of one.
+during construction of the N-graph.
 
+Algorithm \ref{alg:collapse} details steps taken to
+combine the stacks. The algorithm loops over each vertex classified on a geometric
+model face to see if it bounds a prism on lines 1-2. From each of these vertices, the
+algorithm iteratively walks up mesh edges that do not bound any triangles on lines 3-14. An edge
+that only bounds quad faces is guarenteed to be the edge going up the prism elements. Once
+a tetrahedron or pyramid element is hit there will be no edges that are not adjacent to a triangle
+and the iteration will end.
 \begin{algorithm}
   \caption{Boundary Layer Stack Collapse}
   \label{alg:collapse}
   \small
   \begin{algorithmic}[1]
-    \ForAll{Vertices, $v$, on the model boundary}
+    \ForAll{Vertices, $v$, classified on a geometric model face}
     \If{$v$ bounds a prism}
     \State $prev\_edge = NULL$
     \State $next\_edge = NULL$
@@ -321,6 +323,13 @@ graph vertices and hyperedges are given a weight of one.
     \EndFor
   \end{algorithmic}
 \end{algorithm}
+
+To maintain the correct computational and communication load of the stacks,
+we attach weights to the vertices and hyperedges that result from the stack. Each boundary layer
+stack vertex is given a weight equal to the number of vertices in the stack, and the hyperedges
+are given a weight of the number of elements that share the same graph vertices. All other
+graph vertices and hyperedges are given a weight of one.
+
 
 \section{Results}
 \begin{itemize}
