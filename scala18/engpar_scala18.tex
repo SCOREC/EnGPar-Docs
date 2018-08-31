@@ -85,19 +85,19 @@ as a discretization of the spatial domain of interest. The partitioning of the
 mesh into sets of elements assigned to a process, a part, results in
 computational costs associated with the mesh entities and communication
 costs relative to the number of shared entities between parts. In addition to
-these basic metrics, applications adds further criteria that is critical for performance.
+these basic metrics, applications add further criteria that are critical for performance.
 
-Common partitioning techniques include multilevel graph/hypergraph methods
-and geometric methods have been applied to unstructured mesh applications. Multilevel
-graph/hypergraph methods are the most powerful tools to build good static partitions
-\cite{catalyurek2013umpa,karypis1999parallel,lasalle2013multi,schloegel2002parallel}.
+Multilevel graph/hypergraph methods and geometric methods have been successfully
+applied to balance unstructured mesh applications.
+Multilevel graph/hypergraph methods are the most powerful tools to build good static
+partitions~\cite{catalyurek2013umpa,karypis1999parallel,lasalle2013multi,schloegel2002parallel}.
 These methods construct a graph representing the data of the application. Then, target
 reducing the imbalance (measured as max divided by average) of the graph vertices while
 minimizing the edges cut between processes. Multilevel methods are very good at reducing
-these metrics, but have a heavy memory cost and can take a long time when scaling out to large
-part counts. One way to alleviate these costs is to run multilevel partitioners globally
+these metrics, but require increasing amounts of memory as they are applied to
+larger part counts. One way to alleviate these costs is to run multilevel partitioners globally
 out to thousands of processes, then partition locally on each of those parts to go out
-further. This approach can reach arbitrarily high process counts, but each
+further. This approach readily supports partitions with millions of parts, but each
 local partitioning cannot improve the global partitioning. For meshes, these methods
 can degrade the final load balance which is a function of not only base mesh
 entity count, but of a number of mesh level
@@ -105,7 +105,8 @@ interactions~\cite{zhou2012unstructured,SmithParma2015}.
 
 Geometric methods are quick spatial methods of partitioning. They are good for getting low
 imbalances of a single criteria, but often result in poor surface areas of parts and thus large
-communication costs in the applications.
+communication costs in the
+applications~\cite{devineMultiJagged2015,bergerRib1987}.
 
 In order to improve the partitions for PIC and CFD applications, we utilize diffusive
 load balancing procedures to improve the partitions. Diffusive methods iteratively transfer
@@ -115,11 +116,13 @@ able to reduce the large imbalances accounting for a full set of mesh entity
 considerations~\cite{SmithParma2015}. Our tool, EnGPar, uses diffusive methods on a
 generalized graph structure in order to improve partitions for a diverse set of application needs.
 
-Section 2 briefly discusses EnGPar. Section 3 discusses a PIC application and initial results
-using EnGPar. Section 4 looks at two different types of CFD codes. Results for the CFD
-designs is given in section 5. Conclusions and future work are discussed in section 6.
+Section~\ref{sec:engpar}  briefly discusses EnGPar.
+Section~\ref{sec:pic} 3 discusses a PIC application and initial results
+using EnGPar. Section~\ref{sec:cfd} looks at two different types of CFD codes. Results for the CFD
+designs are given in Section~\ref{sec:results}. Conclusions and future work are
+discussed in the last section.
 
-\section{EnGPar}
+\section{EnGPar} \label{sec:engpar}
 
 %\begin{itemize}
 %\item Discuss the Ngraph in general graph terms with some figures
@@ -144,7 +147,7 @@ that use structures such as meshes, graphs, and other relational structures.
 
 EnGPar's partition improvement is driven by local diffusive techniques that migrate weight
 from heavily weighted parts to lightly weighted parts. This is done by iteratively running
-a set of steps until the target imbalance is met or no further improvements can be met.
+a set of steps until the target imbalance is met or no further improvements are found.
 A diffusive iteration consists of three steps: targeting, selection, and migration.
 The targeting step consists of gathering information about the current partition and deciding
 which neighbors should be sent weight and how much weight to send. The selection step constructs
@@ -152,13 +155,13 @@ a plan of what vertices should be sent to each neighbor in order to satisfy the 
 the targeting step. The final step, migration, is where the vertices are sent to their
 destinations and the partition is changed.
 
-\section{Plasma Simulation}
+\section{Plasma Simulation} \label{sec:pic}
 
 Plasma physics simulated using a PIC method utilize particles
 in the spatial domain of a mesh.
 In this work we focus on load balancing the computationally dominant particle
-push operation that is common to both PIC codes with fixed field (e.g., GITR~\cite{younkin2017})
-and self-consistent field (e.g., XGC~\cite{chang2004numerical,Ku2016467,ku2009},
+push operation that is common to both PIC codes with a fixed field (e.g., GITR~\cite{younkin2017})
+and a self-consistent field (e.g., XGC~\cite{chang2004numerical,Ku2016467,ku2009},
 M3D-C1~\cite{jardin2012multiple}, HPIC~\cite{hpic2017}).
 Given initial electric and magnetic fields on the mesh, the value of the field
 for each particle is determined via interpolation from associated mesh vertices.
@@ -173,7 +176,7 @@ computational imbalance that degrades
 performance~\cite{carmona1997,plimptonPic2003,worleyBalancePic2016}.
 
 XGC is a gyrokinetic PIC code for plasma turbulence simulation in a tokamak
-fusion device ~\cite{chang2004numerical,Ku2016467,ku2009}.
+fusion device~\cite{chang2004numerical,Ku2016467,ku2009}.
 In this work we refer to a development version of XGC named XGCm that supports
 a mesh-based particle distribution strategy.
 XGCm decomposes the domain with a 2D mesh of the
@@ -183,10 +186,9 @@ domain, the polodial planes that decompose it in the toroidal direction, and the
 definition of physics-based geometric features within the planes.
 Specifically, Figures~\ref{fig:xgcmPtn}-b and ~\ref{fig:xgcmPtn}-c depict the
 flux curve and the faces they form. A part is made for each flux face.
-To satisfy information dependencies of particles belonging to the core,
-the sets of elements of neighboring cores are replicated to satisfy
-particle data dependencies and thus avoid communication during the
-computationally intensive particle push operation.
+To satisfy information dependencies of particles belonging to the core, the sets
+of elements of neighboring cores are replicated and thus avoid communication
+during the computationally intensive particle push operation.
 These replicated elements are referred to as the buffer region.
 Figures~\ref{fig:xgcmPtn}-d and ~\ref{fig:xgcmPtn}-e depict a core and buffer
 flux faces that makes up one part. 
@@ -204,11 +206,11 @@ The elements in the core flux face of each part, and some layers of the
 buffer region elements that surround it, are marked as a safe region since there is
 sufficient mesh field information available to satisfy the dependency of the
 push operation.
-Initially, particles are distributed uniformly over the Tokamak volume.
+Initially, particles are distributed uniformly over the tokamak volume.
 The dominant motion of the particles, projected to the polodial plane, tends to
 keep them within their initial flux face while a secondary motion drifts them
 outwards towards the boundary of the plane.
-If the particle moves outside of the safe region it is migrated to a process
+If the particle moves outside of the safe region, it is migrated to a process
 where it resides in the safe region before the next push operation.
 
 To ensure that particles are always migrated to the safe elements
@@ -257,13 +259,14 @@ process test case. The mesh has around four thousand
 mesh faces, four flux faces with four processes per flux face and sixteen thousand particles.
 The initial partitioning of particles has an imbalance of 42\%. After running EnGPar, the
 imbalance of particles is reduced to 18\%. The push operation's computational load is
-statistically proportional to the number of particles on part. So this reduction in
-imbalance is expected to reduce the runtime of the push operation proportionally.
+statistically proportional to the number of particles on part. thus this
+reduction will significantly improve the performance of the computationally
+dominant push operation.
 
-\section{Computational Fluid Dynamics}
+\section{Computational Fluid Dynamics} \label{sec:cfd}
 
-Parallel CFD applications using
-finite volume and finite elements partition meshes in different
+Parallel CFD applications using the
+finite volume and finite element methods distribute their meshes in different
 ways to efficiently resolve data dependencies.
 A partition of mesh elements uniquely assigns each mesh element to a process.
 Lower dimension entities are duplicated as needed to form the closure of the
@@ -271,10 +274,10 @@ elements.
 For example, if two triangles share an edge, but are assigned to different
 processes, the shared edge and its bounding vertices will exist on both
 processes.
-A vertex-partitioned mesh means that
-instead of elements being uniquely assigned to parts, the vertices are, and the elements are
-copied along the boundary to any process that shares them. We examine both methods of
-partitioning meshes with EnGPar.
+A vertex partition of a mesh uniquely assigns vertices to parts while the
+elements, and their closure, are copied along the boundary to any process that
+shares them.
+We examine both methods of partitioning meshes with EnGPar.
 
 \subsection{Element-partitioned mesh}
 
@@ -386,7 +389,7 @@ are given a weight of the number of elements that share the same graph vertices.
 graph vertices and hyperedges are given a weight of one.
 
 
-\section{Results}
+\section{Results} \label{sec:results}
 
 \subsection{Element-partitioned mesh}
 
@@ -486,7 +489,7 @@ edge cut.
   \label{fig:collapse}
 \end{figure}
 
-\section{Closing Remarks and Future Work}
+\section{Closing Remarks and Future Work} \label{sec:closing}
 
 
 EnGPar was used to improve the partitions of several application data. A special graph was
