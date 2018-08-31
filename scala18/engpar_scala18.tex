@@ -129,23 +129,36 @@ sent to a different process that has sufficient field information.
 As these simulations continue the particles become imbalanced and will degrade
 performance{\color{red} REFERENCE PIC BALANCING}.
 
-XGCm, a PIC application supporting the computation of XYZ {\color{red} REFERENCE
-XGC}.
+The XGC PIC application supports the analysis of plasma physics in a
+tokamak~\cite{Ku2016467,ku2009}.
+In this work we refer to a development version of XGC named XGCm that supports
+a modified mesh and particle distribution strategy.
 XGCm decomposes the domain with a 2D mesh of the
 of the polodial plane that is repeated along the toroidal direction.
-Figure~\ref{XYZ} depicts the distribution of the mesh to processes.
-The left image depicts the set of elements classified on a flux surface; the
-area bounded by two flux curves.
-These elements form a \texttt{core}.
-A \texttt{core} is assigned to one group of processes.
-To satisfy information dependencies of particles belonging to the \texttt{core},
-the sets of elements of neighboring \texttt{core}s are replicated to satisfy
+Figure~\ref{xgcmPtn} depicts a simplified representation of the tokamak computational
+domain, the polodial planes that decompose it in the toroidal direction, and the
+definition of physics-based geometric features within the planes.
+Specifically, Figure~\ref{xgcmPtn}b-c depict the flux curve and the faces
+they form.
+Figure~\ref{xgcmPtn}d-e depicts a core and buffer flux faces,
+and their assignment to a group.
+To satisfy information dependencies of particles belonging to the core,
+the sets of elements of neighboring cores are replicated to satisfy
 particle data dependencies and thus avoid communication during the
 computationally intensive particle push operation.
-The decomposition of each polodial plane is identical and does does not change
-during the simulation.
+These replicated elements are referred to as the buffer flux faces.
+Note, each process has a copy of the entire group.
+This decomposition of the polodial plane is identical for all planes along the
+toroidal direction and does does not change during the simulation.
 
-The elements in the \texttt{core} assigned to each group, and some layers of the
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=.4\textwidth]{../figures/xgcm_partition.png}
+  \caption{XGCm mesh distribution.}
+  \label{fig:xgcmPtn}
+\end{figure}
+
+The elements in the core assigned to each group, and some layers of the
 replicated elements that surround it, are marked as a safe region since there is
 sufficient mesh field information available to satisfy the dependency of the
 push operation.
@@ -178,8 +191,9 @@ on this graph.
 
 \begin{figure}[!ht]
   \centering
-  \includegraphics[width=.48\textwidth]{../figures/xgcm_ngraph_construction.png}
-  \caption{An example of overlapping safe zones and the N-graph constructed from them.}
+  \includegraphics[width=.4\textwidth]{../figures/xgcm_ngraph_construction.png}
+  \caption{An example of overlapping safe zones and the N-graph constructed from
+  them.{\color{red} Move embedded captions to here}}
   \label{fig:sbars}
 \end{figure}
 
