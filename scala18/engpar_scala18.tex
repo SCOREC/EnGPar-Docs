@@ -99,8 +99,9 @@ part counts. One way to alleviate these costs is to run multilevel partitioners 
 out to thousands of processes, then partition locally on each of those parts to go out
 further. This approach can reach arbitrarily high process counts, but each
 local partitioning cannot improve the global partitioning. For meshes, these methods
-are good at reducing the imbalance for one mesh entity,
-but other mesh entities become greatly imbalanced as the part counts get larger.
+can degrade teh final load balance which is a function of not only base mesh
+entity count, but of a number of mesh level
+interactions~\cite{zhou2012unstructured,SmithParma2015}.
 
 Geometric methods are quick spacial methods of partitioning. They are good for getting low
 imbalances of a single criteria, but often result in poor surface areas of parts and thus large
@@ -110,8 +111,8 @@ In order to improve the partitions for PIC and CFD applications, we utilize diff
 load balancing procedures to improve the partitions. Diffusive methods iteratively transfer
 weight from heavily loaded parts to lighter neighboring parts
 \cite{cybenko1989dynamic,subramanian1994analysis}. Diffusive methods have been shown to be
-able to reduce the large imbalances of secondary mesh entities coming out of multilevel
-tools \cite{SmithParma2015}. Our tool, EnGPar, uses diffusive methods on a
+able to reduce the large imbalances accounting for a full set of mesh entity
+considerations~\cite{SmithParma2015}. Our tool, EnGPar, uses diffusive methods on a
 generalized graph structure in order to improve partitions for a diverse set of application needs.
 
 Section 2 briefly discusses EnGPar. Section 3 discusses a PIC application and initial results
@@ -159,24 +160,25 @@ In this work we focus on load balancing the computationally dominant particle
 push operation that is common to both passive (e.g., GITR~\cite{younkin2017})
 and active (e.g., XGC~\cite{chang2004numerical,Ku2016467,ku2009},
 M3D-C1~\cite{jardin2012multiple}, HPIC~\cite{hpic2017}) PIC codes.
-Given an initial ABC field on the mesh, the value of the field for each particle
-is determined via interpolation from mesh vertices within the maximum
-gyro-ring radius of the particle.
+Given an initial electric and magnetic field on the mesh, the value of the field
+for each particle is determined via interpolation from mesh vertices within the
+maximum gyro-ring radius of the particle.
 The spatial position of the particles is then updated using a push operation.
 Particle properties are then interpolated back to the mesh vertices; the reverse
 of the vertex-to-particle interpolation process.
 Unless the entire mesh is replicated on all processes, particles that do not
 have their field dependencies satisfied will need to be
 sent to a different process that has sufficient field information.
-As these simulations continue the particles become imbalanced and will degrade
+As these simulations continue the particles migrate through the mesh causing
+computational imbalance that degrades
 performance~\cite{carmona1997,plimptonPic2003,worleyBalancePic2016}.
 
 XGC is a gyrokinetic PIC code for plasma turbulence simulation in a tokamak
 fusion device tokamak~\cite{chang2004numerical,Ku2016467,ku2009}.
 In this work we refer to a development version of XGC named XGCm that supports
-a modified mesh and particle distribution strategy.
+a mesh-based particle distribution strategy.
 XGCm decomposes the domain with a 2D mesh of the
-of the polodial plane that is repeated along the toroidal direction.
+polodial plane that is repeated a given number of times in the toroidal direction.
 Figure~\ref{fig:xgcmPtn}-a depicts a simplified representation of the tokamak computational
 domain, the polodial planes that decompose it in the toroidal direction, and the
 definition of physics-based geometric features within the planes.
@@ -189,7 +191,6 @@ the sets of elements of neighboring cores are replicated to satisfy
 particle data dependencies and thus avoid communication during the
 computationally intensive particle push operation.
 These replicated elements are referred to as the buffer flux faces.
-Note, each process has a copy of the entire group.
 This decomposition of the polodial plane is identical for all planes along the
 toroidal direction and does does not change during the simulation.
 
@@ -203,13 +204,13 @@ toroidal direction and does does not change during the simulation.
 The elements in the core assigned to each group, and some layers of the
 replicated elements that surround it, are marked as a safe region since there is
 sufficient mesh field information available to satisfy the dependency of the
-push operation {\color{red} What is the dependency during push on the mesh?}.
+push operation.
 Initially, particles are distributed uniformly over each flux face.
 The dominant motion of the particles, projected to the polodial plane, tends to
 keep them within their initial flux face while a secondary motion drifts them
 outwards towards the boundary of the plane.
 If the particle moves outside of the safe region it is migrated to a process
-where it resides in the safe region.
+where it resides in the safe region before the next push operation.
 
 To ensure that particles are always migrated to the safe elements
 of a process, we construct the N-graph carefully such that any partition
@@ -227,8 +228,8 @@ $S_j \in \bar{S_i}$. The hyperedge connects each of the vertices in the componen
 The fourth row of Figure \ref{fig:sbars} shows the N-graph components for the example model.
 Weights are then applied to each vertex based on the number of particles in the elements
 for each part. 
-EnGPar is then used in order to determine how to redistribute the particles or weight
-on this graph.
+EnGPar is then used in order to determine how to redistribute the particles or
+based on weights on this graph.
 
 \begin{figure}[!ht]
   \centering
