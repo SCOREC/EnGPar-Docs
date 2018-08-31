@@ -65,11 +65,48 @@ particle in cell, computational fluid dynamics
 
 \section{Introduction}
 
-\begin{itemize}
-\item motivate dynamic load balancing
-\item talk about how different applications have different partitioning needs
-\item Mention that engpar is general to support a range of structures.
-\end{itemize}
+High performance computing applications have a wide range of partitioning requirements when
+it comes to managing computation and communication costs. For evolving simulations these
+costs change as the simulation proceeds. In order to maintain good performance throughout the
+simulation, quick repartitioning methods are required that can deal with incremental changes
+to the computational load.
+
+In particle in cell (PIC) and computational fluid dynamics (CFD), unstructured meshes are utilized
+as a discretization of the spacial domain of interest. The partitioning of mesh results in
+computational costs associated with the distribution of the mesh entities and communication
+costs relative to the surface area between parts. Special properties for each application
+result in further criteria that is critical for performance.
+
+Common partitioning techniques include multilevel graph/hypergraph methods
+and geometric methods have been applied to unstructured mesh applications. Multilevel
+graph/hypergraph methods are the most powerful tools to build good static partitions
+\cite{catalyurek2013umpa,karypis1999parallel,lasalle2013multi,schloegel2002parallel}.
+These methods construct a graph representing the data of the application. Then, target
+reducing the imbalance (measured as max divided by average) of the graph vertices while
+minimizing the edges cut between processes. Multilevel methods are very good at reducing
+these metrics, but have a heavy memory cost and can take a long time when scaling out to large
+part counts. One way to alleviate these costs is to run multilevel partitioners globally
+out to thousands of processes, then partition locally on each of those parts to go out
+further. This approach can reach arbitrarily high process counts, but each
+local partitioning cannot improve the global partitioning. For meshes, these methods
+are good at reducing the imbalance for one mesh entity,
+but other mesh entities become greatly imbalanced as the part counts get larger.
+
+Geometric methods are quick spacial methods of partitioning. They are good for getting low
+imbalances of a single criteria, but often result in poor surface areas of parts and thus large
+communication costs in the applications.
+
+In order to improve the partitions for PIC and CFD applications, we utilize diffusive
+load balancing procedures to improve the partitions. Diffusive methods iteratively transfer
+weight from heavily loaded parts to lighter neighboring parts
+\cite{cybenko1989dynamic,subramanian1994analysis}. Diffusive methods have been shown to be
+able to reduce the large imbalances of secondary mesh entities coming out of multilevel
+tools \cite{SmithParma2015}. Our tool, EnGPar, uses diffusive methods on a
+generalized graph structure in order to improve partitions for a diverse set of application needs.
+
+Section 2 briefly discusses EnGPar. Section 3 discusses a PIC application and initial results
+using EnGPar. Section 4 looks at two different types of CFD codes. Results for the CFD
+designs is given in section 5. Conclusions and future work are discussed in section 6.
 
 \section{EnGPar}
 
