@@ -15,5 +15,10 @@ set style line 6 lc rgb '#999999' lt 1 lw 7 pt 11 ps 3.5
 set style line 7 lc rgb '#a65628' lt 1 lw 7 pt 13 ps 3.5
 set style line 8 lc rgb '#f781bf' lt 1 lw 7 pt 15 ps 3.5
 
-plot prefix."/edgeimb_v_cores.dat" using 4:xticlabels(1) with lp title 'Initial' ls 1, \
-     ""                  using 5:xticlabels(1) with lp title 'EnGPar'  ls 2
+
+plot prefix."/edgeimb_v_cores.dat" using 2:xticlabels(1) with lp title 'Initial' ls 1, \
+     ""                  using 3:xticlabels(1) with lp title 'Off'  ls 2, \
+     ""                  using 4:xticlabels(1) with lp title '1.2'  ls 3 , \
+     ""                  using 5:xticlabels(1) with lp title '1.0'  ls 4 , \
+     ""                  using 6:xticlabels(1) with lp title '0.8'  ls 5 , \
+     ""                  using 7:xticlabels(1) with lp title '0.5'  ls 8 

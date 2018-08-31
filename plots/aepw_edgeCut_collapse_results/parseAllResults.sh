@@ -31,9 +31,9 @@ for i in 1024 2048 4096 8192
 do
     echo -n $i >> ${results}_collapse/edgeimb_v_cores.dat
     echo -n $i >> ${results}_collapse/edgecut_v_cores.dat
-    for j in aepw aepw_collapsed
+    for j in 0 1.2 1.0 0.8 0.5
     do
-        ./parseResults.sh $trial/${j}_${i}_0.out ${results}_collapse 0
+        ./parseResults.sh $trial/aepw_collapsed_${i}_$j.out ${results}_collapse $j 
     done
     echo $EMPTY >> ${results}_collapse/edgeimb_v_cores.dat
     echo $EMPTY >> ${results}_collapse/edgecut_v_cores.dat

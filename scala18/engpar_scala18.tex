@@ -311,7 +311,7 @@ vertices are defined by mesh vertices and graph hyperedges are defined
 by mesh elements. The pins between graph vertices and hyperedges are
 created for any mesh vertex that bounds a mesh element.
 
-{\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
+%{\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
 
 During initial attempts at improving the partitions, we found that the edge cut was growing
 at a large rate as we improved edge imbalance. This has been attributed to the differences
@@ -386,20 +386,6 @@ graph vertices and hyperedges are given a weight of one.
 
 
 \section{Results}
-\begin{itemize}
-\item PIC
-\begin{itemize}
-  \item engpar vs no balancing timing and particle imbalance
-\end{itemize}
-\item FUN3D
-\begin{itemize}
-  \item aepw with and without BL collapse
-  \item engpar parmetis (no BL collapse) vs fun3d parmetis(?) - need fun3d 
-    solver counts of vertices and edges to compute its imbalance - done
-  \item engpar parmetis (no BL collapse) + vtx improvement vs engpar parmetis
-  \item engpar parmetis (no BL collapse) + vtx > elm improvement vs engpar parmetis
-\end{itemize}
-\end{itemize}
 
 \subsection{Element-partitioned mesh}
 
@@ -420,7 +406,6 @@ imbalance. For the 128Ki and 256Ki cases, both reduce the imbalance to the targe
 the 512Ki case, EnGPar reduces the mesh vertex imbalance to 6\% while ParMA reduces to the
 target.
 
-{\color{red} If we keep the discussion of previous results we should add the old EnGPar results in the plot? CWS do you think it is worth including the old results for further comparison?}
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=3in]{plots/mira_fem_results/vimb_v_cores}
@@ -448,10 +433,10 @@ element mesh on 1024 to 8192 processes. To show the affect of the edge cut
 metric, we ran the same test for each process count giving values for the metric
 from 0.5 to 1.2 as well as the metric being turned off. Each test runs 30 iterations
 of EnGPar's edge balancer while strictly maintaining the vertex imbalance at 5\%.
-{\color{red} As per our previous discussion about imbalance, the plots are not adjusted yet to
-  match this definition of imbalance. Neither are the stat described below.}
-In order to better isolate the edge cut from edge imbalance, we measure edge imbalance as the
-maximum edges on a process divided by the average edge of the initial partition.
+%{\color{red} As per our previous discussion about imbalance, the plots are not adjusted yet to
+%  match this definition of imbalance. Neither are the stat described below.}
+%In order to better isolate the edge cut from edge imbalance, we measure edge imbalance as the
+%maximum edges on a process divided by the average edge of the initial partition.
 Figure \ref{fig:metric} shows the edge cut and edge imbalances for each
 test. The initial stats after ParMETIS has partitioned the mesh are also provided. For the
 8192 part case, without
@@ -481,9 +466,15 @@ edge cut would be worth the decreases in imbalance as seen in the 0.8 - 1.2 case
 For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
 built in serial from the mesh with the collapsed boundary layers and partitioned
 out using global ParMETIS for the 1024 to 8192 partitions.
-Then, EnGPar is run for 30 iterations to reduce the edge imbalance. Figure \ref{fig:collapse}
+Then, EnGPar is run for 30 iterations to reduce the edge imbalance with the same set of
+configurations for the edge cut metric limit. Figure \ref{fig:collapse}
 shows the edge cut and edge imbalance after partitioning with
-ParMETIS and after EnGPar. {\color{red} Insert discussion about the results.}
+ParMETIS and after EnGPar. Without the metric limit, there is a 41\% point reduction in
+element imbalance with a 38\% increase in edge cut. The usage of the metric has a much larger
+affect than the in the uncollapsed boundary layer case. For a value of 1.2 there is a 35\% point
+drop in imbalance with a 15\% increase in edge cut. Similar trends are seen for the 1.0 and 0.8
+limit. The 0.5 metric reduces the imbalance by 11\% points with a less than 1\% increase in the
+edge cut.
 
 
 \begin{figure}[!ht]
@@ -494,13 +485,26 @@ ParMETIS and after EnGPar. {\color{red} Insert discussion about the results.}
   \label{fig:collapse}
 \end{figure}
 
-\section{Closing Remarks}
-foo
+\section{Closing Remarks and Future Work}
 
-\begin{itemize}
-\item accelerators
-\item BL collapse
-\end{itemize}
+
+EnGPar was used to improve the partitions of several application data. A special graph was
+constructed to compactly represent particles in a fusion application. Initial results were
+shown greatly reducing the imbalance of particles. In the future, larger simulations will
+be run to further test the graph construction and EnGPar.
+
+Previous results of using EnGPar to improve the partitions for an element-based CFD application
+were revisited. Improvements were made that reduced the imbalance out of EnGPar further and
+almost reaching the tolerance at 512Ki parts.
+
+Vertex-partitioned meshes for CFD were considered. The diffusive methods used previously for
+element-partitioned meshes was not able to control the edge cut while improving the partitions.
+A new metric was introduced that with tuning was able to give a range for trading between edge
+cut and imbalance. Additionally, combining boundary layer stacks was explored. The metric for
+the edge cut was more affective in decreasing imbalance and limiting the increase in edge cut.
+
+%Accelerators
+
 
 \section{Acknowledgements}
 
