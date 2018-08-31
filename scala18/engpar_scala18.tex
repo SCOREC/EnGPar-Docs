@@ -256,8 +256,9 @@ Initial demonstrations of the weighted partitioning approach are run on a 16
 process test case. The mesh has around four thousand
 mesh faces, four flux faces with four processes per flux face and sixteen thousand particles.
 The initial partitioning of particles has an imbalance of 42\%. After running EnGPar, the
-imbalance of particles is reduced to 18\%. {\color{red} Should the run time be
-improved proportionally to the imbalance reduction?}
+imbalance of particles is reduced to 18\%. The push operation's computational load is
+statistically proportional to the number of particles on part. So this reduction in
+imbalance is expected to reduce the runtime of the push operation proportionally.
 
 \section{Computational Fluid Dynamics}
 
