@@ -211,8 +211,8 @@ Since the mesh partitions in XGCm are fixed, we only consider
 load balancing the particles. To ensure that particles are always migrated to the safe elements
 of a process, we construct the N-graph carefully such that any partition
 decision in EnGPar will always maintain this requirement in XGCM. Towards this, we each region
-of overlapping safe zones. Figure \ref{fig:sbars} depicts a model a) with four flux faces labeled
-in b) as f0-f3. Safe zones for each \texttt{core} is shown in the second row.
+of overlapping safe zones. Figure \ref{fig:sbars} depicts a model (a) with four flux faces labeled
+in (b) as f0-f3. Safe zones for each \texttt{core} is shown in the second row.
 Each overlapping safe zone set, $\bar{S_i}$, is in the third row. For a mesh face in
 one of the $\bar{S_i}$, the safe zones in the set represent each group a particle in that element
 can migrate to.
@@ -222,7 +222,7 @@ component is constructed consisting of a hyperedge and vertices for each safe zo
 $S_j \in \bar{S_i}$. The hyperedge connects each of the vertices in the component.
 The fourth row of Figure \ref{fig:sbars} shows the N-graph components for the example model.
 Weights are then applied to each vertex based on the number of particles in the elements
-for each part. Arbitrary particle counts are labeled within each graph vertex in the figure.
+for each part. 
 EnGPar is then used in order to determine how to redistribute the particles or weight
 on this graph.
 
