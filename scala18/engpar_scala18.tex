@@ -60,7 +60,7 @@ shephard@rpi.edu}
 
 \begin{IEEEkeywords}
 partition improvement,multigraph,hypergraph,dynamic load balancing,
-particle in cell, computational fluid dynamics
+particle-in-cell, computational fluid dynamics
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -143,42 +143,37 @@ destinations and the partition is changed.
 
 \section{Particle In Cell}
 
-%\begin{itemize}
-%\item Briefly discuss PIC/XGCM
-%\item Mention that the mesh partition is static.
-%\item Describe the buffer/safe zone
-%\item Describe the weight diffusion algorithm.
-%\end{itemize}
-
-{\color{red} How much can I talk about XCG? Assuming I should only mention XGCm.
-I think we can say this method is applicable to applications with static meshes
-that rely on element replication (either partial like we do or full mesh copies)
-that are computationally dominated by work associated with particles.  We need
-to cite the other balancing methods used for PIC as described in Wu IJNME (see
-my email).}
-Particle in cell (PIC) methods utilize particles in the spacial domain of a
-mesh.
-The particles move around the mesh under the influence of a field defined on the
-mesh.
+Plasma physics simulated using a particle-in-cell (PIC) method utilize particles
+in the spacial domain of a mesh.
+In this work we focus on load balancing the computationally dominant particle
+push operation that is common to both passive (e.g., GITR~\cite{younkin2017})
+and active (e.g., XGC~\cite{chang2004numerical,Ku2016467,ku2009},
+M3D-C1~\cite{jardin2012multiple}, HPIC~\cite{hpic2017}) PIC codes.
+Given an initial ABC field on the mesh, the value of the field for each particle
+is determined via interpolation from mesh vertices within the maximum
+gyro-ring radius of the particle.
+The spatial position of the particles is then updated using a push operation.
+Particle properties are then interpolated back to the mesh vertices; the reverse
+of the vertex-to-particle interpolation process.
 Unless the entire mesh is replicated on all processes, particles that do not
 have their field dependencies satisfied will need to be
 sent to a different process that has sufficient field information.
 As these simulations continue the particles become imbalanced and will degrade
-performance{\color{red} REFERENCE PIC BALANCING}.
+performance~\cite{carmona1997,plimptonPic2003,worleyBalancePic2016}.
 
-The XGC PIC application supports the analysis of plasma physics in a
-tokamak~\cite{Ku2016467,ku2009}.
+XGC is a gyrokinetic PIC code for plasma turbulence simulation in a tokamak
+fusion device tokamak~\cite{chang2004numerical,Ku2016467,ku2009}.
 In this work we refer to a development version of XGC named XGCm that supports
 a modified mesh and particle distribution strategy.
 XGCm decomposes the domain with a 2D mesh of the
 of the polodial plane that is repeated along the toroidal direction.
-Figure~\ref{xgcmPtn} depicts a simplified representation of the tokamak computational
+Figure~\ref{fig:xgcmPtn}-a depicts a simplified representation of the tokamak computational
 domain, the polodial planes that decompose it in the toroidal direction, and the
 definition of physics-based geometric features within the planes.
-Specifically, Figure~\ref{xgcmPtn}b-c depict the flux curve and the faces
-they form.
-Figure~\ref{xgcmPtn}d-e depicts a core and buffer flux faces,
-and their assignment to a group.
+Specifically, Figures~\ref{fig:xgcmPtn}-b and ~\ref{fig:xgcmPtn}-c depict the
+flux curve and the faces they form.
+Figures~\ref{fig:xgcmPtn}-d and ~\ref{fig:xgcmPtn}-e depicts a core and buffer
+flux faces, and their assignment to a group.
 To satisfy information dependencies of particles belonging to the core,
 the sets of elements of neighboring cores are replicated to satisfy
 particle data dependencies and thus avoid communication during the
@@ -191,26 +186,25 @@ toroidal direction and does does not change during the simulation.
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=.4\textwidth]{../figures/xgcm_partition.png}
-  \caption{XGCm mesh distribution.}
+  \caption{XGCm mesh distribution in the toroidal and polodial directions of a tokamak.}
   \label{fig:xgcmPtn}
 \end{figure}
 
 The elements in the core assigned to each group, and some layers of the
 replicated elements that surround it, are marked as a safe region since there is
 sufficient mesh field information available to satisfy the dependency of the
-push operation.
-Particles exist within the safe elements of a process during an iteration of the
-solver, but may move outside the safe region when the particles are moved during
-the push operation.
+push operation {\color{red} What is the dependency during push on the mesh?}.
+Initially, particles are distributed uniformly over each flux face.
+The dominant motion of the particles, projected to the polodial plane, tends to
+keep them within their initial flux face while a secondary motion drifts them
+outwards towards the boundary of the plane.
 If the particle moves outside of the safe region it is migrated to a process
 where it resides in the safe region.
 
-{\color{red} Discuss particle distribution?}
-
-Since the mesh partitions in XGCm are fixed, we only consider
-load balancing the particles. To ensure that particles are always migrated to the safe elements
+To ensure that particles are always migrated to the safe elements
 of a process, we construct the N-graph carefully such that any partition
-decision in EnGPar will always maintain this requirement in XGCM. Towards this, we each region
+decision in EnGPar will always maintain this requirement in XGCM. Towards this,
+we represent each region
 of overlapping safe zones. Figure \ref{fig:sbars} depicts a model a) with four flux faces labeled
 in b) as f0-f3. Safe zones for each \texttt{core} is shown in the second row.
 Each overlapping safe zone set, $\bar{S_i}$, is in the third row. For a mesh face in
@@ -252,7 +246,8 @@ Initial demonstrations of the weighted partitioning approach are run on a 16
 process test case. The mesh has around four thousand
 mesh faces, four flux faces with four processes per flux face and sixteen thousand particles.
 The initial partitioning of particles has an imbalance of 42\%. After running EnGPar, the
-imbalance of particles is reduced to 18\%.
+imbalance of particles is reduced to 18\%. {\color{red} Should the run time be
+improved proportionally to the imbalance reduction?}
 
 \section{Computational Fluid Dynamics}
 
