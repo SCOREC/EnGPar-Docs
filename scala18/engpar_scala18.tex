@@ -337,29 +337,15 @@ higher imbalance.
 
 \subsection{Boundary Layer Stacks}
 
-{\color{red} CWS These paragraphs were alienated by merging the two sections so I moved them here. Feel free to move them elsewhere if you think they fit better elsewhere.}
 Structured boundary layer element stacks growing from geometric model faces can
 be used to reduce discretization errors and reduce mesh element count (i.e., versus
 a full unstructured tetrahedral mesh) when there are strong gradients in
-principle fields normal to a geometric model surface {\color{red} REFERENCE}.
-Figure XYZ depicts the prismatic boundary layer elements along the surface of an
-air foil.
-Accounting for this structured portion of the mesh during load balancing can
-improve the quality of the partition.
-
-{\color{red} GD (if you have a good one in mind) Show a good boundary layer
-stack mesh - yes I'll add that in the next commit along with associated
-references}
-
-Assigning a stack of boundary layer vertices or
-elements to a single process reduces the cut; i.e., cuts that are both normal to
-and in-plane with the boundary layer will have more surface area than a cut that
-is only along the planar or normal direction.
-However, partitioners
-operating on the graph formed by the dual of the mesh, will separate
-the boundary stacks. For a vertex partition, we combine the mesh vertices of each stack into one graph vertex
-during construction of the N-graph to prevent separation of stacks and the
-resulting high surface area cuts. 
+fields normal to a geometric model surface.
+Localizing a stack of elements, or vertices along the growth curve, can reduce
+communications during a PDE solve that uses line relaxation pre-conditioning
+methods~\cite{wesseling2001311} for improved convergence, ({\color{red} Better
+reference?}) and during mesh adaptation coarsening
+procedures~\cite{chitale-aiaa14,Sahn07,loseille20093d}.
 
 Algorithm \ref{alg:collapse} details steps taken to
 combine the stacks. The algorithm loops over each vertex classified on a geometric
