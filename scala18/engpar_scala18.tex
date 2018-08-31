@@ -157,9 +157,9 @@ destinations and the partition is changed.
 Plasma physics simulated using a PIC method utilize particles
 in the spatial domain of a mesh.
 In this work we focus on load balancing the computationally dominant particle
-push operation that is common to both PIC with fixed field (e.g., GITR~\cite{younkin2017})
+push operation that is common to both PIC codes with fixed field (e.g., GITR~\cite{younkin2017})
 and self-consistent field (e.g., XGC~\cite{chang2004numerical,Ku2016467,ku2009},
-M3D-C1~\cite{jardin2012multiple}, HPIC~\cite{hpic2017}) PIC codes.
+M3D-C1~\cite{jardin2012multiple}, HPIC~\cite{hpic2017}).
 Given initial electric and magnetic fields on the mesh, the value of the field
 for each particle is determined via interpolation from associated mesh vertices.
 The spatial position of the particles is then updated using a push operation.
@@ -182,14 +182,14 @@ Figure~\ref{fig:xgcmPtn}-a depicts a simplified representation of the tokamak co
 domain, the polodial planes that decompose it in the toroidal direction, and the
 definition of physics-based geometric features within the planes.
 Specifically, Figures~\ref{fig:xgcmPtn}-b and ~\ref{fig:xgcmPtn}-c depict the
-flux curve and the faces they form.
-Figures~\ref{fig:xgcmPtn}-d and ~\ref{fig:xgcmPtn}-e depicts a core and buffer
-flux faces, and their assignment to a group.
+flux curve and the faces they form. A part is made for each flux face.
 To satisfy information dependencies of particles belonging to the core,
 the sets of elements of neighboring cores are replicated to satisfy
 particle data dependencies and thus avoid communication during the
 computationally intensive particle push operation.
-These replicated elements are referred to as the buffer flux faces.
+These replicated elements are referred to as the buffer region.
+Figures~\ref{fig:xgcmPtn}-d and ~\ref{fig:xgcmPtn}-e depict a core and buffer
+flux faces that makes up one part. 
 This decomposition of the polodial plane is identical for all planes along the
 toroidal direction and does does not change during the simulation.
 
@@ -200,8 +200,8 @@ toroidal direction and does does not change during the simulation.
   \label{fig:xgcmPtn}
 \end{figure}
 
-The elements in the core assigned to each group, and some layers of the
-replicated elements that surround it, are marked as a safe region since there is
+The elements in the core flux face of each part, and some layers of the
+buffer region elements that surround it, are marked as a safe region since there is
 sufficient mesh field information available to satisfy the dependency of the
 push operation.
 Initially, particles are distributed uniformly over the Tokamak volume.
@@ -217,9 +217,9 @@ decision in EnGPar will always maintain this requirement in XGCm. Towards this,
 we represent each region
 of overlapping safe zones. Figure \ref{fig:sbars} depicts a model (a) with four flux faces labeled
 in (b) as f0-f3. Safe zones for each \texttt{core} is shown in the second row.
-Each overlapping safe zone set, $\bar{S_i}$, is in the third row. For a mesh face in
-one of the $\bar{S_i}$, the safe zones in the set represent each group a particle in that element
-can migrate to.
+Each overlapping safe zone set, $\bar{S_i}$, is in the third row. For an element in
+one of the $\bar{S_i}$, the safe zones in the set represent the parts that a particle in
+the element can migrate to.
 
 The N-graph is then constructed using the set of $\bar{S_i}$. For each $\bar{S_i}$ a
 component is constructed consisting of a hyperedge and vertices for each safe zone
