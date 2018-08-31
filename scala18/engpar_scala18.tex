@@ -11,7 +11,7 @@
 \begin{document}
 
 
-\title{Dynamic Load Balancing for Particle-in-Cell and CFD Analysis\\
+\title{Dynamic Load Balancing of Plasma and Flow Simulations\\
 \thanks{
 This research was supported by the U.S. Department of Energy, Office of
 Science, Office of Advanced Scientific Computing Research, under award
@@ -49,13 +49,14 @@ shephard@rpi.edu}
   on massively parallel computers requires the computational work to be evenly
   distributed across the processing resources while maintaining low
   communication costs.
-  Particle-in-cell and unstructured mesh-based finite element and volume
-  simulations present two distinct sets of distribution requirements.
+  Plasma simulations using a particle-in-cell method and computational fluid
+  dynamics using unstructured mesh-based finite element and volume
+  methods present three distinct distribution requirements.
   To meet these needs, we present EnGPar's diffusive partition improvement
   method.
-  EnGPar's performance is compared against XYZ (PIC?) and ParMETIS.
-  Specifically, partition improvement results are provided on
-  up to QRS and XYZ processes of the ABC and DEF systems, respectively.
+  An initial demonstration of EnGPar's particle distribution improvement is
+  provided along with fluid dynamics mesh partition improvement results on up to
+  512Ki processes on an IBM BlueGene/Q.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -141,7 +142,7 @@ a plan of what vertices should be sent to each neighbor in order to satisfy the 
 the targeting step. The final step, migration, is where the vertices are sent to their
 destinations and the partition is changed.
 
-\section{Particle In Cell}
+\section{Plasma Simulation}
 
 Plasma physics simulated using a particle-in-cell (PIC) method utilize particles
 in the spacial domain of a mesh.
