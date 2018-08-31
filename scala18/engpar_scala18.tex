@@ -73,17 +73,19 @@ particle-in-cell, computational fluid dynamics
 
 \section{Introduction}
 
-High performance computing applications have a wide range of partitioning requirements when
-it comes to managing computation and communication costs. For evolving simulations these
+High performance computing applications have a wide range of partitioning
+requirements for managing computation and communication costs. For evolving simulations these
 costs change as the simulation proceeds. In order to maintain good performance throughout the
 simulation, quick repartitioning methods are required that can deal with incremental changes
 to the computational load.
 
-In particle in cell (PIC) and computational fluid dynamics (CFD), unstructured meshes are utilized
-as a discretization of the spacial domain of interest. The partitioning of mesh results in
-computational costs associated with the distribution of the mesh entities and communication
-costs relative to the surface area between parts. Special properties for each application
-result in further criteria that is critical for performance.
+In plasma physics simulations using a particle-in-cell (PIC) method and finite
+element/volume based computational fluid dynamics (CFD), unstructured meshes are utilized
+as a discretization of the spacial domain of interest. The partitioning of the
+mesh into sets of elements assigned to a process, a part, results in
+computational costs associated with the mesh entities and communication
+costs relative to the number of shared entities between parts. In addition to
+these basic metrics, applications adds further criteria that is critical for performance.
 
 Common partitioning techniques include multilevel graph/hypergraph methods
 and geometric methods have been applied to unstructured mesh applications. Multilevel
@@ -151,7 +153,7 @@ destinations and the partition is changed.
 
 \section{Plasma Simulation}
 
-Plasma physics simulated using a particle-in-cell (PIC) method utilize particles
+Plasma physics simulated using a PIC method utilize particles
 in the spacial domain of a mesh.
 In this work we focus on load balancing the computationally dominant particle
 push operation that is common to both passive (e.g., GITR~\cite{younkin2017})
@@ -259,7 +261,7 @@ improved proportionally to the imbalance reduction?}
 
 \section{Computational Fluid Dynamics}
 
-Parallel computational fluid dynamic (CFD) applications using
+Parallel CFD applications using
 finite volume and finite elements partition meshes in different
 ways to efficiently resolve data dependencies.
 A partition of mesh elements uniquely assigns each mesh element to a process.
@@ -335,29 +337,15 @@ higher imbalance.
 
 \subsection{Boundary Layer Stacks}
 
-{\color{red} CWS These paragraphs were alienated by merging the two sections so I moved them here. Feel free to move them elsewhere if you think they fit better elsewhere.}
 Structured boundary layer element stacks growing from geometric model faces can
 be used to reduce discretization errors and reduce mesh element count (i.e., versus
 a full unstructured tetrahedral mesh) when there are strong gradients in
-principle fields normal to a geometric model surface {\color{red} REFERENCE}.
-Figure XYZ depicts the prismatic boundary layer elements along the surface of an
-air foil.
-Accounting for this structured portion of the mesh during load balancing can
-improve the quality of the partition.
-
-{\color{red} GD (if you have a good one in mind) Show a good boundary layer
-stack mesh - yes I'll add that in the next commit along with associated
-references}
-
-Assigning a stack of boundary layer vertices or
-elements to a single process reduces the cut; i.e., cuts that are both normal to
-and in-plane with the boundary layer will have more surface area than a cut that
-is only along the planar or normal direction.
-However, partitioners
-operating on the graph formed by the dual of the mesh, will separate
-the boundary stacks. For a vertex partition, we combine the mesh vertices of each stack into one graph vertex
-during construction of the N-graph to prevent separation of stacks and the
-resulting high surface area cuts. 
+fields normal to a geometric model surface.
+Localizing a stack of elements, or vertices along the growth curve, can reduce
+communications during a PDE solve that uses line relaxation pre-conditioning
+methods~\cite{wesseling2001311} for improved convergence, ({\color{red} Better
+reference?}) and during mesh adaptation coarsening
+procedures~\cite{chitale-aiaa14,Sahn07,loseille20093d}.
 
 Algorithm \ref{alg:collapse} details steps taken to
 combine the stacks. The algorithm loops over each vertex classified on a geometric
@@ -513,6 +501,22 @@ foo
 \item accelerators
 \item BL collapse
 \end{itemize}
+
+\section{Acknowledgements}
+
+Consultation on CFD methods was provided by members of the NISC SI2-S2I2
+Conceptualization of CFDSI: Model, Data, and Analysis Integration for End-to-End
+Support of Fluid Dynamics Discovery and Innovation; Award Number 1743185 and 
+1743178.
+
+Computational resources and system support were provided by the Rensselaer
+Polytechnic Institute Computational Center for Innovations.
+An award of computer time was provided by the Innovative and Novel Computational
+Impact on Theory and Experiment (INCITE) program and a separate award of
+computer time by the Theta Early Science program.
+This research used resources of the Argonne Leadership Computing Facility, which
+is a DOE Office of Science User Facility supported under Contract
+DE-AC02-06CH11357.
 
 \bibliographystyle{IEEEtran}
 \bibliography{scorec-refs/scorec-refs}
