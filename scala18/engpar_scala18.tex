@@ -99,7 +99,7 @@ part counts. One way to alleviate these costs is to run multilevel partitioners 
 out to thousands of processes, then partition locally on each of those parts to go out
 further. This approach can reach arbitrarily high process counts, but each
 local partitioning cannot improve the global partitioning. For meshes, these methods
-can degrade teh final load balance which is a function of not only base mesh
+can degrade the final load balance which is a function of not only base mesh
 entity count, but of a number of mesh level
 interactions~\cite{zhou2012unstructured,SmithParma2015}.
 
@@ -502,7 +502,7 @@ Vertex-partitioned meshes for CFD were considered. The diffusive methods used pr
 element-partitioned meshes was not able to control the edge cut while improving the partitions.
 A new metric was introduced that with tuning was able to give a range for trading between edge
 cut and imbalance. Additionally, combining boundary layer stacks was explored. The metric for
-the edge cut was more affective in decreasing imbalance and limiting the increase in edge cut.
+the edge cut was more effective in decreasing imbalance and limiting the increase in edge cut.
 
 %Accelerators
 
