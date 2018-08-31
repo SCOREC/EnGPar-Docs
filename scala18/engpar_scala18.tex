@@ -81,7 +81,7 @@ to the computational load.
 
 In plasma physics simulations using a particle-in-cell (PIC) method and finite
 element/volume based computational fluid dynamics (CFD), unstructured meshes are utilized
-as a discretization of the spacial domain of interest. The partitioning of the
+as a discretization of the spatial domain of interest. The partitioning of the
 mesh into sets of elements assigned to a process, a part, results in
 computational costs associated with the mesh entities and communication
 costs relative to the number of shared entities between parts. In addition to
@@ -103,7 +103,7 @@ can degrade teh final load balance which is a function of not only base mesh
 entity count, but of a number of mesh level
 interactions~\cite{zhou2012unstructured,SmithParma2015}.
 
-Geometric methods are quick spacial methods of partitioning. They are good for getting low
+Geometric methods are quick spatial methods of partitioning. They are good for getting low
 imbalances of a single criteria, but often result in poor surface areas of parts and thus large
 communication costs in the applications.
 
@@ -155,14 +155,13 @@ destinations and the partition is changed.
 \section{Plasma Simulation}
 
 Plasma physics simulated using a PIC method utilize particles
-in the spacial domain of a mesh.
+in the spatial domain of a mesh.
 In this work we focus on load balancing the computationally dominant particle
-push operation that is common to both passive (e.g., GITR~\cite{younkin2017})
-and active (e.g., XGC~\cite{chang2004numerical,Ku2016467,ku2009},
+push operation that is common to both PIC with fixed field (e.g., GITR~\cite{younkin2017})
+and self-consistent field (e.g., XGC~\cite{chang2004numerical,Ku2016467,ku2009},
 M3D-C1~\cite{jardin2012multiple}, HPIC~\cite{hpic2017}) PIC codes.
-Given an initial electric and magnetic field on the mesh, the value of the field
-for each particle is determined via interpolation from mesh vertices within the
-maximum gyro-ring radius of the particle.
+Given initial electric and magnetic fields on the mesh, the value of the field
+for each particle is determined via interpolation from associated mesh vertices.
 The spatial position of the particles is then updated using a push operation.
 Particle properties are then interpolated back to the mesh vertices; the reverse
 of the vertex-to-particle interpolation process.
@@ -174,7 +173,7 @@ computational imbalance that degrades
 performance~\cite{carmona1997,plimptonPic2003,worleyBalancePic2016}.
 
 XGC is a gyrokinetic PIC code for plasma turbulence simulation in a tokamak
-fusion device tokamak~\cite{chang2004numerical,Ku2016467,ku2009}.
+fusion device ~\cite{chang2004numerical,Ku2016467,ku2009}.
 In this work we refer to a development version of XGC named XGCm that supports
 a mesh-based particle distribution strategy.
 XGCm decomposes the domain with a 2D mesh of the
@@ -205,7 +204,7 @@ The elements in the core assigned to each group, and some layers of the
 replicated elements that surround it, are marked as a safe region since there is
 sufficient mesh field information available to satisfy the dependency of the
 push operation.
-Initially, particles are distributed uniformly over each flux face.
+Initially, particles are distributed uniformly over the Tokamak volume.
 The dominant motion of the particles, projected to the polodial plane, tends to
 keep them within their initial flux face while a secondary motion drifts them
 outwards towards the boundary of the plane.
@@ -214,7 +213,7 @@ where it resides in the safe region before the next push operation.
 
 To ensure that particles are always migrated to the safe elements
 of a process, we construct the N-graph carefully such that any partition
-decision in EnGPar will always maintain this requirement in XGCM. Towards this,
+decision in EnGPar will always maintain this requirement in XGCm. Towards this,
 we represent each region
 of overlapping safe zones. Figure \ref{fig:sbars} depicts a model (a) with four flux faces labeled
 in (b) as f0-f3. Safe zones for each \texttt{core} is shown in the second row.
