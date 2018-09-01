@@ -314,6 +314,12 @@ is essentially the opposite of the element-partitioned mesh. Graph
 vertices are defined by mesh vertices and graph hyperedges are defined
 by mesh elements. The pins between graph vertices and hyperedges are
 created for any mesh vertex that bounds a mesh element.
+{\color{red} Attempt to justify why mesh elements are used as hyperedges}
+Alternatively, the hyperedges could be formed from mesh edges or faces.
+Defining mesh faces as hyperedges is similar in characteristic to hyperedges
+formed from elements; they both have low degree.
+In this work we study balancing hypergraphs with hyperedges defined by mesh
+elements. {\color{red} repetative...}
 
 %{\color{red} Add a figure of vertex-partitioned mesh to Ngraph?}
 
@@ -325,8 +331,11 @@ elements should not be cut across partitions. Towards this, EnGPar avoids migrat
 around these high-degree hyperedges. For vertex-partitioned meshes, this problem is reversed
 since mesh vertices are represented as graph vertices and hyperedges all have roughly uniform
 low degrees based on the element: four in a tetrahedron, five in a pyramid, six in a prism, etc.
-Thus the problem of edge cut arises for having high degree graph vertices along the partition
-boundary which leads to a larger edge cut.
+Thus the problem of edge cut arises from having high degree graph vertices along the partition
+boundary which leads to a larger edge cut. {\color{red} I'm not sure I follow -
+it seems like another sentence is needed to conclude this discussion of vtx vs
+elm partitions.  Are you saying that when elements are balanced we need to
+consider the degree of the vertices that bound them?}
 
 To control the edge cut while balancing the graph, we introduce a metric to represent the
 potential edge cut change for a cavity. The metric is the ratio of hyperedges that will be cut
@@ -338,6 +347,9 @@ into account other cavities that are migrated in the iteration. Smaller values o
 parameter will limit the increase in edge cut, but also limit EnGPar's ability to improve the
 imbalance and either take more iterations to reach the imbalance tolerance or stagnate at a
 higher imbalance.
+
+{\color{red} A transition would be good here from cut to BL. Possibly some text
+at the top of the section that previews the discussions (like in the intro).}
 
 \subsection{Boundary Layer Stacks}
 
@@ -424,6 +436,9 @@ the mesh after running EnGPar to fairly compare with ParMA which doesn't require
 conversions of the mesh. In all cases EnGPar runs faster. The speedup ranges from
 25\% faster at the 256Ki case up to 54\% faster for the 512Ki partition.
 
+{\color{red} can we comment on edge cut? it seems natural given the discussion
+in the previous section}
+
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=3in]{plots/mira_fem_results/time_v_cores}
@@ -433,7 +448,7 @@ conversions of the mesh. In all cases EnGPar runs faster. The speedup ranges fro
 
 \subsection {Vertex-partitioned mesh}
 Experiments for the vertex-partitioned mesh application were done with a 60 million
-element mesh on 1024 to 8192 processes. To show the affect of the edge cut
+mixed element mesh on up to 8192 processes. To show the affect of the edge cut
 metric, we ran the same test for each process count giving values for the metric
 from 0.5 to 1.2 as well as the metric being turned off. Each test runs 30 iterations
 of EnGPar's edge balancer while strictly maintaining the vertex imbalance at 5\%.
@@ -459,13 +474,15 @@ increases by only 1\% while reducing the imbalance by 11\%.
   \label{fig:metric}
 \end{figure}
 
-The best configuration from these results is very application specific. The increase in
-edge cut means that there will be overall more elements on each part as well as the communication
-between parts increases. If communication dominates a simulations scaling then the increase in
-edge cut may not be tolerable for the gains on imbalance. So the partition from ParMETIS may
-be the best choice or running EnGPar with a low limit for the cut growth metric like in the
+The best edge cut metric parameter is specific to each application. The increase in
+edge cut means that there will be more elements on each part as well as
+increased communication
+between parts. If communication dominates a simulation's scaling then the increase in
+edge cut, and the associated increse in communications, may negate, or exceed,
+any savings from improved balance. So, the partition from ParMETIS may
+be the best choice, or running EnGPar with a low limit for the cut growth metric like in the
 0.5 case. However, if the application is very susceptible to imbalance, then a increase in the
-edge cut would be worth the decreases in imbalance as seen in the 0.8 - 1.2 cases.
+edge cut would be worth the larger decreases in imbalance as seen in the 0.8 - 1.2 cases.
 
 For the boundary layer collapse, we use the same 60 million element mesh. The N-graph is
 built in serial from the mesh with the collapsed boundary layers and partitioned
@@ -475,7 +492,7 @@ configurations for the edge cut metric limit. Figure \ref{fig:collapse}
 shows the edge cut and edge imbalance after partitioning with
 ParMETIS and after EnGPar. Without the metric limit, there is a 41\% point reduction in
 element imbalance with a 38\% increase in edge cut. The usage of the metric has a much larger
-affect than the in the uncollapsed boundary layer case. For a value of 1.2 there is a 35\% point
+affect than in the uncollapsed boundary layer case. For a value of 1.2 there is a 35\% point
 drop in imbalance with a 15\% increase in edge cut. Similar trends are seen for the 1.0 and 0.8
 limit. The 0.5 metric reduces the imbalance by 11\% points with a less than 1\% increase in the
 edge cut.
@@ -492,18 +509,20 @@ edge cut.
 \section{Closing Remarks and Future Work} \label{sec:closing}
 
 
-EnGPar was used to improve the partitions of several application data. A special graph was
+EnGPar was used to improve the partitions of three different application data. A
+special {\color{red} something more meaningful than 'special'?} graph was
 constructed to compactly represent particles in a fusion application. Initial results were
-shown greatly reducing the imbalance of particles. In the future, larger simulations will
-be run to further test the graph construction and EnGPar.
+shown to greatly reduce the imbalance of particles. In the future, larger simulations will
+be run to further test EnGPar's graph construction and balancing procedures.
 
-Previous results of using EnGPar to improve the partitions for an element-based CFD application
-were revisited. Improvements were made that reduced the imbalance out of EnGPar further and
-almost reaching the tolerance at 512Ki parts.
+Previous results using EnGPar to improve the partitions for an element-based CFD application
+were revisited. Improvements were made that further reduced the
+imbalance while not sacrificing significant imbalance of the primary vertices or
+runtime.
 
 Vertex-partitioned meshes for CFD were considered. The diffusive methods used previously for
-element-partitioned meshes was not able to control the edge cut while improving the partitions.
-A new metric was introduced that with tuning was able to give a range for trading between edge
+element-partitioned meshes were not able to control the edge cut while improving the partitions.
+A new metric was introduced that with tuning is able to give a range for trading between edge
 cut and imbalance. Additionally, combining boundary layer stacks was explored. The metric for
 the edge cut was more effective in decreasing imbalance and limiting the increase in edge cut.
 
