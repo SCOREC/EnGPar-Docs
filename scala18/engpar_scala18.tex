@@ -325,17 +325,17 @@ elements. {\color{red} repetative...}
 
 During initial attempts at improving the partitions, we found that the edge cut was growing
 at a large rate as we improved edge imbalance. This has been attributed to the differences
-caused by the vertex-partitioning of the mesh. For element-partitioned meshes, the hyperedges
+caused by the vertex-partitioning of the mesh. In an unstructured mesh, vertices have
+relatively high degrees while elements have roughly uniform low degrees: four in a tetrahedron, five in a pyramid, six in a prism, etc. For element-partitioned meshes, the hyperedges
 represent the mesh vertices. To maintain a low edge cut, mesh vertices that bound many mesh
 elements should not be cut across partitions. Towards this, EnGPar avoids migrating cavities
-around these high-degree hyperedges. For vertex-partitioned meshes, this problem is reversed
-since mesh vertices are represented as graph vertices and hyperedges all have roughly uniform
-low degrees based on the element: four in a tetrahedron, five in a pyramid, six in a prism, etc.
+around these high-degree hyperedges by searching for low degree cavities. For vertex-partitioned
+meshes, this problem is reversed since mesh vertices are represented as graph vertices
+and hyperedges have low degree.
 Thus, the problem of edge cut arises from having high degree graph vertices along the partition
-boundary which leads to a larger edge cut. {\color{red} I'm not sure I follow -
-it seems like another sentence is needed to conclude this discussion of vtx vs
-elm partitions.  Are you saying that when elements are balanced we need to
-consider the degree of the vertices that bound them?}
+boundary which leads to a larger edge cut. To avoid increasing the edge cut, when balancing
+elements in the vertex-partition we must consider the degree of the vertices that bound the
+hyperedges.
 
 To control the edge cut while balancing the graph, we introduce a metric to represent the
 potential edge cut change for a cavity. The metric is the ratio of hyperedges that will be cut
@@ -440,15 +440,34 @@ the mesh after running EnGPar to fairly compare with ParMA which doesn't require
 conversions of the mesh. In all cases EnGPar runs faster. The speedup ranges from
 25\% faster at the 256Ki case up to 54\% faster for the 512Ki partition.
 
-{\color{red} can we comment on edge cut? it seems natural given the discussion
-in the previous section}
-
 \begin{figure}[!ht]
   \centering
   \includegraphics[width=3in]{plots/mira_fem_results/time_v_cores}
   \caption{Time to balance for EnGPar and ParMA}
   \label{fig:fem_time}
 \end{figure}
+
+Table~\ref{tbl:avgvtx} shows the average number of vertices in the mesh for each case.
+This measurement is related to edge cut in the graph since more average vertices
+means more surface area of the part and higher edge cut. ParMA slightly reduces the
+vertex counts in every case. EnGPar increases slightly by around 1\% for each case. As was
+mentioned for the element-partitioned mesh, the edge cut limit metric was not required to
+avoid large increases in edge cut.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{||c|c|c|c||}
+\hline
+&128Ki&256Ki&512Ki \\
+\hline
+Initial & 2146.404 & 1138.881 & 611.673 \\
+ParMA & 2141.965 & 1137.343 & 610.959 \\
+EnGPar & 2148.310 &  1143.970 & 619.177 \\
+\hline
+\end{tabular}
+\caption{Average number of mesh vertices per part.}
+\label{tbl:avgvtx}
+\end{table}
 
 \subsection {Vertex-partitioned mesh}
 Experiments for the vertex-partitioned mesh application were done with a 60 million
@@ -510,8 +529,10 @@ edge cut.
 
 
 EnGPar was used to improve the partitions of three different application data. A
-special {\color{red} something more meaningful than 'special'?} graph was
-constructed to compactly represent particles in a fusion application. Initial results were
+graph was constructed that compactly represents particles in a fusion application. This
+graph was designed such that the partition requirements of particles were always satisfied
+regardless of decisions made by EnGPar.
+Initial results were
 shown to greatly reduce the imbalance of particles. In the future, larger simulations will
 be run to further test EnGPar's graph construction and balancing procedures.
 
