@@ -283,7 +283,7 @@ We examine both methods of partitioning meshes with EnGPar.
 
 For element-partitioned meshes, the N-graph is constructed by first representing the mesh elements
 as graph vertices. Then, graph hyperedges are constructed for each mesh vertex. Pins
-are then created between each hyperedge and graph vertex where the mesh vertex bounds the
+are created between each hyperedge and graph vertex where the mesh vertex bounds the
 mesh element. For higher order finite element simulations, where degrees of freedom are
 associated with mesh edges and mesh faces, additional graph hyperedge types can be constructed
 similarly for those mesh dimensions. Figure \ref{fig:mesh2graph} shows how a 2-D mesh (a)
@@ -300,7 +300,7 @@ both mesh vertices and mesh edges (c).
 In previous work on this case, we used EnGPar to improve partitions of an
 element-partitioned mesh targeting balancing mesh vertices and mesh elements \cite{engparSC17}.
 For larger process counts, EnGPar fell short balancing mesh vertices.
-We identified that EnGPar was reaching a local minimum due to poor choices of destination part
+We identified that EnGPar was stagnating due to poor choices of destination part
 when selecting graph vertices that were on the part boundary of several processes. In order
 to make better decisions, we choose the destination part based on the largest surface area
 between the source part and the potential destination part. This results in migrating these
@@ -331,7 +331,7 @@ elements should not be cut across partitions. Towards this, EnGPar avoids migrat
 around these high-degree hyperedges. For vertex-partitioned meshes, this problem is reversed
 since mesh vertices are represented as graph vertices and hyperedges all have roughly uniform
 low degrees based on the element: four in a tetrahedron, five in a pyramid, six in a prism, etc.
-Thus the problem of edge cut arises from having high degree graph vertices along the partition
+Thus, the problem of edge cut arises from having high degree graph vertices along the partition
 boundary which leads to a larger edge cut. {\color{red} I'm not sure I follow -
 it seems like another sentence is needed to conclude this discussion of vtx vs
 elm partitions.  Are you saying that when elements are balanced we need to
@@ -339,8 +339,8 @@ consider the degree of the vertices that bound them?}
 
 To control the edge cut while balancing the graph, we introduce a metric to represent the
 potential edge cut change for a cavity. The metric is the ratio of hyperedges that will be cut
-after the cavity is migrated to the hyperedges currently cut around the cavity. We introduce a
-parameter to EnGPar that will only migrate a cavity if the metric is below the given tolerance.
+after the cavity is migrated to the hyperedges currently cut around the cavity. We use a tunable
+parameter in EnGPar that will not migrate a cavity if the metric is above the parameter.
 Setting this parameter to 1.0 forces EnGPar to migrate cavities that will not increase the edge
 cut locally. This does not guarantee that the edge cut will decrease as the metric does not take
 into account other cavities that are migrated in the iteration. Smaller values of this
@@ -364,22 +364,25 @@ reference?}) and during mesh adaptation coarsening
 procedures~\cite{chitale-aiaa14,Sahn07,loseille20093d}.
 
 Algorithm \ref{alg:collapse} details steps taken to
-combine the stacks. The algorithm loops over each vertex classified on a geometric
+combine the stacks for a vertex-partitioned mesh. The algorithm loops over each
+vertex classified on a geometric
 model face to see if it bounds a prism on lines 1-2. From each of these vertices, the
-algorithm iteratively walks up mesh edges that do not bound any triangles on lines 3-14. An edge
-that only bounds quad faces is guaranteed to be the edge going up the prism elements. Once
-a tetrahedron or pyramid element is hit there will be no edges that are not adjacent to a triangle
-and the iteration will end.
+algorithm searches for the mesh edge that does not bound any triangles on lines 5-9. An edge
+that only bounds quad faces is guaranteed to be the edge going up the prism elements. If
+this edge is found, lines 10-14 find the other vertex that bounds this edge and repeats
+looking for a new edge from this vertex. This process is continued until no edge is found
+since once a tetrahedron or pyramid element is hit there will be no edges that are
+not adjacent to a triangle.
 \begin{algorithm}
   \caption{Boundary Layer Stack Collapse}
   \label{alg:collapse}
   \small
   \begin{algorithmic}[1]
-    \ForAll{Vertices, $v$, classified on a geometric model face}
+    \ForAll{vertices, $v$, classified on a geometric model face}
     \If{$v$ bounds a prism}
     \State $prev\_edge = NULL$
     \State $next\_edge = NULL$
-    \ForAll{Edges, $e$, bounded by $v$}
+    \ForAll{edges, $e$, bounded by $v$}
     \If{$e$ bounds no triangles and is not $prev\_edge$}
     \State $next\_edge = e$
     \EndIf
@@ -409,14 +412,15 @@ Tests for the finite element case were run with a one billion element mesh of an
 vertical tail structure. EnGPar was run on the Mira BlueGene/Q system at the Argonne Leadership
 Computing Facility \cite{haring2012ibm} on partitions from 128Ki ($128*2^{10}$) up to 512Ki parts.
 These partitions were created by using ParMETIS part k-way \cite{karypis1999parallel} globally
-up to 8Ki parts. Then METIS is run on each part locally to create the final partitions.
+up to 8Ki parts. Then METIS is run on each part locally to create the 128Ki to 512Ki partitions.
 The initial mesh element imbalance is 2\% and the mesh vertex imbalance ranges from 12\% for
 the 128Ki partition up to 53\% at 512Ki parts.
 
 We compare EnGPar to ParMA \cite{SmithParma2015}, a diffusive load balancer that
 works directly on an unstructured mesh.
-Each tool is run on the partitions to balance the mesh vertices down to 5\% while keeping the mesh
-element imbalance below 5\%. Figures \ref{fig:fem_vtximb} shows the mesh vertex imbalance after
+Each tool is run on the partitions with the goal of balancing the mesh vertices down to 5\%
+while keeping the mesh
+element imbalance below 5\%. Figures \ref{fig:fem_vtximb} shows the mesh vertex imbalance from
 ParMETIS and after EnGPar and ParMA are used. Both tools significantly reduce the mesh vertex
 imbalance. For the 128Ki and 256Ki cases, both reduce the imbalance to the target 5\%. In
 the 512Ki case, EnGPar reduces the mesh vertex imbalance to 6\% while ParMA reduces to the
@@ -449,13 +453,9 @@ in the previous section}
 \subsection {Vertex-partitioned mesh}
 Experiments for the vertex-partitioned mesh application were done with a 60 million
 mixed element mesh on up to 8192 processes. To show the affect of the edge cut
-metric, we ran the same test for each process count giving values for the metric
-from 0.5 to 1.2 as well as the metric being turned off. Each test runs 30 iterations
+metric, we ran the same test for each process count using values from 0.5 to 1.2
+for the metric limit as well as the metric not being used. Each test runs 30 iterations
 of EnGPar's edge balancer while strictly maintaining the vertex imbalance at 5\%.
-%{\color{red} As per our previous discussion about imbalance, the plots are not adjusted yet to
-%  match this definition of imbalance. Neither are the stat described below.}
-%In order to better isolate the edge cut from edge imbalance, we measure edge imbalance as the
-%maximum edges on a process divided by the average edge of the initial partition.
 Figure \ref{fig:metric} shows the edge cut and edge imbalances for each
 test. The initial stats after ParMETIS has partitioned the mesh are also provided. For the
 8192 part case, without
