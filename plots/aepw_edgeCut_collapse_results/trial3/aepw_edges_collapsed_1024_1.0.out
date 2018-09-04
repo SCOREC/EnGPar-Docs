@@ -1,0 +1,35 @@
+ENGPAR Git hash 246a25c51ad813408a0b1b95b1c3304ebbef374f
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/scratch/aepw_edges_collapsed/1024/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 5816513
+ENGPAR Edges: Type 0: 39560688 
+ENGPAR Pins: Type 0: 78690194 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 7.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 39.000 2.000 9.807 3.977
+ENGPAR PARTITION : Edge Cut: <max,tot> 18612.000 9519170.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 18883.000 12039.000 17984.430 1.050
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 30072.000 15445.000 21790.848 1.380
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 137490.000 55914.000 91972.795 1.495
+ENGPAR Starting criteria type -1 with imbalances: 1.0500 1.4949 
+ENGPAR Side Tolerance is: 9296
+ENGPAR Completed criteria type -1 in 0 steps and took 0.007856 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0500 1.4949 
+ENGPAR Side Tolerance is: 9296
+ENGPAR   Step took 16.245311 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.4946 
+ENGPAR   Step took 16.331976 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.4945 
+ENGPAR   Step took 16.453377 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.4945 
+ENGPAR   Step took 16.301069 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0500 1.4945 
+ENGPAR Completed criteria type 0 in 4 steps and took 73.383934 seconds
+ENGPAR EnGPar converged in 4 iterations in 73.392586 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 7.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 39.000 2.000 9.807 3.977
+ENGPAR PARTITION : Edge Cut: <max,tot> 18609.000 9521280.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 18883.000 12039.000 17984.430 1.050
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 30072.000 15445.000 21786.896 1.380
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 137454.000 55914.000 91973.825 1.494

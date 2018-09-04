@@ -1,0 +1,82 @@
+ENGPAR Git hash 246a25c51ad813408a0b1b95b1c3304ebbef374f
+pcu peers 8192 max group size 4096 posix groups 2
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/scratch/aepw/8192/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 18416056
+ENGPAR Edges: Type 0: 57808404 
+ENGPAR Pins: Type 0: 281984140 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 17.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 32.000 4.000 13.309 2.404
+ENGPAR PARTITION : Edge Cut: <max,tot> 7309.000 25867577.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 2360.000 1096.000 2248.054 1.050
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 3937.000 1875.000 3419.076 1.151
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 17382.000 2866.000 8711.464 1.995
+ENGPAR Starting criteria type -1 with imbalances: 1.0498 1.9953 
+ENGPAR Side Tolerance is: 3157
+ENGPAR Completed criteria type -1 in 0 steps and took 0.002770 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0498 1.9953 
+ENGPAR Side Tolerance is: 3157
+ENGPAR   Step took 11.261579 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9767 
+ENGPAR   Step took 11.577838 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9608 
+ENGPAR   Step took 11.771226 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9451 
+ENGPAR   Step took 11.923261 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9347 
+ENGPAR   Step took 12.095164 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9249 
+ENGPAR   Step took 12.242045 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9165 
+ENGPAR   Step took 12.283084 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.9077 
+ENGPAR   Step took 12.387866 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8993 
+ENGPAR   Step took 12.496137 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8947 
+ENGPAR   Step took 12.538990 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8898 
+ENGPAR   Step took 12.641641 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8861 
+ENGPAR   Step took 12.689472 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8809 
+ENGPAR   Step took 12.977755 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8759 
+ENGPAR   Step took 13.365075 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8719 
+ENGPAR   Step took 13.604562 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8683 
+ENGPAR   Step took 13.783554 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8643 
+ENGPAR   Step took 13.998177 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8612 
+ENGPAR   Step took 14.353533 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8577 
+ENGPAR   Step took 14.554467 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8536 
+ENGPAR   Step took 14.680022 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8501 
+ENGPAR   Step took 14.990926 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8509 
+ENGPAR   Step took 15.287354 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8492 
+ENGPAR   Step took 15.504046 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8474 
+ENGPAR   Step took 15.584428 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8460 
+ENGPAR   Step took 14.025284 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8428 
+ENGPAR   Step took 14.024535 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8415 
+ENGPAR   Step took 14.068303 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.8425 
+ENGPAR Completed criteria type 0 in 27 steps and took 369.169592 seconds
+ENGPAR EnGPar converged in 27 iterations in 369.173402 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 6.000 1912.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 42.000 5.000 15.644 2.685
+ENGPAR PARTITION : Edge Cut: <max,tot> 8555.000 30420467.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 2360.000 1311.000 2248.054 1.050
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 4997.000 2346.000 3615.714 1.382
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 16643.000 5013.000 9032.727 1.843

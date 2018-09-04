@@ -1,0 +1,38 @@
+ENGPAR Git hash 246a25c51ad813408a0b1b95b1c3304ebbef374f
+pcu peers 8192 max group size 4096 posix groups 2
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/scratch/aepw_edges_collapsed/8192/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 5816513
+ENGPAR Edges: Type 0: 39560688 
+ENGPAR Pins: Type 0: 78690194 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 36.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 42.000 2.000 10.611 3.958
+ENGPAR PARTITION : Edge Cut: <max,tot> 4911.000 23258392.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 2380.000 890.000 2248.054 1.059
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 11622.000 1664.000 3675.445 3.162
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 18449.000 4262.000 12335.175 1.496
+ENGPAR Starting criteria type -1 with imbalances: 1.0587 1.4956 
+ENGPAR Side Tolerance is: 2839
+ENGPAR   Step took 0.349539 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0627 1.4956 
+ENGPAR   Step took 0.352174 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0627 1.4956 
+ENGPAR Completed criteria type -1 in 2 steps and took 8.634053 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0627 1.4956 
+ENGPAR Side Tolerance is: 2840
+ENGPAR   Step took 4.416984 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0627 1.4950 
+ENGPAR   Step took 4.391052 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0627 1.4950 
+ENGPAR   Step took 4.383399 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0627 1.4950 
+ENGPAR Completed criteria type 0 in 3 steps and took 14.109008 seconds
+ENGPAR EnGPar converged in 5 iterations in 22.744099 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 36.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 42.000 2.000 10.610 3.959
+ENGPAR PARTITION : Edge Cut: <max,tot> 4911.000 23262416.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 2389.000 890.000 2248.054 1.063
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 11622.000 1664.000 3674.031 3.163
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 18442.000 4262.000 12335.421 1.495

@@ -1,0 +1,35 @@
+ENGPAR Git hash 246a25c51ad813408a0b1b95b1c3304ebbef374f
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/scratch/aepw_edges_collapsed/2048/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 5816513
+ENGPAR Edges: Type 0: 39560688 
+ENGPAR Pins: Type 0: 78690194 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 14.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 32.000 2.000 9.926 3.224
+ENGPAR PARTITION : Edge Cut: <max,tot> 12077.000 12976338.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 9444.000 5567.000 8992.215 1.050
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 19132.000 7538.000 11659.653 1.641
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 69977.000 26545.000 46830.433 1.494
+ENGPAR Starting criteria type -1 with imbalances: 1.0502 1.4943 
+ENGPAR Side Tolerance is: 6336
+ENGPAR   Step took 1.514047 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0510 1.4943 
+ENGPAR   Step took 1.533063 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0510 1.4943 
+ENGPAR Completed criteria type -1 in 2 steps and took 21.728235 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0510 1.4943 
+ENGPAR Side Tolerance is: 6337
+ENGPAR   Step took 10.228567 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0510 1.4943 
+ENGPAR   Step took 10.279975 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0510 1.4943 
+ENGPAR Completed criteria type 0 in 2 steps and took 22.754021 seconds
+ENGPAR EnGPar converged in 4 iterations in 44.483129 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 14.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 32.000 2.000 9.926 3.224
+ENGPAR PARTITION : Edge Cut: <max,tot> 12077.000 12978184.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 9451.000 5567.000 8992.215 1.051
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 19133.000 7538.000 11657.782 1.641
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 69980.000 26545.000 46830.883 1.494

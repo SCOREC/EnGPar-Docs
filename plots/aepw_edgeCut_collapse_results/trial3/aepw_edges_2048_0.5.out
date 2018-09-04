@@ -1,0 +1,31 @@
+ENGPAR Git hash 246a25c51ad813408a0b1b95b1c3304ebbef374f
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/scratch/aepw_edges/2048/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 18416056
+ENGPAR Edges: Type 0: 89420557 
+ENGPAR Pins: Type 0: 178841114 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 12.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 48.000 4.000 13.658 3.514
+ENGPAR PARTITION : Edge Cut: <max,tot> 11911.000 11451848.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 9436.000 6151.000 8992.215 1.049
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 12923.000 8168.000 11371.871 1.136
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 70468.000 27194.000 46458.243 1.517
+ENGPAR Starting criteria type -1 with imbalances: 1.0494 1.5168 
+ENGPAR Side Tolerance is: 5591
+ENGPAR Completed criteria type -1 in 0 steps and took 0.004872 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0494 1.5168 
+ENGPAR Side Tolerance is: 5591
+ENGPAR   Step took 10.295231 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0494 1.5168 
+ENGPAR   Step took 10.414451 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0494 1.5168 
+ENGPAR Completed criteria type 0 in 1 steps and took 21.998241 seconds
+ENGPAR EnGPar converged in 1 iterations in 22.003988 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 12.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 48.000 4.000 13.658 3.514
+ENGPAR PARTITION : Edge Cut: <max,tot> 11911.000 11451750.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 9436.000 6151.000 8992.215 1.049
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 12923.000 8168.000 11371.862 1.136
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 70468.000 27194.000 46458.219 1.517

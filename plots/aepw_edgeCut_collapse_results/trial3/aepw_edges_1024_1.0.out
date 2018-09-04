@@ -1,0 +1,35 @@
+ENGPAR Git hash 246a25c51ad813408a0b1b95b1c3304ebbef374f
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/scratch/aepw_edges/1024/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 18416056
+ENGPAR Edges: Type 0: 89420557 
+ENGPAR Pins: Type 0: 178841114 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 11.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 50.000 3.000 13.303 3.759
+ENGPAR PARTITION : Edge Cut: <max,tot> 18641.000 8696732.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 18751.000 11217.000 17984.430 1.043
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 24359.000 14102.000 21537.230 1.131
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 137323.000 57700.000 91571.214 1.500
+ENGPAR Starting criteria type -1 with imbalances: 1.0426 1.4996 
+ENGPAR Side Tolerance is: 8492
+ENGPAR Completed criteria type -1 in 0 steps and took 0.008050 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0426 1.4996 
+ENGPAR Side Tolerance is: 8492
+ENGPAR   Step took 16.083667 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0427 1.4993 
+ENGPAR   Step took 16.152404 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0427 1.4992 
+ENGPAR   Step took 16.180939 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0427 1.4992 
+ENGPAR   Step took 16.116904 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0427 1.4992 
+ENGPAR Completed criteria type 0 in 4 steps and took 72.613407 seconds
+ENGPAR EnGPar converged in 4 iterations in 72.622254 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 11.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 50.000 3.000 13.303 3.759
+ENGPAR PARTITION : Edge Cut: <max,tot> 18639.000 8692566.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 18753.000 11218.000 17984.430 1.043
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 24359.000 14103.000 21536.276 1.131
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 137280.000 57708.000 91569.180 1.499

@@ -1,0 +1,36 @@
+ENGPAR Git hash 246a25c51ad813408a0b1b95b1c3304ebbef374f
+pcu peers 8192 max group size 4096 posix groups 2
+ENGPAR Loaded graph /gpfs/u/home/ITAP/ITAPdmnd/scratch/aepw_edges_collapsed/8192/_0.bgd.
+ENGPAR Hyper N-graph Status
+ENGPAR Vertices: 5816513
+ENGPAR Edges: Type 0: 39560688 
+ENGPAR Pins: Type 0: 78690194 
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 36.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 42.000 2.000 10.611 3.958
+ENGPAR PARTITION : Edge Cut: <max,tot> 4911.000 23258392.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 2380.000 890.000 2248.054 1.059
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 11622.000 1664.000 3675.445 3.162
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 18449.000 4262.000 12335.175 1.496
+ENGPAR Starting criteria type -1 with imbalances: 1.0587 1.4956 
+ENGPAR Side Tolerance is: 2839
+ENGPAR   Step took 0.349571 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0600 1.4956 
+ENGPAR   Step took 0.356033 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0600 1.4956 
+ENGPAR Completed criteria type -1 in 2 steps and took 8.634599 seconds
+ENGPAR Starting criteria type 0 with imbalances: 1.0600 1.4956 
+ENGPAR Side Tolerance is: 2839
+ENGPAR   Step took 4.409739 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0600 1.4957 
+ENGPAR   Step took 4.419137 seconds
+ENGPAR   Imbalances <v, e0, ...>: 1.0600 1.4957 
+ENGPAR Completed criteria type 0 in 1 steps and took 9.196185 seconds
+ENGPAR EnGPar converged in 3 iterations in 17.831827 seconds
+ENGPAR PARTITION : Empty Parts: 0
+ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 36.000
+ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 42.000 2.000 10.611 3.958
+ENGPAR PARTITION : Edge Cut: <max,tot> 4911.000 23256644.000
+ENGPAR PARTITION : Local Vertex Imbalance: <max,min,avg,imb> 2383.000 890.000 2248.054 1.060
+ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 11622.000 1664.000 3675.281 3.162
+ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 18449.000 4262.000 12335.068 1.496
