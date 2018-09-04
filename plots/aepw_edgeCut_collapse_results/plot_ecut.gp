@@ -1,6 +1,7 @@
 if (!exists("prefix")) exit
 set xrange [-0.25:3.25]
-set yrange [10000000:36000000]
+set auto fix
+set offset 0, 0, graph .05, graph .05
 set xlabel "Processes" font ",40"
 set ylabel "Total Edge Cut" font ",40"
 set term postscript eps color blacktext "Helvetica" 20
@@ -14,11 +15,11 @@ set style line 5 lc rgb '#ff7f00' lt 1 lw 7 pt 1 ps 3.5
 set style line 6 lc rgb '#ffff33' lt 1 lw 7 pt 11 ps 3.5
 set style line 7 lc rgb '#a65628' lt 1 lw 7 pt 13 ps 3.5
 set style line 8 lc rgb '#f781bf' lt 1 lw 7 pt 15 ps 3.5
+set key autotitle columnhead
 
-plot prefix."/edgecut_v_cores.dat" using 2:xticlabels(1) with lp title 'Initial' ls 1, \
-     ""                  using 3:xticlabels(1) with lp title 'Off'  ls 2, \
-     ""                  using 6:xticlabels(1) with lp title '1.2'  ls 3 , \
-     ""                  using 7:xticlabels(1) with lp title '1.0'  ls 4 , \
-     ""                  using 8:xticlabels(1) with lp title '0.8'  ls 5 , \
-     ""                  using 9:xticlabels(1) with lp title '0.5'  ls 8 
-               
+plot prefix."/edgecut_v_cores.dat" using 2:xticlabels(1) with lp ls 1, \
+     ""                  using 3:xticlabels(1) with lp ls 2, \
+     ""                  using 4:xticlabels(1) with lp ls 3, \
+     ""                  using 5:xticlabels(1) with lp ls 4, \
+     ""                  using 6:xticlabels(1) with lp ls 5, \
+     ""                  using 7:xticlabels(1) with lp ls 8
