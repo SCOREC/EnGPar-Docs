@@ -1,0 +1,7 @@
+To plot results
+./parseAndPlot.sh <trial number = 2/3> <"list of metric limits">
+
+Trial 2 is the graph vtx=mesh vtx, graph edges = mesh elm
+      limits = 1.2 1.0 0.8 0.5
+Trial 3 is the graph vtx=mesh vtx, graph edges = mesh edges
+      limits = 2.0 1.5 1.2 1.0
