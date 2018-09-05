@@ -33,12 +33,14 @@ workshop paper titled ``Dynamic Load Balancing of Plasma and Flow Simulations''.
 
 \subsubsection{How software can be obtained}
 
-EnGPar is available on Github.  The following version was used for the
+EnGPar is available on Github.  The following versions were used for the
 experiments:
 
-{\color{red} GD link to engpar github commit hash}
-
-{\color{red} GD list other versions as needed}
+\begin{itemize}
+\item For the element-partitioned mesh CFD tests: f6feb49cceea3d475ca3b66d318773fcb022e9e8
+\item For the vertex-partitioned mesh CFD tests: 246a25c51ad813408a0b1b95b1c3304ebbef374f
+\item For the plasma simulation tests: 5357ec528c878965006dfb8cfe0251e83a418b1a
+\end{itemize}
 
 \subsubsection{Hardware dependencies}
 
@@ -48,10 +50,9 @@ Innovations.
 
 \subsubsection{Software dependencies}
 
-EnGPar calls ParMETIS XYZ to perform initial partitioning.
-{\color{red} GD WHAT VERSION OF PARMETIS? 4.0.3 ?}
+EnGPar calls ParMETIS 4.0.3/METIS 5.1.0 to perform initial partitioning.
 
-{\color{red} OTHER DEPS?}
+{\color{red} OTHER DEPS? CWS I think we may want to list core (pcu).}
 
 \subsubsection{Datasets}
 
@@ -61,14 +62,55 @@ Workshop mesh are available at 10.5281/zenodo.1409558 .
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Installation}
 
-{\color{red} GD please provide environment files, build scripts, and commands
-used to build engpar on CCI BGQ}
+For the CCI BGQ we load modules:
+\begin{lstlisting}
+module load cmake \
+       gcc/4.7.2 \
+       zoltan/gcc/4.7.2 \
+       parmetis/gcc/4.7.2
+\end{lstlisting}
+
+To build EnGPar:
+\begin{lstlisting}
+mkdir build
+cd build
+cmake .. \
+    -DCMAKE_C_COMPILER="mpicc" \
+    -DCMAKE_CXX_COMPILER="mpicxx" \
+    -DCMAKE_C_FLAGS="-O2" \
+    -DCMAKE_CXX_FLAGS="-O2 -std=c++11" \
+    -DENABLE_PARMETIS=ON \
+    -DENABLE_PUMI=OFF \
+    -DSCOREC_PREFIX=/path/to/core/install \
+    -DBIG_ENDIAN=ON
+make
+\end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Experiment workflow}
 
-{\color{red} GD please provide job submission scripts and commands
-used to run engpar on CCI BGQ}
+The script below was used to run EnGPar's diffusive load balancing on the vertex-partitioned mesh.
+\begin{lstlisting}
+#!/bin/sh
+#SBATCH --job-name=BALANCE
+#SBATCH -t 01:00:00
+#SBATCH --partition medium
+#SBATCH --nodes 512
+
+engpar=/path/to/EnGPar/build/test
+graph=/path/to/graphs/$1
+
+srun --ntasks $2 -o balance/$1_$2_$3.out \
+     $engpar/balance $graph/$2/ 1 1.05 1.05 $3
+\end{lstlisting}
+An example of running the script with 1024 processes and without the edge cut metric limit is:
+\begin{lstlisting}
+sbatch balance.sh aepw 1024
+\end{lstlisting}
+An example of running the script on the collapsed boundary layer graphs with 8192 processes and the edge cut metric limit set to 1.0 is:
+\begin{lstlisting}
+sbatch balance.sh aepw_collapsed 8192 1.0
+\end{lstlisting}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evaluation and expected result}
@@ -80,7 +122,7 @@ repo.
 
 Plots of vertex and edge imbalances and edge cut are produced by
 running the bash script \texttt{parseAndPlot.sh} in the
-\texttt{scala18/plots/aepw\_edgeCut\_collapse\_results} directory.
+\texttt{plots/aepw\_edgeCut\_collapse\_results} directory.
 GNUPlot is required for plotting.
 
 \section{Artifact Evaluation Appendix: Dynamic Load Balancing of Plasma and Flow Simulations}
@@ -90,7 +132,9 @@ GNUPlot is required for plotting.
 
 Results were verified through multiple runs using the same partition of nodes.
 
-{\color{red} GD can you confirm this for the aepw results?}
+{\color{red} GD can you confirm this for the aepw results? CWS For the aepw runs, multiple runs
+were not exactly run, but since no timing data was reported there would be no difference
+in the results. For the Mira runs, only one run is represented in the results.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -103,12 +147,13 @@ take several seconds to execute and graph based quality metrics.
 Our timers call \texttt{MPI\_Wtime} on the IBM Blue Gene/Q which are implemented
 in IBM's MPI with high precision system clock based timers.
 Any timing runs are repeated multiple times and {\color{red} GD what do we do then? average?
-max?}.
+max? CWS our results on timing were not repeated}.
 Graph partition qualtiy metrics are verified against the same metrics computed
 directly on mesh entities by ParMA.
 
-The source code for EnGPar's timers and metrics are HERE and HERE, respectively.
-{\color{red} GD please add links}.
+{\color{red} CWS I don't know what to do with these long links}
+The source code for EnGPar's timers and metrics are https://github.com/SCOREC/EnGPar/tree/master/partition/Diffusive/src/engpar\_balancer.cpp and https://github.com/SCOREC/EnGPar/tree/master/partition/engpar.cpp, respectively.
+{\color{red} GD please add links. CWS Not sure how helpful the timer link is, since its the full engpar\_balancer.cpp file}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Summary}
