@@ -1,0 +1,37 @@
+\section{Artifact Evaluation Appendix: Dynamic Load Balancing of Plasma and Flow Simulations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Abstract}
+
+Results were verified through multiple runs using the same partition of nodes.
+
+{\color{red} GD can you confirm this for the aepw results?}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Results Analysis Discussion}
+
+{\em Description of results, their correctness and any concerns about them. If your paper is only about performance, describe how you assure the quality of performance measurements and that you have preserved correct computational results.}
+
+EnGPar's performance is evaluated using timers around high-level routines that
+take several seconds to execute and graph based quality metrics.
+Our timers call \texttt{MPI\_Wtime} on the IBM Blue Gene/Q which are implemented
+in IBM's MPI with high precision system clock based timers {\color{red}
+REFERENCE?}.
+Any timing runs are repeated multiple times and {\color{red} WHAT DO WE DO THEN? AVERAGE?
+MAX?}.
+Graph partition qualtiy metrics are verified against the same metrics computed
+directly on mesh entities by ParMA.
+
+The source code for EnGPar's timers and metrics are HERE and HERE, respectively.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Summary}
+
+{\em Final summary demonstrating the trustworthiness of your results.}
+
+We provide full source code with the specific Git SHA1 and inputs to reproduce
+our results.
+Nightly builds and tests are run to prevent regressions.
+
+{\color{red} any other ideas?}
