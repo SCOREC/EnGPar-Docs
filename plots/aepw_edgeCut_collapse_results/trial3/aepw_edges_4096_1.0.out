@@ -13,17 +13,17 @@ ENGPAR PARTITION : Total Vertex Imbalance: <max,min,avg,imb> 7006.000 3999.000 6
 ENGPAR PARTITION : Edges type 0: <max,min,avg,imb> 35919.000 11742.000 23632.588 1.520
 ENGPAR Starting criteria type -1 with imbalances: 1.0500 1.5199 
 ENGPAR Side Tolerance is: 3602
-ENGPAR   Step took 3.920573 seconds
+ENGPAR   Step took 3.930406 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.5196 
-ENGPAR Completed criteria type -1 in 1 steps and took 6.878672 seconds
+ENGPAR Completed criteria type -1 in 1 steps and took 6.882766 seconds
 ENGPAR Starting criteria type 0 with imbalances: 1.0498 1.5196 
 ENGPAR Side Tolerance is: 3601
-ENGPAR   Step took 6.564661 seconds
+ENGPAR   Step took 6.576056 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.5196 
-ENGPAR   Step took 6.637385 seconds
+ENGPAR   Step took 6.632108 seconds
 ENGPAR   Imbalances <v, e0, ...>: 1.0498 1.5196 
-ENGPAR Completed criteria type 0 in 2 steps and took 14.387007 seconds
-ENGPAR EnGPar converged in 3 iterations in 21.266637 seconds
+ENGPAR Completed criteria type 0 in 2 steps and took 14.394674 seconds
+ENGPAR EnGPar converged in 3 iterations in 21.278398 seconds
 ENGPAR PARTITION : Empty Parts: 0
 ENGPAR PARTITION : Disconnected Components: <max,tot> 1.000 30.000
 ENGPAR PARTITION : Neighbors: <max,min,avg,imb> 42.000 4.000 13.847 3.033
