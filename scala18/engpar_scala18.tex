@@ -9,6 +9,7 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{listings}
+\usepackage{url}
 \begin{document}
 
 
@@ -280,7 +281,7 @@ elements, and their closure, are copied along the boundary to any process that
 shares them.
 We examine both methods of partitioning meshes with EnGPar.
 
-\subsection{Element-partitioned mesh}
+\subsection{Element-partitioned mesh}\label{sec:elmPtn}
 
 For element-partitioned meshes, the N-graph is constructed by first representing the mesh elements
 as graph vertices. Then, graph hyperedges are constructed for each mesh vertex. Pins
@@ -308,7 +309,7 @@ between the source part and the potential destination part. This results in migr
 vertices to parts that are more connected to the source part instead of parts that may only
 share a few edges.
 
-\subsection{Vertex-partitioned meshes}
+\subsection{Vertex-partitioned meshes}\label{sec:vtxPtn}
 
 To represent the vertex-partitioned mesh in EnGPar, the construction
 is essentially the opposite of the element-partitioned mesh. Graph

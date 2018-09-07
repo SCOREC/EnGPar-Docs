@@ -9,23 +9,23 @@ Dynamic Load Balancing of Plasma and Flow Simulations}
 Information is provided to create the vertex partitions of the Aeroelastic
 Prediction Workshop mesh that are described in Section~\ref{sec:results} of the ScalA18
 workshop paper titled ``Dynamic Load Balancing of Plasma and Flow Simulations''.
+The meshes and graphs used for the vertical tail problem contain sensitive
+design information that cannot be published at this time.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Description}
 
-\subsubsection{Check-list (artifact meta information)}
+\subsubsection{Check-list}
 
 {\small
 \begin{itemize}
   \item {\bf Algorithm: } diffusive partition improvement
   \item {\bf Program: } EnGPar
-  \item {\bf Compilation: } IBM XL C/C++ Blue Gene/Q, V12.1
+  \item {\bf Compilation: } GNU GCC 4.7.2
   \item {\bf Transformations: } unstructured conformal mesh to hypergraph
-  \item {\bf Data set: } DOI: 10.5281/zenodo.1409558 {\color{red} GD please
-    create a tarball of the aepw input graphs with an included README and place it on
-    a scorec filesystem}
+  \item {\bf Data set: } \url{https://doi.org/10.5281/zenodo.1409558}
   \item {\bf Hardware: } IBM Blue Gene/Q
-  \item {\bf Output: } https://github.com/SCOREC/EnGPar-Docs/tree/master/scala18
+  \item {\bf Output: } \url{https://github.com/SCOREC/EnGPar-Docs/tree/master/scala18}
     {\color{red} GD please change the url to the git hash of the submitted version}
   \item {\bf Publicly available?: } Yes
 \end{itemize}
@@ -33,13 +33,17 @@ workshop paper titled ``Dynamic Load Balancing of Plasma and Flow Simulations''.
 
 \subsubsection{How software can be obtained}
 
-EnGPar is available on Github.  The following versions were used for the
-experiments:
+EnGPar is available on Github at {https://github.com/SCOREC/EnGPar}.
+For reproducibility, we list the specific versions (via Git SHA1 hash) used for
+the experiments.  
 
 \begin{itemize}
-\item For the element-partitioned mesh CFD tests: f6feb49cceea3d475ca3b66d318773fcb022e9e8
-\item For the vertex-partitioned mesh CFD tests: 246a25c51ad813408a0b1b95b1c3304ebbef374f
-\item For the plasma simulation tests: 5357ec528c878965006dfb8cfe0251e83a418b1a
+  \item element-partitioned mesh (Section~\ref{sec:elmPtn}):
+    \url{f6feb49cceea3d475ca3b66d318773fcb022e9e8}
+  \item vertex-partitioned mesh (Section~\ref{sec:vtxPtn}):
+    \url{246a25c51ad813408a0b1b95b1c3304ebbef374f}
+  \item plasma simulation (Section~\ref{sec:pic}): 
+    \url{5357ec528c878965006dfb8cfe0251e83a418b1a}
 \end{itemize}
 
 \subsubsection{Hardware dependencies}
@@ -50,27 +54,36 @@ Innovations.
 
 \subsubsection{Software dependencies}
 
-EnGPar calls ParMETIS 4.0.3/METIS 5.1.0 to perform initial partitioning.
+EnGPar depends on the following libraries:
+\begin{itemize}
+  \item ParMETIS 4.0.3 - initial partitioning
+  \item PCU - peer-to-peer communications and non-blocking sparse neighborhood exchanges
+  \item PUMI - load PUMI unstructured meshes and query them for (hyper)graph construction
+\end{itemize}
 
-{\color{red} OTHER DEPS? CWS I think we may want to list core (pcu).}
+A compatible version of PUMI and PCU is
+\url{https://github.com/SCOREC/core/tree/b623e021a03fa29c548582222127cc669dc708a4}.
 
 \subsubsection{Datasets}
 
-The Zenodo datasets containing the input graphs of the Aeroelastic Prediction
-Workshop mesh are available at 10.5281/zenodo.1409558 .
+The Zenodo dataset containing the input graphs of the Aeroelastic Prediction
+Workshop mesh is available at \url{https://doi.org/10.5281/zenodo.1409558} .
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Installation}
 
 For the CCI BGQ we load modules:
+{\scriptsize
 \begin{lstlisting}
 module load cmake \
        gcc/4.7.2 \
        zoltan/gcc/4.7.2 \
        parmetis/gcc/4.7.2
 \end{lstlisting}
+}
 
 To build EnGPar:
+{\scriptsize
 \begin{lstlisting}
 mkdir build
 cd build
@@ -85,11 +98,13 @@ cmake .. \
     -DBIG_ENDIAN=ON
 make
 \end{lstlisting}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Experiment workflow}
 
 The script below was used to run EnGPar's diffusive load balancing on the vertex-partitioned mesh.
+{\scriptsize
 \begin{lstlisting}
 #!/bin/sh
 #SBATCH --job-name=BALANCE
@@ -103,65 +118,34 @@ graph=/path/to/graphs/$1
 srun --ntasks $2 -o balance/$1_$2_$3.out \
      $engpar/balance $graph/$2/ 1 1.05 1.05 $3
 \end{lstlisting}
+}
+
 An example of running the script with 1024 processes and without the edge cut metric limit is:
+
+{\scriptsize
 \begin{lstlisting}
 sbatch balance.sh aepw 1024
 \end{lstlisting}
+}
+
 An example of running the script on the collapsed boundary layer graphs with 8192 processes and the edge cut metric limit set to 1.0 is:
+
+{\scriptsize
 \begin{lstlisting}
 sbatch balance.sh aepw_collapsed 8192 1.0
 \end{lstlisting}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Evaluation and expected result}
 
 Expected results are located in the 
-https://github.com/SCOREC/EnGPar-Docs/tree/master/scala18
+\url{https://github.com/SCOREC/EnGPar-Docs/tree/master/scala18}
 repo.
-{\color{red} LINK TO SUBMITTED VERSION}
+{\color{red} GD LINK TO SUBMITTED VERSION}
 
 Plots of vertex and edge imbalances and edge cut are produced by
 running the bash script \texttt{parseAndPlot.sh} in the
 \texttt{plots/aepw\_edgeCut\_collapse\_results} directory.
 GNUPlot is required for plotting.
 
-\section{Artifact Evaluation Appendix: Dynamic Load Balancing of Plasma and Flow Simulations}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Abstract}
-
-Results were verified through multiple runs using the same partition of nodes.
-
-{\color{red} GD can you confirm this for the aepw results? CWS For the aepw runs, multiple runs
-were not exactly run, but since no timing data was reported there would be no difference
-in the results. For the Mira runs, only one run is represented in the results.}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Results Analysis Discussion}
-
-{\em Description of results, their correctness and any concerns about them. If your paper is only about performance, describe how you assure the quality of performance measurements and that you have preserved correct computational results.}
-
-EnGPar's performance is evaluated using timers around high-level routines that
-take several seconds to execute and graph based quality metrics.
-Our timers call \texttt{MPI\_Wtime} on the IBM Blue Gene/Q which are implemented
-in IBM's MPI with high precision system clock based timers.
-Any timing runs are repeated multiple times and {\color{red} GD what do we do then? average?
-max? CWS our results on timing were not repeated}.
-Graph partition qualtiy metrics are verified against the same metrics computed
-directly on mesh entities by ParMA.
-
-{\color{red} CWS I don't know what to do with these long links}
-The source code for EnGPar's timers and metrics are https://github.com/SCOREC/EnGPar/tree/master/partition/Diffusive/src/engpar\_balancer.cpp and https://github.com/SCOREC/EnGPar/tree/master/partition/engpar.cpp, respectively.
-{\color{red} GD please add links. CWS Not sure how helpful the timer link is, since its the full engpar\_balancer.cpp file}.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Summary}
-
-{\em Final summary demonstrating the trustworthiness of your results.}
-
-We provide full source code with the specific Git SHA1 and inputs to reproduce
-our results.
-Nightly builds and tests are run to prevent regressions.
-
-{\color{red} GD any other ideas?}
