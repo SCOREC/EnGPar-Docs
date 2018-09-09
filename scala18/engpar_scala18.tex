@@ -121,11 +121,11 @@ able to reduce the large imbalances accounting for a full set of mesh entity
 considerations~\cite{SmithParma2015}. Our tool, EnGPar, uses diffusive methods on a
 generalized graph structure in order to improve partitions for a diverse set of application needs.
 
-Section~\ref{sec:engpar}  briefly discusses EnGPar.
+Section~\ref{sec:engpar} briefly discusses EnGPar.
 Section~\ref{sec:pic} discusses a PIC application and initial results
 using EnGPar. Section~\ref{sec:cfd} describes two different types of CFD codes. Results for CFD
-mesh partitions are given in Section~\ref{sec:results}. The paper closes with
-some remarks. {\color{red} GD ehhh? CWS whats the ehhh for?}
+mesh partitions are given in Section~\ref{sec:results}.
+A brief summary of the results closes the paper.
 
 \section{EnGPar} \label{sec:engpar}
 
@@ -492,12 +492,12 @@ of EnGPar's edge balancer while strictly maintaining the vertex imbalance at 5\%
 Figure \ref{fig:metric} shows the edge cut and edge imbalances for each
 test; including the initial values of the ParMETIS partitioned mesh. For the
 8192 part case, without
-the metric used, EnGPar reduces the edge imbalance by 24\% points while increasing the cut by
+the metric used, EnGPar reduces the edge imbalance by 24 percentage points while increasing the cut by
 34\%. Turning on the metric with a value of 1.2 results in limiting the increase of the cut to
-17\% while reducing the imbalance by 18\% points. Results for the metric limit set to 1.0
+17\% while reducing the imbalance by 18 percentage points. Results for the metric limit set to 1.0
 and 0.8 have similar results following the trend that lower values of the limit result
 in lower edge cuts and higher edge imbalance. When the limit is set to 0.5, the edge cut
-increases by 1\% while reducing the imbalance by 11\% points.
+increases by 1\% while reducing the imbalance by 11 percentage points.
 
 \begin{figure}[!ht]
   \centering
@@ -528,7 +528,7 @@ ParMETIS and after EnGPar. Without the metric limit, there is a 41\% point reduc
 element imbalance with a 38\% increase in edge cut. The usage of the metric has a much larger
 affect than in the uncollapsed boundary layer case. For a value of 1.2 there is a 35\% point
 drop in imbalance with a 15\% increase in edge cut. Similar trends are seen for the 1.0 and 0.8
-limit. The 0.5 metric reduces the imbalance by 11\% points with a less than 1\% increase in the
+limit. The 0.5 metric reduces the imbalance by 11 percentage points with a less than 1\% increase in the
 edge cut.
 
 
@@ -547,14 +547,14 @@ EnGPar was used to improve the partitions of three different application data. A
 graph was constructed that compactly represents particles in a fusion application. This
 graph was designed such that the partition requirements of particles were always satisfied
 regardless of decisions made by EnGPar.
-Initial results were
-shown to greatly reduce the imbalance of particles. In the future, larger simulations will
+An initial test reduces the particle imbalance by 24 percentage points.
+In the future, larger simulations will
 be run to further test EnGPar's graph construction and balancing procedures.
 
 Previous results using EnGPar to improve the partitions for an element-based CFD application
 were revisited. Improvements were made that further reduced the
-imbalance while not sacrificing significant imbalance of the primary vertices or
-runtime.
+imbalance while not sacrificing significant imbalance of the primary vertices,
+edge cut, or runtime.
 
 Vertex-partitioned meshes for CFD were considered. The diffusive methods used previously for
 element-partitioned meshes were not able to control the edge cut while improving the partitions.
