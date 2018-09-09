@@ -520,7 +520,6 @@ edge cut would be worth the larger decreases in imbalance as seen in the 0.8 - 1
 For the boundary layer collapse, we use the same 57 million element mixed mesh. The N-graph is
 built in serial from the mesh with the collapsed boundary layers and partitioned
 out using global ParMETIS for the 1024 to 8192 partitions.
-{\color{red} CWS Should we list the collapsed graph sizes and relate them to the mesh? For reference: the collapsed graph has 6 million vertices, 33 million edges, 133 million pins. The uncollapsed has 18 million vertices, 57 million edges, 281 million pins.}
 Then, EnGPar is run for 30 iterations to reduce the edge imbalance with the same set of
 configurations for the edge cut metric limit. Figure \ref{fig:collapse}
 shows the edge cut and edge imbalance after partitioning with
