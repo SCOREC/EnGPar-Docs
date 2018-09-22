@@ -168,11 +168,11 @@ cost would be amortized across an entire run.
 
 \begin{figure}
   \centering
-  \label{fig:bfs}
   \includegraphics[width=0.8\textwidth]{images/bfsPerformance.png}
   \caption{
     Performance of breadth first traversal implementations.
   }
+  \label{fig:bfs}
 \end{figure}
 
 On the 28M mesh, the `scg\_int\_unroll' is 11 times
@@ -221,7 +221,6 @@ adjacent hyperedges.
 The resulting CSR, \verb|deg| and \verb|edgeList|, are passed directly to
 the Kokkos coloring procedure.
 
-\label{alg:dual}
 \algloopdefx[PFor]{PFor}[1]{\textbf{parallel for} #1 \textbf{do}}
 \algblock[Name]{Start}{End}
 \algblockdefx[NAME]{START}{END}
@@ -271,6 +270,7 @@ the Kokkos coloring procedure.
   \EndProcedure
 \end{algorithmic}
 \end{multicols}
+\label{alg:dual}
 \end{algorithm}
 
 The speedup of the dual and coloring procedures relative to serial
@@ -331,7 +331,7 @@ version for evaluation of overall performance and partition quality.
 
 \begin{acknowledgement}
 This research was supported by the U.S. Department of Energy, Office of Science,
-Office of Advanced Scientific Computing Research, under award DE-SC00066117
+Office of Advanced Scientific Computing Research, under award DE-AC53-07NA27344
 (FASTMath SciDAC Institute) and by the National Science Foundation under Grant
 No. ACI 1533581, (SI2-SSE: Fast Dynamic Load Balancing Tools for Extreme Scale
 Systems).
