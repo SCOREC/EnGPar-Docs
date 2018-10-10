@@ -5,3 +5,9 @@ Trial 2 is the graph vtx=mesh vtx, graph edges = mesh elm
       limits = 1.2 1.0 0.8 0.5
 Trial 3 is the graph vtx=mesh vtx, graph edges = mesh edges
       limits = 2.0 1.5 1.2 1.0
+
+There should be no text output; only the .eps files written to disk.
+
+## SCALA18
+./parseAndPlot.sh 2 "1.2 1.0 0.8 0.5"
+
