@@ -268,7 +268,7 @@ process test case. The mesh has around four thousand
 mesh faces, four flux faces with four processes per flux face, and sixteen thousand particles.
 The initial distribution of particles has an imbalance of 42\%. After running EnGPar, the
 imbalance of particles is reduced to 18\%. The push operation's computational load is
-statistically proportional to the number of particles on part. thus this
+statistically proportional to the number of particles on part. This
 reduction will significantly improve the performance of the computationally
 dominant push operation.
 
@@ -511,7 +511,7 @@ The best edge cut metric parameter is specific to each application. The increase
 edge cut means that there will be more elements on each part as well as
 increased communication
 between parts. If communication dominates a simulation's scaling then the increase in
-edge cut, and the associated increse in communications, may negate, or exceed,
+edge cut, and the associated increase in communications, may negate, or exceed,
 any savings from improved balance. So, the partition from ParMETIS may
 be the best choice, or running EnGPar with a low limit for the cut growth metric like in the
 0.5 case. However, if the application is very susceptible to imbalance, then a increase in the
