@@ -97,8 +97,6 @@ Rensselaer Polytechnic Institute
   \end{itemize}
 \end{frame}
 
-%Maybe one more slide to discuss in more detail why we need diffusive load balancing
-
 \section{EnGPar - a graph based diffusive load balancer}
 
 \begin{frame}
@@ -115,7 +113,7 @@ Rensselaer Polytechnic Institute
   \frametitle{Software}
   EnGPar's source can be found at \url{scorec.github.io/EnGPar/}.
   \begin{itemize}
-  \item Written in C++ using MPI.
+  \item Written in C++ using MPI and Kokkos.
   \item Provides C/C++ and FORTRAN APIs.
   \item Uses PCU for sparse neighborhood exchange peer to peer communications.
     \begin{itemize}
@@ -125,94 +123,16 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{N-graph}
-  The N-graph is a multigraph with two modes of operation: traditional or hypergraph.\\
-  \smallskip
-  The N-graph is defined as the following:
-  \begin{itemize}
-  \item A set of vertices $V$ representing the atomic units of work.
-  \item If using the traditional graph mode:
-    \begin{itemize}
-    \item $N$ sets of edges $E_0,...,E_{n-1}$ for each type of relation.
-    \item Each edge connects two vertices $u,v \in V$.
-    \end{itemize}
-  \item If using the hypergraph mode:
-    \begin{itemize}
-    \item $N$ sets of hyperedges $H_0,...,H_{n-1}$ for each type of relation.
-    \item $N$ sets of pins $P_0,...,P_{n-1}$ corresponding to each set of hyperedges.
-    \item Each pin in $P_i$ connects a vertex, $v \in V$, to a hyperedge $h \in H_i$.
-    \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Mapping structures to the N-graph}
+  \frametitle{Mapping application data to EnGPar}
   %Before using EnGPar a simulation must first map its data to the N-graph
-  To map to the N-graph simulations must:
+  To map to EnGPar, applications must:
   \begin{itemize}
-  \item Define units of work as the vertices.
-  \item Decide on the mode of edges to use.
+  \item Define units of work as the graph vertices.
+  \item Decide on the mode (regular vs. hyper) of edges to use.
   \item Create (hyper)edges between the vertices whose corresponding work relate to each other.
   \end{itemize}
 \end{frame}
-\begin{frame}
-  \frametitle{Mapping structures to the N-graph}
 
-  %Figure showing the conversion from mesh to N-graph
-  \begin{figure}
-    \centering
-    \includegraphics[width=.9\textwidth]{figures/exampleMesh2Graph.png}
-    \caption{Converting a triangular mesh(a) to the N-graph with an edge type for mesh vertices (b) and an additional edge type for mesh edges (c).}
-  \end{figure}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Diffusive Terminology}
-  \begin{minipage}{0.45\textwidth}
-  \begin{itemize}
-  \item Sides
-    \begin{itemize}
-    \item Each part determines which parts are its neighbors.
-    \item Determines a measurement of the area between each part.
-    \end{itemize}
-  \item Cavity
-    \begin{itemize}
-    \item Defined by (hyper)edges that cross a part boundary.
-    \item Includes all the vertices that bound the (hyper)edge.
-    \end{itemize}
-  \end{itemize}
-  \end{minipage} \hfill
-  \begin{minipage}{0.5\textwidth}
-  \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figures/PartBoundary.png}
-    \caption{Two parts of an N-graph with a side of size 4. Two cavities are shown in red and blue for part 0.}
-  \end{figure}
-  \end{minipage}
-\end{frame}
-\begin{frame}
-  \frametitle{Diffusive Terminology}
-  \begin{itemize}
-  \item Weights
-    \begin{itemize}
-    \item Each part computes its weight of the current target entity types, $w_i$.
-    \item This weight is shared with all of the part's neighbors(sides).
-    \end{itemize}
-  \item Targets
-    \begin{itemize}
-    \item The neighbors that the part will send weight to.
-    \item A part, $i$, will send weight to a neighbor, $j$, if:
-      \begin{itemize}
-      \item $w_i>w_j$
-      \item the area between the parts ($s_{ij}$) is less than the average of all part boundaries.  
-      \end{itemize}
-    \item Weight to send from part $i$ to part $j$ is $\alpha(w_i-w_j)*\dfrac{\text{size}(s_{ij})}{\text{size}(s)}$
-      \begin{itemize}
-        \item $\alpha$ is an input parameter that limits how much weight is sent in each iteration.
-      \end{itemize}
-    \end{itemize}
-  \end{itemize}
-\end{frame}
 
 \begin{frame}
   \frametitle{Diffusive Partitioning}
@@ -396,16 +316,17 @@ Rensselaer Polytechnic Institute
   \end{figure}  
 \end{frame}
 
-\section{Accelerating Selection Performance}
-\begin{frame}
-  \frametitle{}
-  \center \huge{Accelerating Selection Performance}
-\end{frame}
+\section{Accelerating Selection Performance on GPUs}
 
 \begin{frame}
-    \centering
-    \animategraphics[scale=0.5]{12}{figures/trap/boulder-}{0}{59}
+  \frametitle{}
+  \center \huge{Accelerating Selection Performance on GPUs}
 \end{frame}
+
+%\begin{frame}
+%    \centering
+%    \animategraphics[scale=0.5]{12}{figures/trap/boulder-}{0}{59}
+%\end{frame}
 
 \begin{frame}
   \frametitle{Where is time currently spent in EnGPar?}
@@ -436,96 +357,6 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Related Work on Accelerated BFS}
-  Lots of it - mostly focused on scale-free graphs and using many-core
-  and GPUs
-  \begin{itemize}
-    \item SlimSell - custom data structure for algebraic BFS (Hoefler)
-    \item Global and Local Manhattan Collapse - inner/frontier loop transformations to
-      improve load balance and reduce irregular memory access (Slota)
-    \item Merijn - runtime switching of graph structure and push/pull algorithm based
-      on front size and other factors (M. Verstraaten)
-      % Merijn ---> Meer-hang
-      % https://arxiv.org/pdf/1708.01159.pdf
-      % https://github.com/merijn/GPU-benchmarks
-% george's BFS references 
-%% [3] - S. Beamer, K. Asanovic, and D. Patterson, “Direction- ´
-%      optimizing breadth-first search,” in Proc. Int’l. Conf. for High
-%      Performance Computing, Networking, Storage and Analysis
-%      (SC), 2013.
-%% [7] F. Checconi and F. Petrini, “Traversing trillions of edges
-%      in real-time: Graph exploration on large-scale parallel machines,”
-%      in Proc. IEEE Int’l. Parallel and Distributed Proc.
-%      Symp. (IPDPS), 2014.
-%% [12] T. Gao, Y. Lu, B. Zhang, and G. Suo, “Using the Intel
-%      Many Integrated Core to accelerate graph traversal,” Sage
-%      Int’l. Journal of High Performance Computing Applications,
-%      vol. 28, no. 3, pp. 255–266, 2014.
-%% [16] S. Hong, S. K. Kim, T. Oguntebi, and K. Olukotun, “Accelerating
-%      CUDA graph algorithms at maximum warp,” in Proc.
-%      ACM SIGPLAN Symp. on Principles and Practice of Parallel
-%      Programming (PPoPP), 2011
-%% [17] S. Hong, T. Oguntebi, and K. Olukotun, “Efficient parallel
-%      graph exploration on multi-core CPU and GPU,” in Proc.
-%      Int’l. Conf. on Parallel Architectures and Compilation Techniques
-%      (PACT), 2011.
-%% [23] D. Merrill, M. Garland, and A. Grimshaw, “Scalable GPU
-%      graph traversal,” in Proc. ACM SIGPLAN Symp. on Principles
-%      and Practice of Parallel Programming (PPoPP), 2012.
-  \end{itemize}
-  Can we apply some of these approaches to a hyper multi-graph and run
-  effectively on manycore CPUs, GPUs, and FPGAs?
-\end{frame}
-
-\begin{frame}
-  \frametitle{Architecture Review}
-  Manycore
-  \begin{itemize}
-    \item Tens of out-of-order cores with hardware level pipelining
-    \item 1-2 TFLOPs per processor/socket, possible$^{*}$ to get near
-      peak
-    \item Programming models and languages: shared memory,
-      distributed, SHMEM, OpenMP, PThreads, MPI, etc.
-    \item Efficient use of available memory bandwidth often yields peak performance - 
-      supported by both data parallel and message passing models
-  \end{itemize}
-  GPU
-  \begin{itemize}
-    \item Many small cores organized into groups that run in lock-step
-    \item Multi TFLOPs per device, hard to get near peak
-    \item Programming models and languages: OpenMP, CUDA, OpenCL,
-      OpenACC
-    \item Wide data parallelism yields maximum performance - requires memory
-      coalescing and minimal divergence
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Architecture Review (cont.)}
-  FPGA
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-        \item Reprogrammable device consisting of DSPs, multiply-accumulate blocks, hundreds of
-          thousands of logic elements, registers, internal memory, external memory controllers, and an interconnect
-        \item Multi TFLOPs per device, possible$^{*}$ to get near peak performance
-        \item Programming models and languages: OpenCL, Xilinx Vivado HLS,
-          OpenARC, initial OpenMP support
-        \item Long pipelines yield highest performance; data parallel can
-          also be effective
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{figures/fpga.png}
-        {\tiny https://www.altera.com/documentation/}
-      \end{figure}  
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
   \frametitle{BFS}
   Degree and diameter matters.
   \begin{itemize}
@@ -541,8 +372,6 @@ Rensselaer Polytechnic Institute
       to for inclusion in next frontier)
     \item GPU - shared memory parallel versions of manycore procedures with data structure
       optimizations for coalesing, algebraic methods
-    \item FPGA - all of the above... but pipelined push procedure may be best if
-      pipeline loop and stalls (ii) can be minimized
   \end{itemize}
 \end{frame}
 
@@ -662,23 +491,83 @@ Rensselaer Polytechnic Institute
  \end{frame}
 
 \begin{frame}
-  \frametitle{Selection Initial Results}
-  RESULTS HERE ON UPRIGHT MESHES USED FOR BFS\\
-  COMPARE WITH SERIAL QUALITY AND TIME
+  \frametitle{Parallel Coloring and Dual Computation}
+  \begin{itemize}
+    \item Speedup of parallel vs. serial on NVIDIA 1080ti
+    \item Construction of dual is roughly constant
+    \item Kokkos Coloring speedup increases with entity count - more parallelism
+  \end{itemize}
+  \begin{figure}
+    \centering
+    \includegraphics[width=.7\textwidth]{figures/kkColoringAndDual.png}
+  \end{figure}
+\end{frame}
+
+\section{Accelerating Graph Operations on FPGAs}
+
+\begin{frame}
+  \frametitle{}
+  \center \huge{Accelerating Graph Operations on FPGAs}
+\end{frame}
+
+\begin{frame}
+  \frametitle{FPGA Architecture Review}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item Reprogrammable device consisting of DSPs, multiply-accumulate blocks, hundreds of
+          thousands of logic elements, registers, internal memory, external memory controllers, and an interconnect
+        \item Multi TFLOPs per device, possible$^{*}$ to get near peak performance
+        \item Programming: OpenCL, Xilinx Vivado HLS, OpenARC, initial OpenMP
+        \item Long pipelines yield high performance
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fpga.png}
+        {\tiny https://www.altera.com/documentation/}
+      \end{figure}  
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{FPGA: Pipelining Graph and Mesh Operations}
-  Static graph: CSR \\
-  Dynamic graph: collecting adjacencies, topology modifications (e.g., migration, adapt) \\
-  One approach: Array of Sliding Windows (AOSW) + degree list $\rightarrow$ CSR\\
-  Example: inversion of regular graph to graph - FIGURE
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      Different graph structures needed
+      \begin{itemize}
+        \item Static graph: breadth first search, reading stored adjacencies
+        \item Dynamic graph: computing upward adjacencies, topology modifications (e.g., migration, adapt)
+      \end{itemize}
+      Example: graph inversion
+      \begin{itemize}
+        \item given a graph with uniform degree (e.g., downward adjacencies)
+        \item add edge 0$\rightarrow$A to output graph if A$\rightarrow$0 exists in the input graph
+        \item constructed graph has non-uniform degree
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.9\textwidth]{figures/exInvert.png}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Our Circuit Using Vivado HLS}
+  Store the non-uniform graph as an array of shift registers
   \begin{itemize}
-    \item read child $\rightarrow$ get parent index $\rightarrow$ insert parent at head of child adjacency array $\rightarrow$ shift adjacency array
-    \item prefix sum of degree list to compute offsets
-    \item shift entries left to fill gaps
+    \item all ops are pipelined with initialization interval of one cycle
+    \item storing adjacencies (shift register) in BRAM reduces shift latency from 435 to 9 cycles
   \end{itemize}
-  Replacing adjacency array with a sliding window reduces initialization interval from 15 cycles to XYZ cycles - each iteration a new edge starts getting processed
+  \begin{figure}
+    \centering
+    \includegraphics[width=.60\textwidth]{figures/invert.png}
+  \end{figure}
 \end{frame}
 
 \begin{frame}
@@ -690,15 +579,14 @@ Rensselaer Polytechnic Institute
   \end{itemize}
   MPI tests show that EnGPar:
   \begin {itemize}
-  \item Reduces the high mesh vertex imbalance from the 512Ki mesh from 1.53 to 1.13.
+  \item Reduces the high mesh vertex imbalance from the 512Ki mesh from 53\% to 6\%
   \item Maintains the mesh element imbalance at the tolerance.
   \end{itemize}
   Initial acceleration tests indicate:
   \begin {itemize}
   \item Utilizing known degree of downward adjacencies enables
     loop unrolling and improved load balance
-  \item 
-  \item FPGA STATEMENT
+  \item High performance FPGA graph processing circuits can be defined at the expense of additional memory
   \end{itemize}
 \end{frame}
 
@@ -717,7 +605,7 @@ Rensselaer Polytechnic Institute
   \end{itemize}
   FPGA Pipelined Operations
   \begin{itemize}
-    \item Sub-graph intersection and union
+    \item Sub-graph intersection and union, adjacency caching 
   \end{itemize}
   Applying EnGPar to other applications:
   \begin{itemize}
@@ -757,6 +645,153 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \center \huge Extra Slides
 \end{frame}
+
+\begin{frame}
+  \frametitle{N-graph}
+  The N-graph is a multigraph with two modes of operation: traditional or hypergraph.\\
+  \smallskip
+  The N-graph is defined as the following:
+  \begin{itemize}
+  \item A set of vertices $V$ representing the atomic units of work.
+  \item If using the traditional graph mode:
+    \begin{itemize}
+    \item $N$ sets of edges $E_0,...,E_{n-1}$ for each type of relation.
+    \item Each edge connects two vertices $u,v \in V$.
+    \end{itemize}
+  \item If using the hypergraph mode:
+    \begin{itemize}
+    \item $N$ sets of hyperedges $H_0,...,H_{n-1}$ for each type of relation.
+    \item $N$ sets of pins $P_0,...,P_{n-1}$ corresponding to each set of hyperedges.
+    \item Each pin in $P_i$ connects a vertex, $v \in V$, to a hyperedge $h \in H_i$.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Mapping example}
+  %Figure showing the conversion from mesh to N-graph
+  \begin{figure}
+    \centering
+    \includegraphics[width=.9\textwidth]{figures/exampleMesh2Graph.png}
+    \caption{Converting a triangular mesh(a) to the N-graph with an edge type for mesh vertices (b) and an additional edge type for mesh edges (c).}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Diffusive Terminology}
+  \begin{minipage}{0.45\textwidth}
+  \begin{itemize}
+  \item Sides
+    \begin{itemize}
+    \item Each part determines which parts are its neighbors.
+    \item Determines a measurement of the area between each part.
+    \end{itemize}
+  \item Cavity
+    \begin{itemize}
+    \item Defined by (hyper)edges that cross a part boundary.
+    \item Includes all the vertices that bound the (hyper)edge.
+    \end{itemize}
+  \end{itemize}
+  \end{minipage} \hfill
+  \begin{minipage}{0.5\textwidth}
+  \begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{figures/PartBoundary.png}
+    \caption{Two parts of an N-graph with a side of size 4. Two cavities are shown in red and blue for part 0.}
+  \end{figure}
+  \end{minipage}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Diffusive Terminology}
+  \begin{itemize}
+  \item Weights
+    \begin{itemize}
+    \item Each part computes its weight of the current target entity types, $w_i$.
+    \item This weight is shared with all of the part's neighbors(sides).
+    \end{itemize}
+  \item Targets
+    \begin{itemize}
+    \item The neighbors that the part will send weight to.
+    \item A part, $i$, will send weight to a neighbor, $j$, if:
+      \begin{itemize}
+      \item $w_i>w_j$
+      \item the area between the parts ($s_{ij}$) is less than the average of all part boundaries.  
+      \end{itemize}
+    \item Weight to send from part $i$ to part $j$ is $\alpha(w_i-w_j)*\dfrac{\text{size}(s_{ij})}{\text{size}(s)}$
+      \begin{itemize}
+        \item $\alpha$ is an input parameter that limits how much weight is sent in each iteration.
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Architecture Review}
+  Manycore
+  \begin{itemize}
+    \item Tens of out-of-order cores with hardware level pipelining
+    \item 1-2 TFLOPs per processor/socket, possible$^{*}$ to get near
+      peak
+    \item Programming models and languages: shared memory,
+      distributed, SHMEM, OpenMP, PThreads, MPI, etc.
+    \item Efficient use of available memory bandwidth often yields peak performance - 
+      supported by both data parallel and message passing models
+  \end{itemize}
+  GPU
+  \begin{itemize}
+    \item Many small cores organized into groups that run in lock-step
+    \item Multi TFLOPs per device, hard to get near peak
+    \item Programming models and languages: OpenMP, CUDA, OpenCL,
+      OpenACC
+    \item Wide data parallelism yields maximum performance - requires memory
+      coalescing and minimal divergence
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Related Work on Accelerated BFS}
+  Lots of it - mostly focused on scale-free graphs and using many-core
+  and GPUs
+  \begin{itemize}
+    \item SlimSell - custom data structure for algebraic BFS (Hoefler)
+    \item Global and Local Manhattan Collapse - inner/frontier loop transformations to
+      improve load balance and reduce irregular memory access (Slota)
+    \item Merijn - runtime switching of graph structure and push/pull algorithm based
+      on front size and other factors (M. Verstraaten)
+      % Merijn ---> Meer-hang
+      % https://arxiv.org/pdf/1708.01159.pdf
+      % https://github.com/merijn/GPU-benchmarks
+% george's BFS references 
+%% [3] - S. Beamer, K. Asanovic, and D. Patterson, “Direction- ´
+%      optimizing breadth-first search,” in Proc. Int’l. Conf. for High
+%      Performance Computing, Networking, Storage and Analysis
+%      (SC), 2013.
+%% [7] F. Checconi and F. Petrini, “Traversing trillions of edges
+%      in real-time: Graph exploration on large-scale parallel machines,”
+%      in Proc. IEEE Int’l. Parallel and Distributed Proc.
+%      Symp. (IPDPS), 2014.
+%% [12] T. Gao, Y. Lu, B. Zhang, and G. Suo, “Using the Intel
+%      Many Integrated Core to accelerate graph traversal,” Sage
+%      Int’l. Journal of High Performance Computing Applications,
+%      vol. 28, no. 3, pp. 255–266, 2014.
+%% [16] S. Hong, S. K. Kim, T. Oguntebi, and K. Olukotun, “Accelerating
+%      CUDA graph algorithms at maximum warp,” in Proc.
+%      ACM SIGPLAN Symp. on Principles and Practice of Parallel
+%      Programming (PPoPP), 2011
+%% [17] S. Hong, T. Oguntebi, and K. Olukotun, “Efficient parallel
+%      graph exploration on multi-core CPU and GPU,” in Proc.
+%      Int’l. Conf. on Parallel Architectures and Compilation Techniques
+%      (PACT), 2011.
+%% [23] D. Merrill, M. Garland, and A. Grimshaw, “Scalable GPU
+%      graph traversal,” in Proc. ACM SIGPLAN Symp. on Principles
+%      and Practice of Parallel Programming (PPoPP), 2012.
+  \end{itemize}
+  Can we apply some of these approaches to a hyper multi-graph and run
+  effectively on manycore CPUs, GPUs, and FPGAs?
+\end{frame}
+
 
 \begin{frame}
   \frametitle{Other View of Results}
