@@ -560,15 +560,22 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Our Circuit Using Vivado HLS}
-  Store the non-uniform graph as an array of shift registers
-  \begin{itemize}
-    \item all ops are pipelined with initialization interval of one cycle
-    \item storing adjacencies (shift register) in BRAM reduces shift latency from 435 to 9 cycles
-  \end{itemize}
-  \begin{figure}
-    \centering
-    \includegraphics[width=.60\textwidth]{figures/invert.png}
-  \end{figure}
+  \begin{columns}
+    \begin{column}{0.35\textwidth}
+      Store the non-uniform graph as an array of shift registers
+      \begin{itemize}
+        \item all ops are pipelined with initialization interval of one cycle
+        \item storing adjacencies (shift register) in BRAM reduces shift latency from 435 to 9 cycles
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/invert.png}
+      \end{figure}
+      {\tiny "Initiation interval (II): Number of clock cycles before the function can accept new input data." - Xilinx Vivado HLS Users Guide}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
