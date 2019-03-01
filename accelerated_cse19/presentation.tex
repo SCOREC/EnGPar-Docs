@@ -52,12 +52,6 @@ Rensselaer Polytechnic Institute
   \titlepage
 \end{frame}
 
-%----------- outline ----------------------------------------------%
-\begin{frame}
-  \frametitle{Outline}
-  \tableofcontents
-\end{frame}
-
 %----------------------------------------------------------------------%
 %----------- Section --------------------------------------------------%
 %----------------------------------------------------------------------%
@@ -189,29 +183,6 @@ Rensselaer Polytechnic Institute
       (left) The distance from each vertex to the boundary and (right) the
     distance from the core vertex (marked with a zero near the
     bottom left corner).
-\end{frame}
-
-\begin{frame}
-  \frametitle{Selection}
-  \begin{minipage}{.5\textwidth}
-    \begin{itemize}
-    \item Iterates over (hyper)edges that cross a part boundary.
-      
-    \item The cavity defined by the (hyper)edge is chosen for migration if:
-      \begin{itemize}
-      \item The part that the (hyper)edge is shared with is a target part.
-      \item The target part has not been sent more weight than the limit.
-      \item The size of the cavity is small.
-      \end{itemize}
-    \end{itemize}
-  \end{minipage}
-  \begin{minipage}{.45\textwidth}
-
-    \begin{figure}
-      \centering
-      \includegraphics[width=\textwidth]{figures/PartBoundary.png}
-    \end{figure}
-  \end{minipage}
 \end{frame}
 
 \section{Partition Improvement Results}
@@ -358,26 +329,7 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{BFS}
-  Degree and diameter matters.
-  \begin{itemize}
-    \item Traversal of scale free graphs introduces additional
-      complexities $\rightarrow$ specific algoritms to balance degree disparity.
-    \item Traversal of low diameter graphs have larger frontiers and fewer
-      synchronizations.
-  \end{itemize}
-  The selected method depends on architecture and graph characteristics
-  \begin{itemize}
-    \item Manycore - serial and shared memory parallel vertex-based, edge-based, push (vertices
-      in the frontier push to next frontier), pull (all unvisited vertices check
-      to for inclusion in next frontier)
-    \item GPU - shared memory parallel versions of manycore procedures with data structure
-      optimizations for coalesing, algebraic methods
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Our Approach}
+  \frametitle{BFS Approach}
   We will focus on hypergraphs created from unstructured meshes
   \begin{itemize}
     \item Downward adjacencies have uniform degree! ... not so much for upward
@@ -391,10 +343,6 @@ Rensselaer Polytechnic Institute
       improved vectorization
     \item Sorting (sigma) will be needed for meshes with semi-structured boundary layers (tet
       and wedge dominant with a handful of pyramids) and discrete event simulation graphs
-  \end{itemize}
-  Quantifying progress
-  \begin{itemize}
-    \item Time to solution, energy usage, GTEPS, and roofline analysis (TODO)
   \end{itemize}
 \end{frame}
 
@@ -488,7 +436,12 @@ Rensselaer Polytechnic Institute
     \item Each criteria is computed as a mask over the cavities
     \item $\land$ (logical and) the masks to select the cavities that meet all criteria
   \end{itemize}
-  Challenge - managing duplicate adjacent entities e.g., second order adjacencies
+  One challenge 
+  \begin{itemize}
+    \item Managing duplicate adjacent entities e.g., second order
+  adjacencies
+    \item Currently unioning fixed length arrays; considering Kokkos hashing
+  \end{itemize}
  \end{frame}
 
 \begin{frame}
@@ -506,11 +459,14 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Parallel Selection}
-  Almost there...
+  Making good decisions
   \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{figures/selectionEx.png}
+    \includegraphics[width=\textwidth]{figures/selectionEx.png}\\
+    Initial, GPU Selection, CPU Selection
   \end{figure}
+  Apply additional masks to bias selection towards cavities with highest
+  topological distance.
 \end{frame}
 
 \section{Accelerating Graph Operations on FPGAs}
@@ -588,41 +544,17 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Closing Remarks}
-  EnGPar:
-  \begin {itemize}
-  \item generalizing the diffusive load balancing algorithm developed in ParMA for applications without an element-based unstructured mesh.
-  \item improving the algorithm of key portions to improve overall runtime.
-  \end{itemize}
+  \frametitle{Closing Remarks and Future Work}
   MPI tests show that EnGPar:
-  \begin {itemize}
-  \item Reduces the high mesh vertex imbalance from the 512Ki mesh from 53\% to 6\%
-  \item Maintains the mesh element imbalance at the tolerance.
+  \begin{itemize}
+  \item Quickly reduces the high secondary imbalances on up to 512Ki parts
+  \item Maintains edge cut and primary imbalances
   \end{itemize}
-  Initial acceleration tests indicate:
-  \begin {itemize}
-  \item Utilizing known degree of downward adjacencies enables
-    loop unrolling and improved load balance
+  Acceleration tests indicate:
+  \begin{itemize}
+  \item On track for on-device selection
+  \item Use graph construction techniques to support on-device graph rebuilds for migration
   \item High performance FPGA graph processing circuits can be defined at the expense of additional memory
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Future Work}
-  Expanding the capabilities of EnGPar:
-  \begin{itemize}
-    \item Continue improving partition quality when parts are small (i.e., strong scaling)
-  \end{itemize}
-  GPU Acceleration
-  \begin{itemize}
-    \item Porting BFS to Kokkos - add SCS, disconnected components
-    \item Support migration - host communicates, device rebuilds (hyper)graph
-    \item Test on bigger graphs
-    \item Examine cost of second adjacencies
-  \end{itemize}
-  FPGA Pipelined Operations
-  \begin{itemize}
-    \item Sub-graph intersection and union, adjacency caching 
   \end{itemize}
   Applying EnGPar to other applications:
   \begin{itemize}
@@ -744,6 +676,29 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
+  \frametitle{Selection}
+  \begin{minipage}{.5\textwidth}
+    \begin{itemize}
+    \item Iterates over (hyper)edges that cross a part boundary.
+      
+    \item The cavity defined by the (hyper)edge is chosen for migration if:
+      \begin{itemize}
+      \item The part that the (hyper)edge is shared with is a target part.
+      \item The target part has not been sent more weight than the limit.
+      \item The size of the cavity is small.
+      \end{itemize}
+    \end{itemize}
+  \end{minipage}
+  \begin{minipage}{.45\textwidth}
+
+    \begin{figure}
+      \centering
+      \includegraphics[width=\textwidth]{figures/PartBoundary.png}
+    \end{figure}
+  \end{minipage}
+\end{frame}
+
+\begin{frame}
   \frametitle{Architecture Review}
   Manycore
   \begin{itemize}
@@ -809,6 +764,24 @@ Rensselaer Polytechnic Institute
   effectively on manycore CPUs, GPUs, and FPGAs?
 \end{frame}
 
+\begin{frame}
+  \frametitle{BFS}
+  Degree and diameter matters.
+  \begin{itemize}
+    \item Traversal of scale free graphs introduces additional
+      complexities $\rightarrow$ specific algoritms to balance degree disparity.
+    \item Traversal of low diameter graphs have larger frontiers and fewer
+      synchronizations.
+  \end{itemize}
+  The selected method depends on architecture and graph characteristics
+  \begin{itemize}
+    \item Manycore - serial and shared memory parallel vertex-based, edge-based, push (vertices
+      in the frontier push to next frontier), pull (all unvisited vertices check
+      to for inclusion in next frontier)
+    \item GPU - shared memory parallel versions of manycore procedures with data structure
+      optimizations for coalesing, algebraic methods
+  \end{itemize}
+\end{frame}
 
 \begin{frame}
   \frametitle{Other View of Results}
