@@ -8,7 +8,7 @@ set y2label "imbalance (max/avg)" font ",20"
 set y2tics font ",20"
 set key left font ",20"
 set term postscript eps color blacktext "Helvetica" 20
-set output "postEngpar_countVsImbalance.eps"
+set output "postEngpar_timeVsCount.eps"
 set key outside center bottom horizontal font ",16"
 p 'vtxTotCount.log' title "Vtx Count" axis x1y2, \
   'tetCount.log' title "Tet Count" axis x1y2, \
