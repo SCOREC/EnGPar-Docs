@@ -349,32 +349,29 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Summit Communication Hardware}
   205:1 ratio of aggregate node memory bandwidth to inter-node network bandwidth
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-        \item Inter-node EDR Infiniband - 25GBs
-        \item Intra-node GPU-GPU and CPU-GPU NVLink - 50GBs
-        \item Intra-GPU HBM - 900GBs
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=.4\textwidth]{figures/summit-node.png}\\
-        \tiny{J.Choquette. Hot Chips 2017. \\"Volta: Programmability and Performance"}
-      \end{figure}
+    \begin{columns}
+      \begin{column}{0.3\textwidth}
+        \begin{figure}
+          \centering
+          \includegraphics[width=.9\textwidth]{figures/summit-node.png}\\
+          \tiny{J.Choquette. Hot Chips 2017. \\"Volta: Programmability and Performance"}
+        \end{figure}
+      \end{column}
+    \begin{column}{0.7\textwidth}
+      \small {
+      \begin{table}[]
+        \begin{tabular}{llll}
+          System              & Stream       & Network     & Stream/ \\
+                              & Triad (GB/s) & Peak (GB/s) & Network \\
+          Summit (inter-node) & 5130         & 25          & 205     \\
+          Summit (intra-node) & 855          & 50          & 17      \\
+          Stampede2           & 194          & 12          & 17      \\
+          Mira                & 27           & 20          & 1.4
+        \end{tabular}
+      \end{table}
+      }
     \end{column}
   \end{columns}
-
-  \begin{table}[]
-    \begin{tabular}{llll}
-      System              & Stream Triad (GB/s) & Network Peak (GB/s) & Stream/Network \\
-      Summit (inter-node) & 5130                & 25                  & 205            \\
-      Summit (intra-node) & 855                 & 50                  & 17             \\
-      Stampede2           & 194                 & 12                  & 17             \\
-      Mira                & 27                  & 20                  & 1.4
-    \end{tabular}
-  \end{table}
   %V100 stream triad from Jack Choquette HotChips 2017 presentation "Volta: Programmability and Performance"
   %Mira network ref: PAMI: A Parallel Active Message Interface for the Blue Gene/Q Supercomputer
   %Mira stream triad ref: Bob Walkup "Application Performance Characterization and Analysis on Blue Gene/Q"
@@ -384,10 +381,18 @@ Rensselaer Polytechnic Institute
   % SKX stream triad: "TACC Technical Report TR-17-01 Benchmarking the Intel Xeon Platinum 8160 Processor"
 \end{frame}
 
+
+        %\begin{tabular}{lllll}
+        %System            & Summit  & Summit  & Stampede2 & Mira \\
+        %                  & (inter) & (intra) &           & \\
+        %Stream  (GB/s)    & 5130    & 855     & 194       & 27 \\
+        %Network BW (GB/s) & 25      & 50      & 12        & 20 \\
+        %Stream/Network    & 205     & 17      & 17        & 1.4
+
 \begin{frame}
   \frametitle{FUN3D - Finite volume CFD}
-  “Enabling Human Exploration of the Red Planet” \\
-  Courtesy of Eric Nielsen and Aaron Walden at NASA Langley.
+  Eric Nielsen and Aaron Walden at NASA Langley \\
+  Summit Early Science Project: ``Enabling Human Exploration of the Red Planet''
   \begin{columns}
     \begin{column}{0.5\textwidth}
       Goals
@@ -406,13 +411,32 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{FUN3D - Finite volume CFD (cont.)}
-  \begin{figure}
-    \centering
-    \includegraphics[width=.9\textwidth]{figures/fun3d-summit.png}
-  \end{figure}
+  \frametitle{FUN3D - Early Summit Results (E. Nielsen and A. Walden)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Partitioning Approach
+      \begin{itemize}
+        \item ParMETIS: mesh vertices $\rightarrow$ graph nodes, 
+          mesh edges $\rightarrow$ graph edges
+        \item Mesh vertices hold DOFs
+      \end{itemize}
+      Weak Scaling - nearly linear
+      \begin{itemize}
+        \item 12.8M vertices per node
+        \item 1024 nodes: 13.2B vertices (58B elements)
+        \item GPU: MPI+CUDA, 3 ranks/socket, MPI via GPUDirect
+        \item CPU: MPI+OpenMP, ranks/socket, 168 threads per node (SMT4)
+      \end{itemize}
+      GPU node-level performance is 23x-37x faster at scale
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fun3d-summit.png}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
-
 
 \begin{frame}
   \frametitle{XGC - PIC plasma fusion}
@@ -437,10 +461,12 @@ Rensselaer Polytechnic Institute
   \end{itemize}
   Inter-GPU Data movement is killer, mitigate costs by
   \begin{itemize}
-    \item place processes near those they share domain data with
+    \item placing processes near those they share domain data with
     \item optimizing partitions for communication, possibly sacrificing load imbalance
     \item buffering and compressing messages
-    \item overlapping communication with computation - on-node tasking?
+    \item overlapping communication with computation
+    \item predictively load balancing
+    \item ghosting mesh in host memory
   \end{itemize}
   Applying EnGPar to applications:
   \begin{itemize}
