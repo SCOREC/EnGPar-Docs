@@ -93,6 +93,8 @@ Rensselaer Polytechnic Institute
 \section{Partitioning and Load Balancing}
 \begin{frame}
   \frametitle{Motivation and Focus}
+  load balancing - distributing work to maximize performance or efficiency on a
+  given machine \\
   Many evolving distributed simulations have: \\
   \begin{itemize}
     \item Complex relational structures.
@@ -381,16 +383,8 @@ Rensselaer Polytechnic Institute
   % SKX stream triad: "TACC Technical Report TR-17-01 Benchmarking the Intel Xeon Platinum 8160 Processor"
 \end{frame}
 
-
-        %\begin{tabular}{lllll}
-        %System            & Summit  & Summit  & Stampede2 & Mira \\
-        %                  & (inter) & (intra) &           & \\
-        %Stream  (GB/s)    & 5130    & 855     & 194       & 27 \\
-        %Network BW (GB/s) & 25      & 50      & 12        & 20 \\
-        %Stream/Network    & 205     & 17      & 17        & 1.4
-
 \begin{frame}
-  \frametitle{FUN3D - Finite volume CFD}
+  \frametitle{FUN3D - Finite Volume CFD}
   Eric Nielsen and Aaron Walden at NASA Langley \\
   Summit ESP: ``Enabling Human Exploration of the Red Planet''
   \begin{columns}
@@ -427,7 +421,7 @@ Rensselaer Polytechnic Institute
         \item GPU: MPI+CUDA, 3 ranks/socket, MPI via GPUDirect
         \item CPU: MPI+OpenMP, ranks/socket, 168 threads per node (SMT4)
       \end{itemize}
-      GPU node-level performance is 23x-37x faster at scale
+      GPU node-level performance is 23x-37x faster at scale than CPUs
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{figure}
@@ -439,30 +433,76 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{XGC - PIC plasma fusion}
+  \frametitle{XGC - Fusion Plasma Physics}
   CS Chang, Princeton Plasma Physics Laboratory \\
   Summit ESP: ``Using XGC to predict ITER’s boundary plasma performance and its impact on fusion efficiency''
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      Models the whole-volume %, in contact w/ material wall, and  includes heat, momentum and particle sources
+      Goals
       \begin{itemize}
-	\item Study non-Maxwellian plasma
-	\item Monte-Carlo neutral recycling with atomic data
-	\item Fully nonlinear Fokker-Planck collision operation
-	\item Multiple impurity species
+        \item Science: Study tokamak plasma performance near boundary
+	\item Computational: Develop platform for multiscale plasma physics simulations on leadership systems
       \end{itemize}
-      Study overlapping multiscale, \\ % multi physics in space and time w/o the usual perturbative approach \\
-      Highly compute-intensive per simulation time step \\
-      Difficult edge geometry with magnetic %X-point and must scale well on leadership class computers
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=.7\textwidth]{figures/xgcCase.png}
+        \includegraphics[width=.7\textwidth]{figures/xgcCase.png} \\
+        \tiny{DIII-D Geometry: Boundary turbulence saturates 
+        in $<$ 0.1ms, core turbulence in a few ms.}
       \end{figure}
     \end{column}
   \end{columns}
+\end{frame}
 
+\begin{frame}
+  \frametitle{XGC - Partitioning Approach}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Partitioning Approach
+      %https://scorec.rpi.edu/~shephard/some%20fusion%20stuff/xgc-book-chapter.pdf
+      \begin{itemize}
+        \item Radial 1D partition of 2D poloidal mesh vertices used for field solve
+        \item Processes assigned to a polodial plane, each process gets a
+          different mesh part.
+        \item Poloidal mesh and fields copied to GPU to avoid
+          communications in particle push.
+        \item Particles are owned by the part/process they reside in
+        \item Balancer monitors wall clock time and optimizes the
+          partition with a constraint on max particle count per process.
+          CHECK THIS pg 18
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.4\textwidth]{figures/xgcSpiralMesh.png} \\
+        \small{2D mesh of poloidal plane with radial 1D partitioning.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{XGC - Early Summit Results (CS Chang)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Strong Scaling vs Titan
+      \begin{itemize}
+        \item Up to 44\% of Summit
+        \item MPI + CUDA (electron push) + OpenACC (collision) + OpenMP
+        \item 25 times faster than Titan % HERE
+      \end{itemize}
+      CPU+GPU performance is 11 times faster than CPU only at 12,288 GPUs (2Ki
+      nodes)
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=\textwidth]{figures/xgcStrongScaling.png}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
