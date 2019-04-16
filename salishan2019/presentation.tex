@@ -392,7 +392,7 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{FUN3D - Finite volume CFD}
   Eric Nielsen and Aaron Walden at NASA Langley \\
-  Summit Early Science Project: ``Enabling Human Exploration of the Red Planet''
+  Summit ESP: ``Enabling Human Exploration of the Red Planet''
   \begin{columns}
     \begin{column}{0.5\textwidth}
       Goals
@@ -440,6 +440,29 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{XGC - PIC plasma fusion}
+  CS Chang, Princeton Plasma Physics Laboratory \\
+  Summit ESP: ``Using XGC to predict ITER’s boundary plasma performance and its impact on fusion efficiency''
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Models the whole-volume %, in contact w/ material wall, and  includes heat, momentum and particle sources
+      \begin{itemize}
+	\item Study non-Maxwellian plasma
+	\item Monte-Carlo neutral recycling with atomic data
+	\item Fully nonlinear Fokker-Planck collision operation
+	\item Multiple impurity species
+      \end{itemize}
+      Study overlapping multiscale, \\ % multi physics in space and time w/o the usual perturbative approach \\
+      Highly compute-intensive per simulation time step \\
+      Difficult edge geometry with magnetic %X-point and must scale well on leadership class computers
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.7\textwidth]{figures/xgcCase.png}
+      \end{figure}
+    \end{column}
+  \end{columns}
+
 \end{frame}
 
 \begin{frame}
