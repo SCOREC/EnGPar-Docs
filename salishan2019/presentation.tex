@@ -54,6 +54,23 @@ Rensselaer Polytechnic Institute
 %----------------------------------------------------------------------%
 %----------- Systems --------------------------------------------------%
 %----------------------------------------------------------------------%
+\begin{frame}
+  \frametitle{Load Balancing, Performance, and Scalability}
+  \begin{itemize}
+  \item Load Balancing - distributing work to maximize performance on a
+  given machine
+  \item Performance - time to solution
+  \item Scalability - efficiency with increase in computing power
+    \begin{itemize}
+    \item Weak - increase problem size with increase in computing power
+    \item Strong - fixed problem size as computing power increases
+    \end{itemize}
+  \item High performance procedures are not necessarily
+    scalable or portable
+  \item Scalable procedures are not necessarily portable
+  \end{itemize}
+\end{frame}
+
 \section{Manycore and Accelerated Systems}
 \begin{frame}
   \frametitle{Manycore and Accelerated Systems}
@@ -72,29 +89,12 @@ Rensselaer Polytechnic Institute
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Performance, Scalability, and Portability}
-  \begin{itemize}
-  \item Performance - time to solution
-  \item Scalability - efficiency with increase in computing power
-    \begin{itemize}
-    \item Weak - increase problem size with increase in computing power
-    \item String - fixed problem size as computing power increases
-    \end{itemize}
-  \item High performance procedures are not necessarily
-    scalable or portable
-  \item Scalable procedures are not necessarily portable
-  \end{itemize}
-\end{frame}
-
 %----------------------------------------------------------------------%
 %----------- Section --------------------------------------------------%
 %----------------------------------------------------------------------%
 \section{Partitioning and Load Balancing}
 \begin{frame}
   \frametitle{Motivation and Focus}
-  load balancing - distributing work to maximize performance or efficiency on a
-  given machine \\
   Many evolving distributed simulations have: \\
   \begin{itemize}
     \item Complex relational structures.
@@ -102,11 +102,13 @@ Rensselaer Polytechnic Institute
     \item Evolving imbalance of work. %Define Imbalance
     \item Multiple criteria that need balancing simultaneously.
   \end{itemize}
-  `Applications' - libraries composed into a single executable \\
-  Focused on bulk synchronus parallel applications \\
-  \small{\texttt{1. work 2. communicate 3. goto 1}} \\
-  \bigskip
-  Global runtime systems are a different beast, but some of this may apply.
+  Applications
+  \begin{itemize}
+    \item Libraries composed into a single executable
+    \item Focused on bulk synchronus parallel applications \\
+      {\small \texttt 1. work 2. communicate 3. goto 1}
+    \item Global runtime systems are a different beast... some of this may apply.
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -217,8 +219,8 @@ Rensselaer Polytechnic Institute
   \frametitle{Queue}
   \begin{figure}
     \centering
-    \includegraphics[width=.4\textwidth]{../accelerated_cse19/figures/2dTreeDepth.png}
-    \includegraphics[width=.41\textwidth]{../accelerated_cse19/figures/2dDistance.png}
+    \includegraphics[width=.3\textwidth]{../accelerated_cse19/figures/2dTreeDepth.png}
+    \includegraphics[width=.31\textwidth]{../accelerated_cse19/figures/2dDistance.png}
   \end{figure}
       (left) The distance from each vertex to the boundary and (right) the
     distance from the core vertex (marked with a zero near the
@@ -337,14 +339,25 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Summit Computing Hardware}
-  Focus on GPUs - provide 95\% of memory bandwidth and $>$ 99\% FLOPs
+  \textbf{Focus on GPUs; they provide 95\% of memory bandwidth and $>$ 99\% FLOPs}
   \begin{itemize}
-    \item 27,648 V100 - 7.5 DP FLOPS and 900 GB/s (peak)
-    \item 9,216 P9 - .5 DP FLOPS and 135 GB/s (peak)
-    \item V100 total - 207,360 DP FLOPS, 24,883,200 GB/s
-    \item P9 total - 4,608 DP FLOPS, 1,244,160 GB/s
-    \item P9/V100 - .3\% DP FLOPS, 5\% GB/s
+    \item 6 V100 and 2 P9 per node
+    \item 4,608 nodes $\rightarrow$ 27,648 V100 and 9,216 P9
   \end{itemize}
+  {
+  \begin{table}[]
+    \begin{tabular}{llll}
+      System     & Double Precision & Memory           \\
+                 & TeraFLOPs        & Bandwidth (GB/s) \\
+      V100       & 7.5              & 900              \\
+      P9         & 0.5 (.07\%)      & 135 (.15\%)      \\
+      V100 total & 207,360          & 24,833,200       \\
+      P9 total   & 4608             & 1,244,160       \\
+      \hline
+      P9/V100    & 0.3 \%           & 5 \%
+    \end{tabular}
+  \end{table}
+  }
   %from sc18-tutorial-pleiter.pdf
 \end{frame}
 
@@ -360,7 +373,7 @@ Rensselaer Polytechnic Institute
         \end{figure}
       \end{column}
     \begin{column}{0.7\textwidth}
-      \small {
+      { \small
       \begin{table}[]
         \begin{tabular}{llll}
           System              & Stream       & Network     & Stream/ \\
@@ -489,7 +502,7 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.5\textwidth}
       Strong Scaling vs Titan
       \begin{itemize}
-        \item Up to 44\% of Summit
+        \item Scaling runs using up to 44\% of Summit, 2048 nodes
         \item MPI + CUDA (electron push) + OpenACC (collision) + OpenMP
         \item 25 times faster than Titan % HERE
       \end{itemize}
