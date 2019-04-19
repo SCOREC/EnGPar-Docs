@@ -31,7 +31,7 @@
 
 \title[Load Balancing on Many-Core and Accelerated Systems]{
 
-Session 4:  Heterogeneous Applications: Maximizing Benefits While Minimizing Cost
+Session 4: Heterogeneous Applications: Maximizing Benefits While Minimizing Cost
 
 \textbf{Load Balancing on Many-Core and Accelerated Systems}
 }
@@ -312,25 +312,29 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Summit Computing Hardware}
-  \textbf{Focus on GPUs; they provide 95\% of memory bandwidth and $>$ 99\% FLOPs}
+  \textbf{Focus on GPUs; they provide 95\% of memory bandwidth and 98\% of FLOPs}
   \begin{itemize}
     \item 6 V100 and 2 P9 per node
     \item 4,608 nodes $\rightarrow$ 27,648 V100 and 9,216 P9
   \end{itemize}
   {
   \begin{table}[]
-    \begin{tabular}{llll}
-      System     & Double Precision & Memory           \\
-                 & TeraFLOPs        & Bandwidth (GB/s) \\
-      V100       & 7.5              & 900              \\
-      P9         & 0.5 (.07\%)      & 135 (.15\%)      \\
-      V100 total & 207,360          & 24,833,200       \\
-      P9 total   & 4608             & 1,244,160       \\
-      \hline
-      P9/V100    & 0.3 \%           & 5 \%
+    \begin{tabular}{lrr}
+      Processor   & Double Precision & Memory           \\
+                  & TeraFLOPs        & Bandwidth (GB/s) \\
+      V100        & 7.5              & 900              \\
+      P9          & 0.5              & 135       \\
+      P9/V100     & 7\%              & 15\% \\
+      \\
+      Full System &                  & \\
+      V100        & 207,360          & 24,833,200       \\
+      P9          & 4,608            & 1,244,160       \\
+      P9/V100     & 2\%              & 5\%
     \end{tabular}
   \end{table}
   }
+  % Summit GPUs: 207PF, 24 PB/s
+  % Summit P9s:  4.6PF, 1 PB/s
   %from sc18-tutorial-pleiter.pdf
 \end{frame}
 
@@ -348,10 +352,10 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.7\textwidth}
       { \small
       \begin{table}[]
-        \begin{tabular}{llll}
+        \begin{tabular}{lrrr}
           System              & Stream       & Network     & Stream/ \\
                               & Triad (GB/s) & Peak (GB/s) & Network \\
-          Summit (inter-node) & 5130         & 25          & 205     \\
+          Summit (inter-node) & 5,130         & 25          & 205     \\
           Summit (intra-node) & 855          & 50          & 17      \\
           Stampede2           & 194          & 12          & 17      \\
           Mira                & 27           & 20          & 1.4
