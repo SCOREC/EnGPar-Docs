@@ -426,11 +426,12 @@ Rensselaer Polytechnic Institute
         \item ParMETIS: mesh vertices $\rightarrow$ graph nodes, 
           mesh edges $\rightarrow$ graph edges
         \item Mesh vertices hold DOFs
+        \item EnGPar is integrated and being tested
       \end{itemize}
       Weak Scaling - nearly linear
       \begin{itemize}
-        \item 12.8M vertices per node
-        \item 1024 nodes: 13.2B vertices (58B elements)
+        \item 12.8M vertices per node. 13.2B vertices (58B elements) at 1024
+          nodes.
         \item GPU: MPI+CUDA, 3 ranks/socket, MPI via GPUDirect
         \item CPU: MPI+OpenMP, ranks/socket, 168 threads per node (SMT4)
       \end{itemize}
@@ -521,7 +522,7 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{XGC Developments at SCOREC ?BETTER TITLE?}
+  \frametitle{XGC - Ongoing Developments}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       Developing tools for unstructured mesh PIC
@@ -547,7 +548,7 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{MFEM Laghos - High-order Compressible Gas Dynamics}
+  \frametitle{MFEM Laghos MiniApp - High-order Compressible Gas Dynamics}
   Tzanio Kolev and Vladimir Tomov, Lawrence Livermore National Laboratory \\
   DOE Exascale Computing Project: The Center for Efficient Exascale Discretizations (CEED)
   \begin{columns}
@@ -574,44 +575,70 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{MFEM Laghos Sedov Blast - Partitioning Approach (T. Kolev, V. Tomov)}
+  \frametitle{MFEM Laghos MiniApp - Partitioning Approach (T. Kolev, V. Tomov)}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{itemize}
-	\item One process per GPU
+	\item One MPI process per GPU
         \item Initial partition with METIS
         \item Non-conforming adaptive mesh refinement (AMR) version using space
-          filling curves ADD FIGURE
+          filling curves
+        \item GPU porting of computationally dominant functions in AMR version is underway
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \includegraphics[width=0.7\textwidth]{figures/sedov_amr_900.png} \\
-      \includegraphics[width=0.7\textwidth]{figures/sedov_amr_2463.png} \\
-      \small{Sedov AMR at steps 900 and 2463.}
+      \centering
+      \includegraphics[width=0.3\textwidth]{figures/sedov-amr-900.png}
+      \includegraphics[width=0.3\textwidth]{figures/sedov-amr-2463.png} \\
+      \small{Sedov AMR at steps 900 and 2463.} \\
+      \includegraphics[width=0.9\textwidth]{{figures/sedov_animation_t8.19}.jpg} \\
+      \small{Sedov AMR mesh (left) and partition (right) with space filling curves.}
     \end{column}
   \end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{MFEM Laghos Sedov Blast - Early Sierra Results (V. Tomov)}
+  \frametitle{MFEM Laghos MiniApp - Early Sierra Results (T. Kolev, V. Tomov)}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      Goals
       \begin{itemize}
-	\item Help applications leverage future architectures by providing them high
-          order unstructured mesh methods.
-        \item Collaborate with hardware vendors and software projects to guide
-          the design of upcoming exascale systems.
+        \item 3rd order velocity and position (continuous kinematic), 2nd order internal
+          energy (discontinuous thermodynamic) finite elements (Q3Q2)
+        \item Mesh vertex repositioning without AMR
+        \item Four GPUs/node with one MPI process/GPU
+        \item More than 256K elements ('zones') required for
+          scaling to ~30 GPUs, 16M elements required for 1024 GPUs
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
-      \includegraphics[width=0.7\textwidth]{figures/laghos_strong_Q3Q2_sierra_cws.png} \\
-      \small{Strong scaling for Laghos on Sierra, pure CUDA version, four GPUs/node,
-      one MPI process/GPU, Q3Q2 (3rd order velocity and position, 2nd order
-      internal energy) finite elements.
+      \includegraphics[width=\textwidth]{figures/laghos_strong_Q3Q2_sierra_cws.png} \\
+      \small{Strong scaling for Laghos on Sierra of pure CUDA version.
       A zone is a mesh element.}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}
+
+  \frametitle{MFEM Laghos MiniApp - Next Steps for Load Balancing AMR}
+  Task Mapping
+  \begin{itemize}
+    \item Ensure proceses that are assigned to the same node share domain data
+    \item Zoltan2 (Karen Devine, SNL) geometric methods support the mapping of
+      the network partition to the domain partition
+  \end{itemize}
+  SFC
+  \begin{itemize}
+    \item Implement on-node balancer to avoid inter-node communications
+    \item As needed, run global balancer when execution cost on
+      imbalanced mesh is factors more than the cost to fix the imbalance
+  \end{itemize}
+  EnGPar
+  \begin{itemize}
+    \item Integrate EnGPar w/MFEM - similar interface as (Par)METIS
+    \item Complete acceleration of critical EnGPar procedures - initial work
+      completed with Kokkos
+  \end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -621,29 +648,15 @@ Rensselaer Polytechnic Institute
     \item Quickly reduces the high secondary imbalances on up to 512Ki parts
     \item Maintains edge cut and primary imbalances
   \end{itemize}
-  Acceleration tests indicate:
-  \begin{itemize}
-    \item On track for on-device selection
-    \item Use graph construction techniques to support on-device graph rebuilds for migration
-    \item High performance FPGA graph processing circuits can be defined at the expense of additional memory
-  \end{itemize}
-  Inter-GPU Data movement is killer, mitigate costs by
+  Inter-GPU data movement is expensive. Some possible mitigations:
   \begin{itemize}
     \item placing processes near those they share domain data with
+    \item balancing within each node before addressing inter-node imbalance
     \item optimizing partitions for communication, possibly sacrificing load imbalance
     \item buffering and compressing messages
     \item overlapping communication with computation
     \item predictively load balancing
     \item ghosting mesh in host memory
-    \item partition to each node optimizing for communication and then partition
-      within the node optimizing for work balance.
-  \end{itemize}
-  Applying EnGPar to applications:
-  \begin{itemize}
-    \item MFEM-Laghos - high-order unstructured for time dependent compressible gas dynamics. \url{github.com/CEED/Laghos}
-    \item XGCM - unstructured mesh based particle in cell plasma physics \url{epsi.pppl.gov/computing/xgc-1}
-    \item FUN3D - a computational fluid dynamic simulation using a vertex-based partitioned mesh. \url{fun3d.larc.nasa.gov}
-    \item PHASTA - massively parallel computational fluid dynamics. \url{github.com/PHASTA/phasta}
   \end{itemize}
 \end{frame}
 
