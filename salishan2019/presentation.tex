@@ -147,19 +147,6 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Software}
-  EnGPar's source can be found at \url{scorec.github.io/EnGPar/}.
-  \begin{itemize}
-  \item Written in C++ using MPI and Kokkos.
-  \item Provides C/C++ and FORTRAN APIs.
-  \item Uses PCU for sparse neighborhood exchange peer to peer communications.
-    \begin{itemize}
-      \item Found at \url{github.com/SCOREC/core/tree/master/pcu}
-      \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
   \frametitle{Mapping application data to EnGPar}
   %Before using EnGPar a simulation must first map its data to the N-graph
   To map to EnGPar, applications must:
@@ -199,20 +186,6 @@ Rensselaer Polytechnic Institute
       \EndProcedure
     \end{algorithmic}
   \end{algorithm}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Queue}
-  The queue provides an ordering of the (hyper)edges on the part boundary for selection.\\
-  \medskip
-  This is done in two steps:
-  \begin{itemize}
-  \item A breadth-first traversal starting at the part boundary to determine the furthest (hyper)edges as the center of the part.
-  \item A breadth-first traversal starting at the center (hyper)edges to compute topological distance for each (hyper)edge on the part boundary.
-  \end{itemize}
-  When parts are not fully connected, this operation is performed on each component separately. \\
-  \medskip
-  The queue is then ordered with shallowest components before deeper components.
 \end{frame}
 
 \begin{frame}
