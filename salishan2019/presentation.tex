@@ -469,28 +469,30 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{XGC - Partitioning Approach}
+  \frametitle{XGC - Partitioning Approach (CS Chang)}
   \begin{columns}
     \begin{column}{0.5\textwidth}
-      Partitioning Approach
       %https://scorec.rpi.edu/~shephard/some%20fusion%20stuff/xgc-book-chapter.pdf
+      %https://cug.org/proceedings/cug2016_proceedings/includes/files/pap178s2-file2.pdf
       \begin{itemize}
-        \item Radial 1D partition of 2D poloidal mesh vertices used for field solve
-        \item Processes assigned to a polodial plane, each process gets a
-          different mesh part.
-        \item Poloidal mesh and fields copied to GPU to avoid
-          communications in particle push.
+        \item Each process has entire copy of 2D poloidal mesh, mesh repeated N
+          times in the toroidal direction
+        \item Radial 1D partition of poloidal mesh vertices used for push and collision
+        \item Each plane has a set of processes working on it, each process is
+          assigned a different part
         \item Particles are owned by the part/process they reside in
-        \item Balancer monitors wall clock time and optimizes the
-          partition with a constraint on max particle count per process.
-          CHECK THIS pg 18
+        \item Load balancer monitors wall clock time of push and collision steps
+          and uses a Golden Section Search to minimize the time as a function of
+          the the max particle count per process
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=.4\textwidth]{figures/xgcSpiralMesh.png} \\
-        \small{2D mesh of poloidal plane with radial 1D partitioning.}
+        \includegraphics[width=.5\textwidth]{figures/xgcTokamakSimulation.png} \\
+        \small{3D tokamak simulation.  2 poloidal planes shown.}
+        \includegraphics[width=.85\textwidth]{figures/xgcMeshDistribution.png} \\
+        \small{2D mesh and process groups.}
       \end{figure}
     \end{column}
   \end{columns}
@@ -519,7 +521,64 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
+  \frametitle{XGC Developments at SCOREC ?BETTER TITLE?}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Developing tools for unstructured mesh PIC
+      \begin{itemize}
+        \item Extending ECP COPA Cabana (Kokkos) - per element particle grouping 
+          inspired by Sell-C-$\sigma$ rotated and padded CSR-like structure
+        \item Distributed mesh with `safe' zones to avoid communication during
+          push
+        \item Bulk communication protocol that accounts for `safe' zones
+        \item Particle load balancing with EnGPar
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.6\textwidth]{figures/sellCSigma.png}\\
+        \small{Sell-C-$\sigma$ data structure.} \smallskip \\
+        \includegraphics[width=.4\textwidth]{figures/rfMesh.png}\\
+        \small{Unstructured 3D mesh of RF model.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
   \frametitle{MFEM Laghos - High-order compressible gas dynamics}
+  Tzanio Kolev and Vladimir Tomov, Lawrence Livermore National Laboratory \\
+  The Center for Efficient Exascale Discretizations (CEED) is a co-design center
+  within the DOE  Exascale Computing Project (ECP)
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Goals
+      \begin{itemize}
+	\item Help applications leverage future architectures by providing them high
+          order unstructured mesh methods.
+        \item Collaborate with hardware vendors and software projects to guide
+          the design of upcoming exascale systems.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.7\textwidth]{figures/laghosShockTriplePt.png} \\
+        \tiny{The Laghos miniapp solves the time-dependent Euler equation of compressible gas
+        dynamics in a moving Lagrangian frame using high-order finite element
+        spatial discretization and explicit high-order time-stepping.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MFEM Laghos - Early Sierra results (V. Tomov)}
+  \includegraphics[width=0.4\textwidth]{figures/blast_3D_rates.png} \\
+  Strong scaling for the Triple Point problem in BLAST.
+  Both plots compare partial assembly (PA) vs full assembly (FA).
+  PA wins for orders above 2.
 \end{frame}
 
 \begin{frame}
