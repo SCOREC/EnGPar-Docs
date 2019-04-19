@@ -95,43 +95,73 @@ Rensselaer Polytechnic Institute
 \section{Partitioning and Load Balancing}
 \begin{frame}
   \frametitle{Motivation and Focus}
-  Many evolving distributed simulations have: \\
-  \begin{itemize}
-    \item Complex relational structures.
-    \item Irregular forms of computational and communication costs.
-    \item Evolving imbalance of work. %Define Imbalance
-    \item Multiple criteria that need balancing simultaneously.
-  \end{itemize}
-  Applications
-  \begin{itemize}
-    \item Libraries composed into a single executable
-    \item Focused on bulk synchronus parallel applications \\
-      {\small \texttt (1) work (2) communicate (3) goto 1}
-    \item Global runtime systems are a different beast... some of this may apply.
-  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.7\textwidth}
+      Many evolving distributed simulations have: \\
+      \begin{itemize}
+        \item Complex relational structures.
+        \item Irregular forms of computational and communication costs.
+        \item Evolving imbalance of work. %Define Imbalance
+        \item Multiple criteria that need balancing simultaneously.
+      \end{itemize}
+      Applications
+      \begin{itemize}
+        \item Libraries composed into a single executable
+        \item Bulk synchronus parallel execution \\
+          {\small \texttt (1) work (2) communicate (3) goto 1}
+        \item Global runtime systems are a different beast... some of this may apply.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.75\textwidth]{figures/xgcCase.png} \\
+        \includegraphics[width=.75\textwidth]{figures/laghos_sedov.png}\\
+        \tiny{XGC fusion plasma physics (top) and MFEM Laghos Sedov blast
+        (bottom)}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
   \frametitle{Common Methods for Partitioning}
-  \begin{itemize}
-  \item Multilevel Graph Methods %Discuss poor scaling
-    \begin{itemize}
-    \item ParMETIS
-    \item Zoltan
-    \end{itemize}
-  \item Geometric Methods %Require coordinates
-    \begin{itemize}
-    \item Recursive Coordinate Bisection (RCB)
-    \item Recursive Inertial Bisection (RIB)
-    \item Multi-Jagged
-    \end{itemize}
-  \item Diffusive Methods %Improve a partition efficiently
-    \begin{itemize}
-    \item Label Propagation
-%    \item ParMA
-%    \item EnGPar
-    \end{itemize}
-  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}
+        \item Multilevel Graph Methods %Discuss poor scaling
+          \begin{itemize}
+            \item ParMETIS
+            \item Zoltan
+          \end{itemize}
+        \item Geometric Methods %Require coordinates
+          \begin{itemize}
+            \item Recursive Coordinate Bisection (RCB)
+            \item Recursive Inertial Bisection (RIB)
+            \item Multi-Jagged
+          \end{itemize}
+        \item Diffusive Methods %Improve a partition efficiently
+          \begin{itemize}
+            \item Label Propagation
+            \item ParMA and EnGPar
+          \end{itemize}
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.32\textwidth]{figures/mitchellMesh.png}
+        \includegraphics[width=.32\textwidth]{figures/mitchellHSFC.png}
+        \includegraphics[width=.32\textwidth]{figures/mitchellRCB.png} \\
+        \includegraphics[width=.32\textwidth]{figures/mitchellRIB.png}
+        \includegraphics[width=.32\textwidth]{figures/mitchellParmetis.png} \\
+        \small{Top to bottom, left to right: mesh, space filling curve,
+        coordinate bisection, inertial bisection, multi-level k-way.} \\
+        \tiny{``A refinement-tree based partitioning method for dynamic load
+        balancing with adaptively refined grids'', William F. Mitchell}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \section{EnGPar - a graph based diffusive load balancer}
