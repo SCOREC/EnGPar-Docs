@@ -547,10 +547,9 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{MFEM Laghos - High-order compressible gas dynamics}
+  \frametitle{MFEM Laghos - High-order Compressible Gas Dynamics}
   Tzanio Kolev and Vladimir Tomov, Lawrence Livermore National Laboratory \\
-  The Center for Efficient Exascale Discretizations (CEED) is a co-design center
-  within the DOE  Exascale Computing Project (ECP)
+  DOE Exascale Computing Project: The Center for Efficient Exascale Discretizations (CEED)
   \begin{columns}
     \begin{column}{0.5\textwidth}
       Goals
@@ -564,21 +563,55 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=.7\textwidth]{figures/laghosShockTriplePt.png} \\
-        \tiny{The Laghos miniapp solves the time-dependent Euler equation of compressible gas
-        dynamics in a moving Lagrangian frame using high-order finite element
-        spatial discretization and explicit high-order time-stepping.}
+        \includegraphics[width=.7\textwidth]{figures/laghos_sedov.png} \\
+        \tiny{The Laghos miniapp's Sedov blast wave problem.  Laghos solves the
+        time-dependent Euler equation of compressible gas dynamics in a moving
+        Lagrangian frame using high-order finite element spatial discretization
+        and explicit high-order time-stepping.}
       \end{figure}
     \end{column}
   \end{columns}
 \end{frame}
 
 \begin{frame}
-  \frametitle{MFEM Laghos - Early Sierra results (V. Tomov)}
-  \includegraphics[width=0.4\textwidth]{figures/blast_3D_rates.png} \\
-  Strong scaling for the Triple Point problem in BLAST.
-  Both plots compare partial assembly (PA) vs full assembly (FA).
-  PA wins for orders above 2.
+  \frametitle{MFEM Laghos Sedov Blast - Partitioning Approach (T. Kolev, V. Tomov)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+	\item One process per GPU
+        \item Initial partition with METIS
+        \item Non-conforming adaptive mesh refinement (AMR) version using space
+          filling curves ADD FIGURE
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=0.7\textwidth]{figures/sedov_amr_900.png} \\
+      \includegraphics[width=0.7\textwidth]{figures/sedov_amr_2463.png} \\
+      \small{Sedov AMR at steps 900 and 2463.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MFEM Laghos Sedov Blast - Early Sierra Results (V. Tomov)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Goals
+      \begin{itemize}
+	\item Help applications leverage future architectures by providing them high
+          order unstructured mesh methods.
+        \item Collaborate with hardware vendors and software projects to guide
+          the design of upcoming exascale systems.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=0.7\textwidth]{figures/laghos_strong_Q3Q2_sierra_cws.png} \\
+      \small{Strong scaling for Laghos on Sierra, pure CUDA version, four GPUs/node,
+      one MPI process/GPU, Q3Q2 (3rd order velocity and position, 2nd order
+      internal energy) finite elements.
+      A zone is a mesh element.}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
