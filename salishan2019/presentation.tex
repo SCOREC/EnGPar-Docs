@@ -57,18 +57,26 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Load Balancing, Performance, and Scalability}
   \begin{itemize}
-  \item Load Balancing - distributing work to maximize performance on a
+  \item Load Balancing and Partitioning - distributing work to maximize performance on a
   given machine
   \item Performance - time to solution
+  \begin{itemize}
+    \item local - serial, vectorized, threaded, or data parallel procedures on
+      many-core processor or accelerator
+    \item global - local operations + coordination/synchronization procedures
+  \end{itemize}
   \item Scalability - efficiency with increase in computing power
     \begin{itemize}
     \item Weak - increase problem size with increase in computing power
     \item Strong - fixed problem size as computing power increases
     \end{itemize}
   \item High performance procedures are not necessarily
-    scalable or portable
+    scalable or portable (some parameter tuning, no algorithm changes
+      required to get acceptable performance [1])
   \item Scalable procedures are not necessarily portable
   \end{itemize}
+  \bigskip
+  \tiny{[1] \url{https://performanceportability.org/perfport/definition/}}
 \end{frame}
 
 \section{Manycore and Accelerated Systems}
@@ -85,7 +93,8 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item Host processor - dispatches accelerator work, facilitates
       communications, OS iteractions
-    \item Accelerator - does 90\% of the work
+    \item Accelerator - provides most of the computing power \\
+      e.g.) Summit has 95\% of memory bandwidth and 98\% of FLOPs
   \end{itemize}
 \end{frame}
 
@@ -97,19 +106,22 @@ Rensselaer Polytechnic Institute
   \frametitle{Motivation and Focus}
   \begin{columns}
     \begin{column}{0.7\textwidth}
-      Many evolving distributed simulations have: \\
+      Simulating systems with regions of physical interest that change.\\
+      \smallskip
+      Many evolving distributed simulations have one or more of the following
+      characteristics that make scaling and achieving performance difficult. \\
       \begin{itemize}
         \item Complex relational structures.
         \item Irregular forms of computational and communication costs.
-        \item Evolving imbalance of work. %Define Imbalance
-        \item Multiple criteria that need balancing simultaneously.
+        \item Evolving imbalance of work characterized by multiple criteria.
       \end{itemize}
-      Applications
+
+      Evolving simulations we focus have:
       \begin{itemize}
-        \item Libraries composed into a single executable
-        \item Bulk synchronus parallel execution \\
+        \item Single executable built from library APIs - using in-memory
+          interactions
+        \item Bulk synchronus parallel execution model\\
           {\small \texttt (1) work (2) communicate (3) goto 1}
-        \item Global runtime systems are a different beast... some of this may apply.
       \end{itemize}
     \end{column}
     \begin{column}{0.3\textwidth}
@@ -165,6 +177,10 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \section{EnGPar - a graph based diffusive load balancer}
+\begin{frame}
+  \frametitle{}
+  \center \huge{EnGPar: One Approach to Partition Control}
+\end{frame}
 
 \begin{frame}
   \frametitle{What is EnGPar?}
@@ -250,7 +266,7 @@ Rensselaer Polytechnic Institute
   \bigskip
   EnGPar first balances the DOF holders and then the secondary entity.
   target imbalance of 1.05. \\
-  The imbalance of a given type (vtx, edge, face, or region) is defined as the 
+  The imbalance of a given type (vtx, edge, face, or region) is defined as the
   max part weight divided by the avg part weight.
 \end{frame}
 
@@ -291,7 +307,7 @@ Rensselaer Polytechnic Institute
     \includegraphics[width=.49\textwidth]{../accelerated_cse19/figures/elmPtn_elmImb.png} \\
     Mesh vertex imbalances is reduced from 13\% to 5\% for 128Ki, 18\% to 5\% for
     256Ki, and 53\% to 6\% for 512Ki.  Edge cut is increased by 1\%.
-  \end{figure}  
+  \end{figure}
 \end{frame}
 
 \begin{frame}
@@ -330,7 +346,7 @@ Rensselaer Polytechnic Institute
     \includegraphics[width=.48\textwidth]{../accelerated_cse19/figures/ecut_v_cores.eps}\\
     Tuning the edge cut metric maintains the ParMETIS edge cut while reducing the
     edge imbalance by up to 5\%.
-  \end{figure}  
+  \end{figure}
 \end{frame}
 
 \section{Load Balancing On Accelerated Systems}
@@ -398,7 +414,7 @@ Rensselaer Polytechnic Institute
   %Mira network ref: PAMI: A Parallel Active Message Interface for the Blue Gene/Q Supercomputer
   %Mira stream triad ref: Bob Walkup "Application Performance Characterization and Analysis on Blue Gene/Q"
   %On a Skylake cluster like Stampede2 the ratio is in the range of 250:1 (~3 TFDP for two socket
-  % skylake https://colfaxresearch.com/xeon-2017/ and 
+  % skylake https://colfaxresearch.com/xeon-2017/ and
   % 12GB/s Omnipath https://portal.tacc.utexas.edu/user-guides/stampede2#overview-network)
   % SKX stream triad: "TACC Technical Report TR-17-01 Benchmarking the Intel Xeon Platinum 8160 Processor"
 \end{frame}
@@ -430,7 +446,7 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.5\textwidth}
       Partitioning Approach
       \begin{itemize}
-        \item ParMETIS: mesh vertices $\rightarrow$ graph nodes, 
+        \item ParMETIS: mesh vertices $\rightarrow$ graph nodes,
           mesh edges $\rightarrow$ graph edges
         \item Mesh vertices hold DOFs
         \item EnGPar is integrated and being tested
@@ -469,7 +485,7 @@ Rensselaer Polytechnic Institute
       \begin{figure}
         \centering
         \includegraphics[width=.7\textwidth]{figures/xgcCase.png} \\
-        \tiny{DIII-D Geometry: Boundary turbulence saturates 
+        \tiny{DIII-D Geometry: Boundary turbulence saturates
         in $<$ 0.1ms, core turbulence in a few ms.}
       \end{figure}
     \end{column}
@@ -534,7 +550,7 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.5\textwidth}
       Developing tools for unstructured mesh PIC
       \begin{itemize}
-        \item Extending ECP COPA Cabana (Kokkos) - per element particle grouping 
+        \item Extending ECP COPA Cabana (Kokkos) - per element particle grouping
           inspired by Sell-C-$\sigma$ rotated and padded CSR-like structure
         \item Distributed mesh with `safe' zones to avoid communication during
           push
@@ -659,7 +675,7 @@ Rensselaer Polytechnic Institute
   \begin{itemize}
     \item placing processes near those they share domain data with
     \item balancing within each node before addressing inter-node imbalance
-    \item optimizing partitions for communication, possibly sacrificing load imbalance
+    \item optimizing partitions for communication, possibly sacrificing load balance
     \item buffering and compressing messages
     \item overlapping communication with computation
     \item predictively load balancing
