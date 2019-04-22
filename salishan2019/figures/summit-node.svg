@@ -16,8 +16,8 @@
    height="902.12872"
    viewBox="0 0 673.00855 902.12872"
    sodipodi:docname="summit-node.svg"
-   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
-   inkscape:export-filename="/users/cwsmith/Projects/engpar-docs/salishan2019/figures/summit-node.png"
+   inkscape:version="0.91 r13725"
+   inkscape:export-filename="/Users/cwsmith/Documents/engpar-docs/salishan2019/figures/summit-node.png"
    inkscape:export-xdpi="199.98558"
    inkscape:export-ydpi="199.98558">
   <metadata
@@ -393,13 +393,13 @@
      inkscape:window-height="2039"
      id="namedview4"
      showgrid="false"
-     inkscape:zoom="1.29"
-     inkscape:cx="335.72909"
-     inkscape:cy="450.67677"
+     inkscape:zoom="1.8243355"
+     inkscape:cx="430.61502"
+     inkscape:cy="851.3244"
      inkscape:window-x="0"
      inkscape:window-y="40"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg2"
+     inkscape:current-layer="g1962"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -427,7 +427,7 @@
      id="g1962"
      transform="translate(37.017381,46.761986)">
     <flowRoot
-       transform="translate(195.82419,-198.5895)"
+       transform="translate(197.82419,-198.5895)"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="flowRoot817-3"
        xml:space="preserve"><flowRegion
@@ -441,16 +441,27 @@
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path849"
-       d="M 494.40525,103.56035 H 593.698"
+       d="m 500.40525,103.56035 99.29275,0"
        style="fill:none;fill-rule:evenodd;stroke:#538135;stroke-width:2.4000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:url(#Arrow2Lend)" />
     <rect
-       y="80.469017"
-       x="470.15936"
-       height="87.74707"
-       width="157.02107"
+       y="42.579361"
+       x="470.40164"
+       height="125.39444"
+       width="158.72906"
        id="rect4771"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#080808;stroke-width:2.4000001;stroke-miterlimit:4;stroke-dasharray:7.20000029, 7.20000029;stroke-dashoffset:0;stroke-opacity:1" />
-  </g>
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#080808;stroke-width:2.88458514;stroke-miterlimit:4;stroke-dasharray:8.65375495, 8.65375495;stroke-dashoffset:0;stroke-opacity:1" />
+    <flowRoot
+       transform="translate(194.3909,-270.90107)"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       id="flowRoot817-3-6"
+       xml:space="preserve"><flowRegion
+         id="flowRegion819-6-7"><rect
+           y="315.53864"
+           x="280.55972"
+           height="48.49181"
+           width="150.09369"
+           id="rect821-7-5" /></flowRegion><flowPara
+         id="flowPara823-5-6">NVLINK</flowPara></flowRoot>  </g>
   <rect
      style="opacity:1;fill:none;fill-opacity:1;stroke:#080808;stroke-width:2.4000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
      id="rect4773"
