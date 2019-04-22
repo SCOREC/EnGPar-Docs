@@ -86,14 +86,14 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.7\textwidth}
       Manycore Node
       \begin{itemize}
-        \item Many homogenous cores provide all the computing power
+        \item Many homogeneous cores provide all the computing power
         \item Each core can access filesystem and network
         \item Possibly multiple NUMA domains
       \end{itemize}
       Accelerated Node
       \begin{itemize}
         \item Host processor - dispatches accelerator work, facilitates
-          communications, OS iteractions
+          communications, OS interactions
         \item Accelerator - provides most of the computing power \\
           e.g.) Summit has 95\% of memory bandwidth and 98\% of FLOPs
       \end{itemize}
@@ -217,7 +217,7 @@ Rensselaer Polytechnic Institute
       \begin{itemize}
         \item Single executable built from library APIs - using in-memory
           interactions
-        \item Bulk synchronus parallel execution model\\
+        \item Bulk synchronous parallel execution model\\
           {\small \texttt (1) work (2) communicate (3) goto 1}
       \end{itemize}
     \end{column}
@@ -499,22 +499,20 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{MFEM Laghos MiniApp - Next Steps for Load Balancing AMR}
+  \frametitle{MFEM Laghos MiniApp - Next Steps for Load Balancing}
   Task Mapping
   \begin{itemize}
     \item Ensure proceses that are assigned to the same node share domain data
     \item Zoltan2 (Karen Devine, SNL) geometric methods support the mapping of
       the network partition to the domain partition
   \end{itemize}
-  SFC
-  \begin{itemize}
-    \item Implement on-node balancer to avoid inter-node communications
-    \item As needed, run global balancer when execution cost on
-      imbalanced mesh is factors more than the cost to fix the imbalance
-  \end{itemize}
   EnGPar
   \begin{itemize}
-    \item Integrate EnGPar w/MFEM - similar interface as (Par)METIS
+    \item Integrate EnGPar w/MFEM
+    \item Predictive balancing prior to mesh adaptation to (1) avoid memory 
+      exhaustion and (2) create a post adaptation partition w/ acceptable imbalance
+    \item Tune post adapt partition to (1) minimize induced communications between
+      nodes and (2) reduce work imbalance
     \item Complete acceleration of critical EnGPar procedures - initial work
       completed with Kokkos
   \end{itemize}
@@ -618,7 +616,7 @@ Rensselaer Polytechnic Institute
         \item Particles are owned by the part/process they reside in
         \item Load balancer monitors wall clock time of push and collision steps
           and uses a Golden Section Search to minimize the time as a function of
-          the the max particle count per process
+          the max particle count per process
       \end{itemize}
     \end{column}
     \begin{column}{0.5\textwidth}
@@ -682,21 +680,25 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Closing Remarks and Future Work}
+  \frametitle{Closing Remarks}
   MPI tests show that EnGPar:
   \begin{itemize}
     \item Quickly reduces the high secondary imbalances on up to 512Ki parts
     \item Maintains edge cut and primary imbalances
   \end{itemize}
-  Inter-GPU data movement is expensive. Some possible mitigations:
+  Inter-GPU data movement is expensive. Some possible load balancing mitigations:
   \begin{itemize}
-    \item placing processes near those they share domain data with
-    \item balancing within each node before addressing inter-node imbalance
-    \item optimizing partitions for communication, possibly sacrificing load balance
-    \item buffering and compressing messages
-    \item overlapping communication with computation
-    \item predictively load balancing
-    \item ghosting mesh in host memory
+    \item Placing processes near those they share domain data with
+    \item Optimizing partitions for communication, possibly sacrificing load balance
+    \item Predictively load balancing
+  \end{itemize}
+  Suppose we had a processor with multiple specialized accelerators
+  (e.g., compression, fft, spmv, graph traversal, encryption, etc...)
+  \begin{itemize}
+    \item Will OpenMP, OpenCL, Kokkos, Raja, etc.. work effectively?
+    \item Can the current application code be refactored or will major pieces
+      require a rewrite?
+    \item Can we still use message passing to coordinate nodes?
   \end{itemize}
 \end{frame}
 
