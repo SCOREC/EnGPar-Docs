@@ -424,7 +424,105 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{}
-  \center \huge{Load Balancing On Accelerated Systems}
+  \center \huge{Balancing High-order Adaptive Finite Elements}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MFEM Laghos MiniApp - High-order Compressible Gas Dynamics}
+  Tzanio Kolev and Vladimir Tomov, Lawrence Livermore National Laboratory \\
+  DOE Exascale Computing Project: The Center for Efficient Exascale Discretizations (CEED)
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Goals
+      \begin{itemize}
+	\item Help applications leverage future architectures by providing them high
+          order unstructured mesh methods.
+        \item Collaborate with hardware vendors and software projects to guide
+          the design of upcoming exascale systems.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=.7\textwidth]{figures/laghos_sedov.png} \\
+        \tiny{The Laghos miniapp's Sedov blast wave problem.  Laghos solves the
+        time-dependent Euler equation of compressible gas dynamics in a moving
+        Lagrangian frame using high-order finite element spatial discretization
+        and explicit high-order time-stepping.}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MFEM Laghos MiniApp - Partitioning Approach (T. Kolev, V. Tomov)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+	\item One MPI process per GPU
+        \item Initial partition with METIS
+        \item Non-conforming adaptive mesh refinement (AMR) version using space
+          filling curves
+        \item GPU porting of computationally dominant functions in AMR version is underway
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=0.3\textwidth]{figures/sedov-amr-900.png}
+      \includegraphics[width=0.3\textwidth]{figures/sedov-amr-2463.png} \\
+      \small{Sedov AMR at steps 900 and 2463.} \\
+      \includegraphics[width=0.9\textwidth]{{figures/sedov_animation_t8.19}.jpg} \\
+      \small{Sedov AMR mesh (left) and partition (right) with space filling curves.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MFEM Laghos MiniApp - Early Sierra Results (T. Kolev, V. Tomov)}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item 3rd order velocity and position (continuous kinematic), 2nd order internal
+          energy (discontinuous thermodynamic) finite elements (Q3Q2)
+        \item Mesh vertex repositioning without AMR
+        \item Four GPUs/node with one MPI process/GPU
+        \item More than 256K elements ('zones') required for
+          scaling to ~30 GPUs, 16M elements required for 1024 GPUs
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \includegraphics[width=\textwidth]{figures/laghos_strong_Q3Q2_sierra_cws.png} \\
+      \small{Strong scaling for Laghos on Sierra of pure CUDA version.
+      A zone is a mesh element.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{MFEM Laghos MiniApp - Next Steps for Load Balancing AMR}
+  Task Mapping
+  \begin{itemize}
+    \item Ensure proceses that are assigned to the same node share domain data
+    \item Zoltan2 (Karen Devine, SNL) geometric methods support the mapping of
+      the network partition to the domain partition
+  \end{itemize}
+  SFC
+  \begin{itemize}
+    \item Implement on-node balancer to avoid inter-node communications
+    \item As needed, run global balancer when execution cost on
+      imbalanced mesh is factors more than the cost to fix the imbalance
+  \end{itemize}
+  EnGPar
+  \begin{itemize}
+    \item Integrate EnGPar w/MFEM - similar interface as (Par)METIS
+    \item Complete acceleration of critical EnGPar procedures - initial work
+      completed with Kokkos
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{}
+  \center \huge{Balancing Finite Volume CFD}
 \end{frame}
 
 \begin{frame}
@@ -475,6 +573,11 @@ Rensselaer Polytechnic Institute
       \end{figure}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}
+  \frametitle{}
+  \center \huge{Balancing Unstructured Mesh Particle-in-Cell}
 \end{frame}
 
 \begin{frame}
@@ -576,100 +679,6 @@ Rensselaer Polytechnic Institute
       \end{figure}
     \end{column}
   \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{MFEM Laghos MiniApp - High-order Compressible Gas Dynamics}
-  Tzanio Kolev and Vladimir Tomov, Lawrence Livermore National Laboratory \\
-  DOE Exascale Computing Project: The Center for Efficient Exascale Discretizations (CEED)
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      Goals
-      \begin{itemize}
-	\item Help applications leverage future architectures by providing them high
-          order unstructured mesh methods.
-        \item Collaborate with hardware vendors and software projects to guide
-          the design of upcoming exascale systems.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \begin{figure}
-        \centering
-        \includegraphics[width=.7\textwidth]{figures/laghos_sedov.png} \\
-        \tiny{The Laghos miniapp's Sedov blast wave problem.  Laghos solves the
-        time-dependent Euler equation of compressible gas dynamics in a moving
-        Lagrangian frame using high-order finite element spatial discretization
-        and explicit high-order time-stepping.}
-      \end{figure}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{MFEM Laghos MiniApp - Partitioning Approach (T. Kolev, V. Tomov)}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-	\item One MPI process per GPU
-        \item Initial partition with METIS
-        \item Non-conforming adaptive mesh refinement (AMR) version using space
-          filling curves
-        \item GPU porting of computationally dominant functions in AMR version is underway
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \centering
-      \includegraphics[width=0.3\textwidth]{figures/sedov-amr-900.png}
-      \includegraphics[width=0.3\textwidth]{figures/sedov-amr-2463.png} \\
-      \small{Sedov AMR at steps 900 and 2463.} \\
-      \includegraphics[width=0.9\textwidth]{{figures/sedov_animation_t8.19}.jpg} \\
-      \small{Sedov AMR mesh (left) and partition (right) with space filling curves.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
-  \frametitle{MFEM Laghos MiniApp - Early Sierra Results (T. Kolev, V. Tomov)}
-  \begin{columns}
-    \begin{column}{0.5\textwidth}
-      \begin{itemize}
-        \item 3rd order velocity and position (continuous kinematic), 2nd order internal
-          energy (discontinuous thermodynamic) finite elements (Q3Q2)
-        \item Mesh vertex repositioning without AMR
-        \item Four GPUs/node with one MPI process/GPU
-        \item More than 256K elements ('zones') required for
-          scaling to ~30 GPUs, 16M elements required for 1024 GPUs
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.5\textwidth}
-      \includegraphics[width=\textwidth]{figures/laghos_strong_Q3Q2_sierra_cws.png} \\
-      \small{Strong scaling for Laghos on Sierra of pure CUDA version.
-      A zone is a mesh element.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}
-
-  \frametitle{MFEM Laghos MiniApp - Next Steps for Load Balancing AMR}
-  Task Mapping
-  \begin{itemize}
-    \item Ensure proceses that are assigned to the same node share domain data
-    \item Zoltan2 (Karen Devine, SNL) geometric methods support the mapping of
-      the network partition to the domain partition
-  \end{itemize}
-  SFC
-  \begin{itemize}
-    \item Implement on-node balancer to avoid inter-node communications
-    \item As needed, run global balancer when execution cost on
-      imbalanced mesh is factors more than the cost to fix the imbalance
-  \end{itemize}
-  EnGPar
-  \begin{itemize}
-    \item Integrate EnGPar w/MFEM - similar interface as (Par)METIS
-    \item Complete acceleration of critical EnGPar procedures - initial work
-      completed with Kokkos
-  \end{itemize}
 \end{frame}
 
 \begin{frame}
