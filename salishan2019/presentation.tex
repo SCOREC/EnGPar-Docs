@@ -184,12 +184,20 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{What is EnGPar?}
-  \begin{itemize}
-  \item A partitioning tool to complement existing multi-level and geometric methods.
-  \item Provides a diffusive load balancing algorithm for partition improvement and supports multi-criteria partitioning.
-  \item Utilizes a specialized multigraph structure to represent relation based data.
-  \item Implemented to support efficient data parallel operations on accelerators and vector units in many core processors.
-  \end{itemize}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+        \item Complements existing multi-level and geometric methods.
+        \item Provides a diffusive load balancing algorithm for partition improvement and supports multi-criteria partitioning.
+        \item Utilizes a multi(hyper)graph structure to represent relation based data.
+        \item Implemented to support efficient data parallel operations on accelerators
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \includegraphics[width=\textwidth]{figures/hypergraph.eps} \\
+      \small{Example hypergraph with eight vertices (dots) and six hyperedges (boxes).}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}
