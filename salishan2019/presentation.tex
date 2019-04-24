@@ -31,7 +31,8 @@
 
 \title[Load Balancing on Many-Core and Accelerated Systems]{
 
-Session 4: Heterogeneous Applications: Maximizing Benefits While Minimizing Cost
+Session 4: Heterogeneous Applications: \\
+Maximizing Benefits While Minimizing Cost
 
 \textbf{Load Balancing on Many-Core and Accelerated Systems}
 }
@@ -57,7 +58,7 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{Load Balancing, Performance, and Scalability}
   \begin{itemize}
-  \item Load Balancing and Partitioning - distributing work to maximize performance on a
+  \item Partitioning and Load Balancing - distributing work to maximize performance on a
   given machine
   \item Performance - time to solution
   \begin{itemize}
@@ -76,7 +77,7 @@ Rensselaer Polytechnic Institute
   \item Scalable procedures are not necessarily portable
   \end{itemize}
   \bigskip
-  \tiny{[1] \url{https://performanceportability.org/perfport/definition/}}
+  \small{[1] \url{https://performanceportability.org/perfport/definition/}}
 \end{frame}
 
 \section{Manycore and Accelerated Systems}
@@ -95,7 +96,7 @@ Rensselaer Polytechnic Institute
         \item Host processor - dispatches accelerator work, facilitates
           communications, OS interactions
         \item Accelerator - provides most of the computing power \\
-          e.g.) Summit has 95\% of memory bandwidth and 98\% of FLOPs
+          e.g.) Summit GPUs have 95\% of memory bandwidth and 98\% of FLOPs
       \end{itemize}
       %Big-little
       %\begin{itemize}
@@ -159,23 +160,28 @@ Rensselaer Polytechnic Institute
   205:1 ratio of aggregate V100 HBM bandwidth to inter-node EDR bandwidth}
     \begin{columns}
     \begin{column}{0.7\textwidth}
+      \small
       \begin{table}[]
         \begin{tabular}{lrrr}
-        System                & Stream & Network & Stream/ \\
-                              & Triad  & Peak    & Network \\
-                              & (GB/s) & (GB/s)  & \\
-        Summit (inter-node)   & 5,130  & 25      & 205     \\
-        Summit (intra-node)   & 855    & 50      & 17      \\
-        Stampede2             & 194    & 12      & 17      \\
-        Mira                  & 27     & 20      & 1.4
+        System                      & Stream & Network & Stream/ \\
+                                    & Triad  & Peak    & Network \\
+                                    & (GB/s) & (GB/s)  & \\
+        Summit (inter-node)         & 5,130  & 25      & 205     \\
+        Summit (intra-node)         & 855    & 50      & 17      \\
+        Stampede2                   & 194    & 12      & 17      \\
+        Mira                        & 27     & 20      & 1.4 \\
+        \hline
+        Perlmutter (inter-node)[1] & 5,130  & 100     & 51   \\
+        \hline
         \end{tabular}
       \end{table}
       {\small
         Summit stream/network ratios
         \begin{itemize}
-          \item inter-node - sum of six V100 HBM bandwidth to EDR IB bandwidth
+          \item inter-node - sum six V100 HBM to EDR IB bandwidth
           \item intra-node - V100 HBM bandwidth to NVLINK bandwidth
         \end{itemize}
+        [1] `4x Volta Next' ?= 4x1.5xV100, Slingshot 4x 25GB/s links
       }
     \end{column}
     \begin{column}{0.3\textwidth}
@@ -203,19 +209,20 @@ Rensselaer Polytechnic Institute
   \frametitle{Motivation and Focus}
   \begin{columns}
     \begin{column}{0.7\textwidth}
-      Simulating systems with regions of physical interest that change.\\
+      Simulations with regions of physical interest that change.\\
       \smallskip
-      Many evolving distributed simulations have one or more of the following
-      characteristics that make scaling and achieving performance difficult. \\
+      Many simulations have one or more of the following
+      characteristics that make scaling and achieving
+      performance difficult.
       \begin{itemize}
         \item Complex relational structures.
         \item Irregular forms of computational and communication costs.
         \item Evolving imbalance of work characterized by multiple criteria.
       \end{itemize}
 
-      Evolving simulations we focus have:
+      Evolving simulations we focus on have:
       \begin{itemize}
-        \item Single executable built from library APIs - using in-memory
+        \item A single executable built from library APIs - in-memory
           interactions
         \item Bulk synchronous parallel execution model\\
           {\small \texttt (1) work (2) communicate (3) goto 1}
@@ -234,7 +241,7 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Common Methods for Partitioning}
+  \frametitle{Common Methods for Partitioning and Load Balancing}
   \begin{columns}
     \begin{column}{0.4\textwidth}
       \begin{itemize}
@@ -245,14 +252,19 @@ Rensselaer Polytechnic Institute
           \end{itemize}
         \item Geometric Methods %Require coordinates
           \begin{itemize}
-            \item Recursive Coordinate Bisection (RCB)
-            \item Recursive Inertial Bisection (RIB)
+            \item Recursive Coordinate(Inertial) Bisection
             \item Multi-Jagged
           \end{itemize}
         \item Diffusive Methods %Improve a partition efficiently
           \begin{itemize}
             \item Label Propagation
             \item ParMA and EnGPar
+          \end{itemize}
+        \item ... Not within a SIMT GPU
+          \begin{itemize}
+            \item same work for each thread
+            \item e.g.) loop collapsing graph traversal - operate on edges
+              instead of nodes
           \end{itemize}
       \end{itemize}
     \end{column}
@@ -284,7 +296,8 @@ Rensselaer Polytechnic Institute
       \begin{itemize}
         \item Provides a diffusive load balancing algorithm for partition improvement and supports multi-criteria partitioning.
         \item Complements existing multi-level and geometric methods.
-        \item Utilizes a multi(hyper)graph structure to represent relation based data.
+        \item Utilizes a weighted multi(hyper)graph structure to represent
+          data dependencies.
         \item Implemented to support efficient data parallel operations on accelerators
       \end{itemize}
       \includegraphics[width=.2\textwidth]{figures/engparDiffusion/0.jpg}
@@ -299,32 +312,7 @@ Rensselaer Polytechnic Institute
 \end{frame}
 
 \begin{frame}
-  \frametitle{Mapping application data to EnGPar}
-  \begin{columns}
-    \begin{column}{0.6\textwidth}
-  %Before using EnGPar a simulation must first map its data to the N-graph
-  To map to EnGPar, applications must:
-  \begin{itemize}
-  \item Define units of work as the graph vertices.
-  \item Decide on the mode (regular vs. hyper) of edges to use.
-  \item Create (hyper)edges between the vertices whose corresponding work relate to each other.
-  \end{itemize}
-    \end{column}
-    \begin{column}{0.4\textwidth}
-      \includegraphics[width=\textwidth]{figures/hypergraph.eps} \\
-      \small{Example hypergraph with eight vertices (dots) and six hyperedges (boxes).}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\section{Partition Improvement Results}
-\begin{frame}
-  \frametitle{}
-  \center \huge{Partition Improvement Results}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Problem Setup}
+  \frametitle{Unstructured Mesh Partition Improvement}
   We evaluate EnGPar's ability to improve vertex-centric
   and element-centric partitions created by ParMETIS.\\
   \medskip
@@ -335,8 +323,8 @@ Rensselaer Polytechnic Institute
     \item Degrees of freedom are associated with primary entities.
   \end{itemize}
   \bigskip
-  EnGPar first balances the DOF holders and then the secondary entity.
-  target imbalance of 1.05. \\
+  EnGPar first balances the DOF holders and then the secondary entity. \\
+  Target imbalance of 1.05. \\
   The imbalance of a given type (vtx, edge, face, or region) is defined as the
   max part weight divided by the avg part weight.
 \end{frame}
@@ -486,7 +474,7 @@ Rensselaer Polytechnic Institute
           energy (discontinuous thermodynamic) finite elements (Q3Q2)
         \item Mesh vertex repositioning without AMR
         \item Four GPUs/node with one MPI process/GPU
-        \item More than 256K elements ('zones') required for
+        \item More than 256K (256*1000) elements ('zones') required for
           scaling to ~30 GPUs, 16M elements required for 1024 GPUs
       \end{itemize}
     \end{column}
@@ -557,16 +545,16 @@ Rensselaer Polytechnic Institute
       \end{itemize}
       Weak Scaling - nearly linear
       \begin{itemize}
-        \item 12.8M vertices per node. 13.2B vertices (58B elements) at 1024
-          nodes.
+        \item 13.2B (13.2*10$^9$) vertices, 58B elements, at 1024 nodes.
         \item GPU: MPI+CUDA, 3 ranks/socket, MPI via GPUDirect
         \item CPU: MPI+OpenMP, ranks/socket, 168 threads per node (SMT4)
       \end{itemize}
-      GPU node-level performance is 23x-37x faster at scale than CPUs
+      GPU node-level performance is 23-37 times faster at scale than CPUs
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
+        Weak Scaling \\
         \includegraphics[width=\textwidth]{figures/fun3d-summit.png}
       \end{figure}
     \end{column}
@@ -634,7 +622,7 @@ Rensselaer Polytechnic Institute
 \begin{frame}
   \frametitle{XGC - Early Summit Results (CS Chang)}
   \begin{columns}
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.3\textwidth}
       Strong Scaling vs Titan
       \begin{itemize}
         \item Scaling runs using up to 44\% of Summit, 2048 nodes
@@ -644,7 +632,7 @@ Rensselaer Polytechnic Institute
       CPU+GPU performance is 11 times faster than CPU only at 12,288 GPUs (2Ki
       nodes)
     \end{column}
-    \begin{column}{0.5\textwidth}
+    \begin{column}{0.65\textwidth}
       \begin{figure}
         \centering
         \includegraphics[width=\textwidth]{figures/xgcStrongScaling.png}
@@ -663,15 +651,18 @@ Rensselaer Polytechnic Institute
           inspired by Sell-C-$\sigma$ rotated and padded CSR-like structure
         \item Distributed mesh with `safe' zones to avoid communication during
           push
-        \item Bulk communication protocol that accounts for `safe' zones
+        \item Bulk communication protocol that accounts for `safe' zones and can
+          quickly update field data already on the GPU - Omega\_h [1] for GPU mesh
         \item Particle load balancing with EnGPar
       \end{itemize}
+      {\tiny [1] \url{github.com/SNLcomputation/omega_h} } \\
+      {\tiny [2] M. Kreutzer, SISC 2014; Besta and Marending, IPDPS 2017}
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
         \includegraphics[width=.6\textwidth]{figures/sellCSigma.png}\\
-        \small{Sell-C-$\sigma$ data structure.} \smallskip \\
+        \small{Sell-C-$\sigma$ data structure [2].} \smallskip \\
         \includegraphics[width=.4\textwidth]{figures/rfMesh.png}\\
         \small{Unstructured 3D mesh of RF model.}
       \end{figure}
@@ -681,24 +672,24 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Closing Remarks}
-  MPI tests show that EnGPar:
+  Summit GPUs provide $>$90\% of the system performance
   \begin{itemize}
-    \item Quickly reduces the high secondary imbalances on up to 512Ki parts
-    \item Maintains edge cut and primary imbalances
+    \item Technically heterogeneous...
+    \item Cost to thread, optimize and load balance for the CPUs is not worth
+      the person-hours
   \end{itemize}
-  Inter-GPU data movement is expensive. Some possible load balancing mitigations:
+  Focus on providing a `decent' load imbalance to GPUs with minimized induced inter-GPU data movement
   \begin{itemize}
     \item Placing processes near those they share domain data with
     \item Optimizing partitions for communication, possibly sacrificing load balance
-    \item Predictively load balancing
+    \item Predictively load balance to reduce calls to balancer
   \end{itemize}
-  Suppose we had a processor with multiple specialized accelerators
+  Many more challenges if we had a processor/node with multiple specialized accelerators
   (e.g., compression, fft, spmv, graph traversal, encryption, etc...)
   \begin{itemize}
-    \item Will OpenMP, OpenCL, Kokkos, Raja, etc.. work effectively?
-    \item Can the current application code be refactored or will major pieces
-      require a rewrite?
-    \item Can we still use message passing to coordinate nodes?
+    \item Will current programming models/tools work effectively? Major code rewrite?
+    \item Many post exascale technologies in the pipeline:
+      \url{www.crnch.gatech.edu/sites/default/files/02-siamcse-2019-shalf.pdf}
   \end{itemize}
 \end{frame}
 
@@ -726,5 +717,33 @@ Rensselaer Polytechnic Institute
     \item CEED ECP
   \end{itemize}
 \end{frame}
+
+\begin{frame}
+  \begin{center}
+    {\huge
+      Extra Slides
+    }
+  \end{center}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Mapping application data to EnGPar}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+  %Before using EnGPar a simulation must first map its data to the N-graph
+  To map to EnGPar, applications must:
+  \begin{itemize}
+  \item Define units of work as the graph vertices with optional weights.
+  \item Decide on the mode (regular vs. hyper) of edges to use.
+  \item Create (hyper)edges between the vertices whose corresponding work relate to each other.
+  \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \includegraphics[width=\textwidth]{figures/hypergraph.eps} \\
+      \small{Example hypergraph with eight vertices (dots) and six hyperedges (boxes).}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 
 \end{document}
