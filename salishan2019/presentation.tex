@@ -313,29 +313,16 @@ Rensselaer Polytechnic Institute
 
 \begin{frame}
   \frametitle{Unstructured Mesh Partition Improvement}
-  We evaluate EnGPar's ability to improve vertex-centric
-  and element-centric partitions created by ParMETIS.\\
   \medskip
-  EnGPar is set to balance a mesh for a finite element and finite volume analysis where:
+  Problem setup
   \begin{itemize}
-    \item Scalability of matrix formation is sensitive to secondary entity imbalance.
-    \item Linear algebra routines are sensitive to the imbalance of degrees of freedom.
-    \item Degrees of freedom are associated with primary entities.
+    \item Billion element mesh of vertical tail structure.
+    \item Run on the Mira BG/Q with one process per hardware thread.
+    \item Target imbalance of 1.05.
+    \item The imbalance of a given type (vtx, edge,
+      face, or region) is defined as the max part
+      weight divided by the avg part weight.
   \end{itemize}
-  \bigskip
-  EnGPar first balances the DOF holders and then the secondary entity. \\
-  Target imbalance of 1.05. \\
-  The imbalance of a given type (vtx, edge, face, or region) is defined as the
-  max part weight divided by the avg part weight.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Element Partition: Problem Setup}
-  \medskip
-  Element-centric tests were run on a billion element mesh. \\
-  All experiments were run on the Mira BlueGene/Q system with one process per
-  hardware thread. \\
-  \smallskip
   Initial partitions are built using:
   \begin{itemize}
   \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts.
@@ -343,6 +330,7 @@ Rensselaer Polytechnic Institute
   \end{itemize}
   The partitions before using EnGPar:\\
   \begin{table}[!h]
+    \small
     \centering
     \begin{tabular}{||c|c|c|c||}
       \hline
@@ -369,44 +357,6 @@ Rensselaer Polytechnic Institute
   \end{figure}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Vertex Partition: Problem Setup}
-  \medskip
-  Vertex-centric tests were run on a 60 million element mesh. \\
-  All experiments were run on the Mira BlueGene/Q system. \\
-  \smallskip
-  Initial partitions are built using:
-  \begin{itemize}
-  \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts.
-  \end{itemize}
-  The partitions before using EnGPar: \\
-  \begin{table}[!h]
-    \centering
-    \begin{tabular}{||c|c|c|c|c||}
-      \hline
-      Number of Parts   & 1Ki   & 2Ki   & 4Ki   & 8Ki \\
-      \hline
-      Vertices per part & 17,984 & 8,992 & 4,496 & 2,248 \\
-      \hline
-      Vertex imbalance  & 1.05  & 1.05  & 1.05  & 1.05 \\
-      \hline
-      Element imbalance & 1.99  & 2.0  & 1.99  & 2.00 \\
-      \hline
-    \end{tabular}
-  \end{table}
-  ParMETIS sacrifices element imbalance for a low edge cut.
-\end{frame}
-
-\begin{frame}
-  \frametitle{Vertex Partition: Mesh Element Imbalance and Edge Cut}
-  \begin{figure}
-    \centering
-    \includegraphics[width=.48\textwidth]{../accelerated_cse19/figures/eimb_v_cores.eps}
-    \includegraphics[width=.48\textwidth]{../accelerated_cse19/figures/ecut_v_cores.eps}\\
-    Tuning the edge cut metric maintains the ParMETIS edge cut while reducing the
-    edge imbalance by up to 5\%.
-  \end{figure}
-\end{frame}
 
 \section{Load Balancing On Accelerated Systems}
 
@@ -647,24 +597,28 @@ Rensselaer Polytechnic Institute
     \begin{column}{0.5\textwidth}
       Developing tools for unstructured mesh PIC
       \begin{itemize}
-        \item Extending ECP COPA Cabana (Kokkos) - per element particle grouping
-          inspired by Sell-C-$\sigma$ rotated and padded CSR-like structure
         \item Distributed mesh with `safe' zones to avoid communication during
           push
         \item Bulk communication protocol that accounts for `safe' zones and can
           quickly update field data already on the GPU - Omega\_h [1] for GPU mesh
         \item Particle load balancing with EnGPar
+        \begin{itemize}
+          \item Construct subgraphs connecting processes
+            for each overlapping safe zone.
+          \item Set the weights of vertices to be the
+            number of particles in the elements for
+            the overlapping safe zone.
+          \item Diffusively migrate weight (\# of particles) in each
+            subgraph until processes are balanced.
+        \end{itemize}
       \end{itemize}
-      {\tiny [1] \url{github.com/SNLcomputation/omega_h} } \\
-      {\tiny [2] M. Kreutzer, SISC 2014; Besta and Marending, IPDPS 2017}
+      {\tiny [1] \url{github.com/SNLcomputation/omega_h} }
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{figure}
         \centering
-        \includegraphics[width=.6\textwidth]{figures/sellCSigma.png}\\
-        \small{Sell-C-$\sigma$ data structure [2].} \smallskip \\
-        \includegraphics[width=.4\textwidth]{figures/rfMesh.png}\\
-        \small{Unstructured 3D mesh of RF model.}
+        \includegraphics[width=.6\textwidth]{figures/engparPIC.png}\\
+        \small{Subgraphs created from core parts and safe zone parts.}
       \end{figure}
     \end{column}
   \end{columns}
@@ -717,33 +671,5 @@ Rensselaer Polytechnic Institute
     \item CEED ECP
   \end{itemize}
 \end{frame}
-
-\begin{frame}
-  \begin{center}
-    {\huge
-      Extra Slides
-    }
-  \end{center}
-\end{frame}
-
-\begin{frame}
-  \frametitle{Mapping application data to EnGPar}
-  \begin{columns}
-    \begin{column}{0.6\textwidth}
-  %Before using EnGPar a simulation must first map its data to the N-graph
-  To map to EnGPar, applications must:
-  \begin{itemize}
-  \item Define units of work as the graph vertices with optional weights.
-  \item Decide on the mode (regular vs. hyper) of edges to use.
-  \item Create (hyper)edges between the vertices whose corresponding work relate to each other.
-  \end{itemize}
-    \end{column}
-    \begin{column}{0.4\textwidth}
-      \includegraphics[width=\textwidth]{figures/hypergraph.eps} \\
-      \small{Example hypergraph with eight vertices (dots) and six hyperedges (boxes).}
-    \end{column}
-  \end{columns}
-\end{frame}
-
 
 \end{document}
