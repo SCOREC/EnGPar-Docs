@@ -4,7 +4,7 @@ set style line 2 lc rgb '#984ea3' lt 1 lw 7 pt 7 ps 1
 set title "Post Parmetis: Mesh Entity Counts versus Time" font ",20"
 set xlabel "process" font ",20"
 set ylabel "time (s)" font ",20"
-set y2label "imbalance (max/avg)" font ",20"
+set y2label "entity counts" font ",20"
 set y2tics font ",20"
 set key left font ",20"
 set term postscript eps color blacktext "Helvetica" 20
