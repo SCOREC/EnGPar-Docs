@@ -10,6 +10,8 @@
 % 
 % Further modified by:
 % Nathaniel Johnston (nathaniel@njohnston.ca)
+% and
+% Cameron Smith (@cwsmith on GitHub)
 %
 % Portrait version by:
 % John Hammersley
@@ -28,7 +30,7 @@
 
 \documentclass[final]{beamer}
 
-\usepackage[size=a1]{beamerposter} % Use the beamerposter package for laying out the poster
+\usepackage[size=a1,scale=0.78]{beamerposter} % Use the beamerposter package for laying out the poster
 
 \usetheme{nsfposter} % Use the confposter theme supplied with this template
 
@@ -43,25 +45,21 @@
 % To set effective sepwid, onecolwid and twocolwid values, first choose how many columns you want and how much separation you want between columns
 % In this template, the separation width chosen is 0.024 of the paper width and a 4-column layout
 % onecolwid should therefore be (1-(# of columns+1)*sepwid)/# of columns e.g. (1-(4+1)*0.024)/4 = 0.22
-% Set twocolwid to be (2*onecolwid)+sepwid = 0.464
-% Set threecolwid to be (3*onecolwid)+2*sepwid = 0.708
 
 \newlength{\sepwid}
 \newlength{\onecolwid}
-\newlength{\twocolwid}
-\newlength{\threecolwid}
-\setlength{\paperwidth}{36in} % A0 width: 46.8in
-\setlength{\paperheight}{48in} % A0 height: 33.1in
+\setlength{\paperwidth}{23.4in} % A1
+\setlength{\paperheight}{33.1in} % A1
 \setlength{\sepwid}{0.024\paperwidth} % Separation width (white space) between columns
-\setlength{\onecolwid}{0.22\paperwidth} % Width of one column
-\setlength{\twocolwid}{0.464\paperwidth} % Width of two columns
-\setlength{\threecolwid}{0.708\paperwidth} % Width of three columns
+\setlength{\onecolwid}{0.30\paperwidth} % Width of one column
 \setlength{\topmargin}{-0.5in} % Reduce the top margin size
 %-----------------------------------------------------------
 
 \usepackage{graphicx}  % Required for including images
 
-\usepackage{booktabs} % Top and bottom rules for tables
+%algorithms and pseudo code
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
 
 %----------------------------------------------------------------------------------------
 %	TITLE SECTION 
@@ -85,7 +83,7 @@
 
 \begin{frame}[t] % The whole poster is enclosed in one beamer frame
 
-\begin{columns}[t] % The whole poster consists of three major columns, the second of which is split into two columns twice - the [t] option aligns each column's content to the top
+\begin{columns}[t] % three columns
 
 \begin{column}{\sepwid}\end{column} % Empty spacer column
 
@@ -95,257 +93,236 @@
 %	OBJECTIVES
 %----------------------------------------------------------------------------------------
 
-\begin{alertblock}{Objectives}
-
-Lorem ipsum dolor sit amet, consectetur, nunc tellus pulvinar tortor, commodo eleifend risus arcu sed odio:
-\begin{itemize}
-\item Mollis dignissim, magna augue tincidunt dolor, interdum vestibulum urna
-\item Sed aliquet luctus lectus, eget aliquet leo ullamcorper consequat. Vivamus eros sem, iaculis ut euismod non, sollicitudin vel orci.
-\item Nascetur ridiculus mus.  
-\item Euismod non erat. Nam ultricies pellentesque nunc, ultrices volutpat nisl ultrices a.
-\end{itemize}
-
+\begin{alertblock}{Motivation and Focus}
+  GPUs provide >90\% of the compute power on leadership systems.\\
+  Simulations with regions of physical interest that change can have\\
+  \begin{itemize}
+    \item complex relational structures,
+    \item irregular forms of computational \& communication costs, and
+    \item evolving imbalance of work characterized by multiple criteria.
+  \end{itemize}
+  Provide fast dynamic load balancing on GPUs where simulation data exists. \\
+  \vskip1cm
+  \includegraphics[width=.45\textwidth]{../salishan2019/figures/xgcCase.png}
+  \includegraphics[width=.45\textwidth]{../salishan2019/figures/laghos_sedov.png}\\
+  \small{XGC fusion plasma physics (left) and MFEM Laghos Sedov blast
+  (right).}
 \end{alertblock}
-
-%----------------------------------------------------------------------------------------
-%	INTRODUCTION
-%----------------------------------------------------------------------------------------
-
-\begin{block}{Introduction}
-
-Lorem ipsum dolor \textbf{sit amet}, consectetur adipiscing elit. Sed commodo molestie porta. Sed ultrices scelerisque sapien ac commodo. Donec ut volutpat elit. Sed laoreet accumsan mattis. Integer sapien tellus, auctor ac blandit eget, sollicitudin vitae lorem. Praesent dictum tempor pulvinar. Suspendisse potenti. Sed tincidunt varius ipsum, et porta nulla suscipit et. Etiam congue bibendum felis, ac dictum augue cursus a. \textbf{Donec} magna eros, iaculis sit amet placerat quis, laoreet id est. In ut orci purus, interdum ornare nibh. Pellentesque pulvinar, nibh ac malesuada accumsan, urna nunc convallis tortor, ac vehicula nulla tellus eget nulla. Nullam lectus tortor, \textit{consequat tempor hendrerit} quis, vestibulum in diam. Maecenas sed diam augue.
-
-Lorem ipsum dolor \textbf{sit amet}, consectetur adipiscing elit. Sed commodo molestie porta. Sed ultrices scelerisque sapien ac commodo. Donec ut volutpat elit. Sed laoreet accumsan mattis. Integer sapien tellus, auctor ac blandit eget, sollicitudin vitae lorem. Praesent dictum tempor pulvinar. Suspendisse potenti. Sed tincidunt varius ipsum, et porta nulla suscipit et. Etiam congue bibendum felis, ac dictum augue cursus a.
-
-This statement requires citation \cite{Smith:2012qr}.
-
-\end{block}
 
 %------------------------------------------------
 
-\begin{figure}
-\includegraphics[width=0.8\linewidth]{nsfLogo.png}
-\caption{Figure caption}
-\end{figure}
+%\begin{block}{Accelerated Systems}
+%  \begin{itemize}
+%    \item Host processor - dispatches accelerator work, facilitates
+%      communications, OS interactions
+%    \item Accelerator - provides most of the computing power \\
+%      e.g.) ORNL Summit GPUs have 95\% of memory bandwidth and 98\% of FLOPs
+%  \end{itemize}
+%\end{block}
+%\begin{figure}
+%  \includegraphics[width=.5\textwidth]{../salishan2019/figures/summit-node.png}\\
+%  \small{ORNL Summit Compute Node: IBM AC922}\\
+%  \tiny{J.Choquette. Hot Chips 2017. "Volta: Programmability and Performance"}
+%\end{figure}
+%
+%\begin{block}{Common Methods for Partitioning and Load Balancing}
+%\end{block}
+%\begin{figure}
+%  \centering
+%  \includegraphics[width=.3\textwidth]{../salishan2019/figures/mitchellMesh.png}
+%  \includegraphics[width=.3\textwidth]{../salishan2019/figures/mitchellHSFC.png}
+%  \includegraphics[width=.3\textwidth]{../salishan2019/figures/mitchellRCB.png} \\
+%  \includegraphics[width=.3\textwidth]{../salishan2019/figures/mitchellRIB.png}
+%  \includegraphics[width=.3\textwidth]{../salishan2019/figures/mitchellParmetis.png} \\
+%  \small{Top to bottom, left to right: mesh, space filling curve,
+%  coordinate bisection, inertial bisection, multi-level k-way.} \\
+%  \tiny{``A refinement-tree based partitioning method for dynamic load
+%  balancing with adaptively refined grids'', William F. Mitchell}
+%\end{figure}
+
 
 %----------------------------------------------------------------------------------------
+
+  
+\begin{block}{What is EnGPar?}
+   \begin{itemize}
+     \item Provides a diffusive load balancing algorithm for partition improvement and supports multi-criteria partitioning.
+     \item Complements existing multi-level and geometric methods.
+     \item Utilizes a weighted multi(hyper)graph structure to represent
+       data dependencies.
+     \item Implemented to support efficient data parallel operations on accelerators
+   \end{itemize}
+   \includegraphics[width=.24\textwidth]{../salishan2019/figures/engparDiffusion/0.jpg}
+   \includegraphics[width=.24\textwidth]{../salishan2019/figures/engparDiffusion/1.jpg}
+   \includegraphics[width=.24\textwidth]{../salishan2019/figures/engparDiffusion/2.jpg}
+   \includegraphics[width=.24\textwidth]{../salishan2019/figures/engparDiffusion/3.jpg}
+   \includegraphics[width=.24\textwidth]{../salishan2019/figures/engparDiffusion/4.jpg}
+   \includegraphics[width=.24\textwidth]{../salishan2019/figures/engparDiffusion/5.jpg} \\
+   Multiple diffusive iterations (left to right) biased
+   to migrate entities in order of descending distance (red to blue) from the
+   topological center of the part (blue).
+\end{block}
+
+\begin{block}{Unstructured Mesh Partition Improvement}
+  \medskip
+  Problem setup
+  \begin{itemize}
+    \item Billion element mesh of vertical tail structure.
+    \item Run on the Mira BG/Q with one process per hardware thread.
+    \item Target imbalance of 1.05.
+    \item The imbalance of a given type (vtx, edge,
+      face, or region) is defined as the max part
+      weight divided by the avg part weight.
+  \end{itemize}
+  Initial partitions are built using:
+  \begin{itemize}
+  \item Global ParMETIS part k-way to 8Ki($8*2^{10}$) parts.
+  \item Local ParMETIS part k-way from 8Ki to 128Ki, 256Ki, and 512Ki parts.
+  \end{itemize}
+\end{block}
 
 \end{column} % End of the first column
 
 \begin{column}{\sepwid}\end{column} % Empty spacer column
 
-\begin{column}{\twocolwid} % Begin a column which is two columns wide (column 2)
+\begin{column}{\onecolwid} % The second column
 
-\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column
 
-\begin{column}{\onecolwid}\vspace{-.6in} % The first column within column 2 (column 2.1)
-
-%----------------------------------------------------------------------------------------
-%	MATERIALS
-%----------------------------------------------------------------------------------------
-
-\begin{block}{Materials}
-
-The following materials were required to complete the research:
-
-\begin{itemize}
-\item Curabitur pellentesque dignissim
-\item Eu facilisis est tempus quis
-\item Duis porta consequat lorem
-\item Eu facilisis est tempus quis
-\end{itemize}
-
-The materials were prepared according to the steps outlined below:
-
-\begin{enumerate}
-\item Curabitur pellentesque dignissim
-\item Eu facilisis est tempus quis
-\item Duis porta consequat lorem
-\item Curabitur pellentesque dignissim
-\end{enumerate}
-
+\begin{block}{Element Partition: Mesh Vertex Imbalance Reduction}
+  The partitions before using EnGPar:\\
+  \begin{table}[!h]
+    \small
+    \centering
+    \begin{tabular}{||c|c|c|c||}
+      \hline
+      Number of Parts &128Ki&256Ki&512Ki \\
+      \hline
+      Elements per part & 9,836 & 4,918&2,459  \\
+      \hline
+      Vertex imbalance & 1.13 & 1.18 & 1.53 \\
+      \hline
+      Element imbalance & 1.02& 1.02& 1.02\\
+      \hline
+    \end{tabular}
+  \end{table}
+  {\centering
+    \includegraphics[width=.6\textwidth]{../accelerated_cse19/figures/elmPtn_vtxImb.png}
+    \includegraphics[width=.6\textwidth]{../accelerated_cse19/figures/elmPtn_elmImb.png} \\
+    Mesh vertex imbalances are reduced from 13\% to 5\% for 128Ki, 18\% to 5\% for
+    256Ki, and 53\% to 6\% for 512Ki.  Edge cut is increased by 1\%.
+  }
 \end{block}
 
-%----------------------------------------------------------------------------------------
 
-\end{column} % End of column 2.1
+\begin{block}{Diffusive Partitioning}
+  \begin{algorithm}[H]
+    \caption{Diffusive Load Balancing Framework}
+    \label{alg:engpar}
+    \small
+    \begin{algorithmic}[1]
+      \Procedure{Balance}{$ngraph$,$entity\_types$}
+      \ForAll{$t \in entity\_types$}
+      \While{imbalance of $t >$ tolerance}
+      \Call{RunStep}{$ngraph$,$t$}
+      \If{Balancing Stagnates}
+      \State break
+      \EndIf
+      \EndWhile
+      \EndFor
+      \EndProcedure
 
-\begin{column}{\onecolwid}\vspace{-.6in} % The second column within column 2 (column 2.2)
-
-%----------------------------------------------------------------------------------------
-%	METHODS
-%----------------------------------------------------------------------------------------
-
-\begin{block}{Methods}
-
-Lorem ipsum dolor \textbf{sit amet}, consectetur adipiscing elit. Sed laoreet accumsan mattis. Integer sapien tellus, auctor ac blandit eget, sollicitudin vitae lorem. Praesent dictum tempor pulvinar. Suspendisse potenti. Sed tincidunt varius ipsum, et porta nulla suscipit et. Etiam congue bibendum felis, ac dictum augue cursus a. \textbf{Donec} magna eros, iaculis sit amet placerat quis, laoreet id est. In ut orci purus, interdum ornare nibh. Pellentesque pulvinar, nibh ac malesuada accumsan, urna nunc convallis tortor, ac vehicula nulla tellus eget nulla. Nullam lectus tortor, \textit{consequat tempor hendrerit} quis, vestibulum in diam. Maecenas sed diam augue.
-
+      \Procedure{RunStep}{$ngraph$,$t$}
+      \State $sides = makeSides(ngraph)$
+      \State $weights = makeWeights(ngraph,sides,t)$
+      \State $targets = makeTargets(ngraph,sides,weights)$
+      \State $queue = makeQueue(ngraph)$
+      \State $plan = select(ngraph,targets,queue)$
+      \State $ngraph.migrate(plan)$
+      \EndProcedure
+    \end{algorithmic}
+  \end{algorithm}
 \end{block}
 
-%----------------------------------------------------------------------------------------
-
-\end{column} % End of column 2.2
-
-\end{columns} % End of the split of column 2 - any content after this will now take up 2 columns width
-
-%----------------------------------------------------------------------------------------
-%	IMPORTANT RESULT
-%----------------------------------------------------------------------------------------
-
-\begin{alertblock}{Important Result}
-
-Lorem ipsum dolor \textbf{sit amet}, consectetur adipiscing elit. Sed commodo molestie porta. Sed ultrices scelerisque sapien ac commodo. Donec ut volutpat elit.
-
-\end{alertblock} 
-
-%----------------------------------------------------------------------------------------
-
-\begin{columns}[t,totalwidth=\twocolwid] % Split up the two columns wide column again
-
-\begin{column}{\onecolwid} % The first column within column 2 (column 2.1)
-
-%----------------------------------------------------------------------------------------
-%	MATHEMATICAL SECTION
-%----------------------------------------------------------------------------------------
-
-\begin{block}{Mathematical Section}
-
-Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin. Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin.
-  
-\begin{equation}
-E = mc^{2}
-\label{eqn:Einstein}
-\end{equation}
-
-Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin. Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin.
-
-\begin{equation}
-\cos^3 \theta =\frac{1}{4}\cos\theta+\frac{3}{4}\cos 3\theta
-\label{eq:refname}
-\end{equation}
-
-Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin. Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin.
-
-\begin{equation}
-\kappa =\frac{\xi}{E_{\mathrm{max}}} %\mathbb{ZNR}
-\end{equation}
-
-Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin. Nam quis odio enim, in molestie libero. Vivamus cursus mi at nulla elementum sollicitudin.
-
+\begin{block}{Queue}
+  One inward BFS and one outward BFS to compute graph distance; the traversal
+  order.
+  \begin{figure}
+    \centering
+    \includegraphics[width=.4\textwidth]{../accelerated_cse19/figures/2dTreeDepth.png}
+    \includegraphics[width=.41\textwidth]{../accelerated_cse19/figures/2dDistance.png}
+  \end{figure}
+      (left) The distance from each vertex to the boundary and (right) the
+    distance from the core vertex (marked with a zero near the
+    bottom left corner).
 \end{block}
-
-%----------------------------------------------------------------------------------------
-
-\end{column} % End of column 2.1
-
-\begin{column}{\onecolwid} % The second column within column 2 (column 2.2)
-
-%----------------------------------------------------------------------------------------
-%	RESULTS
-%----------------------------------------------------------------------------------------
-
-\begin{block}{Results}
 
 \begin{figure}
-\includegraphics[width=0.8\linewidth]{nsfLogo.png}
-\caption{Figure caption}
+  \centering
+  \includegraphics[width=.9\textwidth]{../accelerated_cse19/figures/sellcsigma.png}\\
+  Sell-C-Sigma structure (Besta and Merending, et al.)
 \end{figure}
 
-Nunc tempus venenatis facilisis. Curabitur suscipit consequat eros non porttitor. Sed a massa dolor, id ornare enim:
-
-Nunc tempus venenatis facilisis. Curabitur suscipit consequat eros non porttitor. Sed a massa dolor, id ornare enim:
-
-Nunc tempus venenatis facilisis. Curabitur suscipit consequat eros non porttitor. Sed a massa dolor, id ornare enim:
-
-Nunc tempus venenatis facilisis. Curabitur suscipit consequat eros non porttitor. Sed a massa dolor, id ornare enim:
-
-\begin{table}
-\vspace{2ex}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Treatments} & \textbf{Res. 1} & \textbf{Res. 2}\\
-\midrule
-Treatment 1 & 0.0003262 & 0.562 \\
-Treatment 2 & 0.0015681 & 0.910 \\
-Treatment 3 & 0.0009271 & 0.296 \\
-\bottomrule
-\end{tabular}
-\caption{Table caption}
-\end{table}
-
-\end{block}
-
-%----------------------------------------------------------------------------------------
-
-\end{column} % End of column 2.2
-
-\end{columns} % End of the split of column 2
 
 \end{column} % End of the second column
-
 \begin{column}{\sepwid}\end{column} % Empty spacer column
-
 \begin{column}{\onecolwid} % The third column
 
-%----------------------------------------------------------------------------------------
-%	CONCLUSION
-%----------------------------------------------------------------------------------------
-
-\begin{block}{Conclusion}
-
-Nunc tempus venenatis facilisis. \textbf{Curabitur suscipit} consequat eros non porttitor. Sed a massa dolor, id ornare enim. Fusce quis massa dictum tortor \textbf{tincidunt mattis}. Donec quam est, lobortis quis pretium at, laoreet scelerisque lacus. Nam quis odio enim, in molestie libero. Vivamus cursus mi at \textit{nulla elementum sollicitudin}.
-
-Nunc tempus venenatis facilisis. Curabitur suscipit consequat eros non porttitor. Sed a massa dolor, id ornare enim.
-
+\begin{block}{Accelerating BFS}
+  Hypergraphs created from unstructured tet mesh of automotive part \\
+  Timing comparison on NVIDIA 1080ti - includes data transfers, but not JIT; 
+  average of three runs shown \\
+  \texttt{scg\_int\_unroll} is 4.78 times faster than csr on 28M graph and up to 
+      11 times faster than serial push on Intel Xeon (not shown) \\
+  Memory coalescing is critical; csr vs. scg \\
+  {
+    \centering
+    \includegraphics[width=.97\textwidth]{../accelerated_cse19/results/openclBfs.png} \\
+    { \small
+    \texttt{push}: C++ serial push,
+    \texttt{pull}: C++ serial `pull',
+    \texttt{csr}: OpenCL `pull' on CSR, 
+    \texttt{scg}: OpenCL `pull' on Sell-C-Sigma,
+    \texttt{*\_int}: 4B int,
+    \texttt{*\_unroll}: unroll the vtx-to-hyperedge loop
+    }
+  }
 \end{block}
 
-%----------------------------------------------------------------------------------------
-%	ADDITIONAL INFORMATION
-%----------------------------------------------------------------------------------------
-
-\begin{block}{Additional Information}
-
-Maecenas ultricies feugiat velit non mattis. Fusce tempus arcu id ligula varius dictum. 
-\begin{itemize}
-\item Curabitur pellentesque dignissim
-\item Eu facilisis est tempus quis
-\item Duis porta consequat lorem
-\end{itemize}
-
-Maecenas ultricies feugiat velit non mattis. Fusce tempus arcu id ligula varius dictum. 
-\begin{itemize}
-\item Curabitur pellentesque dignissim
-\item Eu facilisis est tempus quis
-\item Duis porta consequat lorem
-\end{itemize}
-
+\begin{block}{Selection using Kokkos}
+  Operate on non-overlapping cavities to avoid race; color the boundary \\
+  A cavity is selected for migration if it satisfies color, target, and size
+  criteria \\
+  { \centering
+    \includegraphics[width=\textwidth]{../accelerated_cse19/figures/kkColoringAndDual.png}\\
+    Speedup of parallel vs. serial coloring and dual computation on NVIDIA 1080ti
+  }
+  Making good decisions
+  { \centering
+    \includegraphics[width=\textwidth]{../accelerated_cse19/figures/selectionEx.png}\\
+    Initial, GPU Selection, CPU Selection
+  }
+  Bias selection towards cavities with highest topological distance.
 \end{block}
 
-%----------------------------------------------------------------------------------------
-%	REFERENCES
-%----------------------------------------------------------------------------------------
-
-\begin{block}{References}
-
-\nocite{*} % Insert publications even if they are not cited in the poster
-\small{\bibliographystyle{unsrt}
-\bibliography{sample}\vspace{0.75in}}
-
+\begin{block}{Closing Remarks and Future Work}
+  \begin{itemize}
+    \item Using Kokkos for improved portability and ease of use over OpenCL
+    \item Porting of BFS to Kokkos is underway
+    \item Focused on balancing particles in XGCm accelerated unstructured mesh PIC
+  \end{itemize}
 \end{block}
 
-%----------------------------------------------------------------------------------------
-%	ACKNOWLEDGEMENTS
-%----------------------------------------------------------------------------------------
-
-\setbeamercolor{block title}{fg=red,bg=white} % Change the block title color
-
-\begin{block}{Acknowledgements}
-
-\small{\rmfamily{Nam mollis tristique neque eu luctus. Suspendisse rutrum congue nisi sed convallis. Aenean id neque dolor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.}} \\
-
+\begin{block}{More Info}
+  EnGPar - \url{github.com/SCOREC/EngPar} \\
+  Mark S. Shephard - \url{shephard@rpi.edu} \\
+  Cameron W. Smith - \url{smithc11@rpi.edu} \\
 \end{block}
+
+
 
 \end{column} % End of the third column
+
+\begin{column}{\sepwid}\end{column} % Empty spacer column
 
 \end{columns} % End of all the columns in the poster
 
